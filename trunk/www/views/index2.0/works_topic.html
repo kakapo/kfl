@@ -1,0 +1,84 @@
+<?include_once(APP_DIR_V.'/index2.0/include/head.html')?>
+<style type="text/css">
+#cot {width:920px;margin-left:auto;margin-right:auto;background:#FFFFFF;float:left;margin-left:44px;}
+#cot ul{margin:0px;padding:0px;}
+#cot .yf ul li{float:left;width:180px;margin-left:20px;margin-top:30px;}
+#cot .head_art{margin-left:20px;margin-right:20px;margin-top:20px;}
+#cot .tab_heam{margin-top: 15px; margin-bottom: 20px;margin-left:0px;margin-right:0px;position:relative;}
+#cot .l{clear:both;}
+#cot .flet{float:left;}
+#cot .msg_fet{float:left;margin-left:10px;}
+#cot .msg_fet h4{color:#F0893E;padding:5px 0px;}
+#cot .litem91 a{color:#EB6100;}
+#cot .msg_fet ._h4{font-size:14px;color:#F0893E;font-weight:bold;}
+#cot .phto{border:solid 1px #E5E5E5;}
+#cot .msg_fet span{display:block;margin-top:5px;}
+#cot .bot_fit{float:left;width:300px;background:url(<?=$image_site_url?>/images/component/diylist/pagenum_bg.jpg) repeat scroll 0 0;padding-top:5px;height:23px;}
+.hmenu_4{ background:url(<?=$image_site_url?>/images/component/diylist/h_menu_gbg.jpg) repeat-x; height:31px;line-height:26px; margin:0px 20px; padding:0px 0px 0px 10px; }
+.hmenu_4 .litem91{ float:left; width:91px; text-align:center; margin-left:3px;}
+.hmenu_4 .litem91 a:hover{ width:91px; height:31px;line-height:26px; line-height:26px;display:block; background:url(<?=$image_site_url?>/images/component/diylist/h_hover91bg.jpg) 0px 0px; font-weight:bold; color:#72B001;}
+.hmenu_4 .litem142{ float:left; width:142px; text-align:center; margin-left:3px;}
+.hmenu_4 .hover91{ height:31px; line-height:26px; background:url(<?=$image_site_url?>/images/component/diylist/h_hover91bg.jpg) 0px 0px;}
+.hmenu_4 .hover91 a{ color:#72B001;}
+</style>
+</head>
+<body>
+<? include(APP_DIR_V.'/index2.0/include/menu.html'); ?>
+<div id="cot">
+<div class="head_art">
+<div>
+<img src="<?=$image_site_url?>/images/onload/images/hume_03.gif" />
+</div>
+<div>
+
+<div class="hmenu_4 tab_heam">
+<div class="litem91"><a class="gray6_14b none" href="/index.php/works/art">美术资源</a></div>
+<div class="litem91 hover91"><a class="gray6_14b none" href="/index.php/works/topic" style="color:#EB6100;">主题背景</a></div>
+<div style="position:absolute;top:-8px;right:0px;"><a href="/index.php/works/agree"><img src="<?=$image_site_url?>/images/onload/images/hume_09.gif" /></a></div>
+</div>
+<div style="width:100%;" class="yf">
+ <ul>
+<?
+if(isset($list_array['record']) && is_array($list_array['record'])){
+foreach($list_array['record'] as $key=>$list){
+?>
+<li>
+<div class="flet phto">
+   <a><img src="<?=$list['ws_Abbr']?>" /></a>
+</div>
+<div class="msg_fet">
+   <span class="_h4"><?=$list['ws_name']?></span>
+   <span>设计师：<a><?=$list['ws_author']?></a></span>
+ </div>
+ <div class="clr"></div>
+</li>
+
+<?}}?>
+<li class="clr"></li>
+ </ul>
+</div>
+ <?
+if(isset($list_array['page']->total) && ($list_array['page']->total > $list_array['page']->onepage))
+{
+?>
+<form method="GET" action="/index.php" name='form1'>
+<input type='hidden' name="action" value="works" />
+<input type='hidden' name="view" value="topic" />
+ <div class="page">
+ <div class="pre_page"><?=$list_array['page_array']['prePage']?></div>
+ <div class="list_page">
+ <?=$list_array['page_array']['numBar'];?>
+ </div>
+ <div class="next_page"><?=$list_array['page_array']['nextPage']?></div>
+ </div>
+ </form>
+ <?}?>
+</div>
+<div class="clr"></div>
+</div>
+<div class="clr"></div>
+</div>
+<div class="clr"></div>
+<? include(APP_DIR_V.'/index2.0/include/foot.html'); ?>
+</body>
+</html>

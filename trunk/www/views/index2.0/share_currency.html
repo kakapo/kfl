@@ -1,0 +1,71 @@
+<?include_once(APP_DIR_V.'/index2.0/include/head.html')?>
+<script language="javascript" type="text/javascript" src="<?=$image_site_url?>/js/control/share.js?v=<?=$version?>"></script>
+<script type="text/javascript">
+//
+function show_subnav()
+{
+	document.getElementById("ztg_subnav").style.display='block';	
+	document.getElementById("xg3d_a").className ='cur';
+}
+
+function hid_subnav()
+{
+	document.getElementById("ztg_subnav").style.display='none';
+	document.getElementById("xg3d_a").className ='';
+	
+}
+
+function show_subnav2()
+{
+	document.getElementById("wdgd_sub").style.display='block';	
+	document.getElementById("wdgd_a").className ='cur';
+}
+
+function hid_subnav2()
+{
+	document.getElementById("wdgd_sub").style.display='none';
+	document.getElementById("wdgd_a").className ='';
+	
+}
+//
+</script>
+<div class="implant_right" style="border:0;">
+    	<div class="implant_tit3">
+			<a href="/index.php/share/index" class="s_1" title="选择你要嵌入的空间"></a>
+        	<a href="/index.php/share/size/type/<?=$type?>" class="s_2" title="选取显示位置"></a>
+			<a href="/index.php/share/<?=$type?>/type/<?=$type?>" class="s_3" title="嵌入空间"></a>
+		</div>
+        <div class="clr"></div>
+        <div class="im_nav">
+        	<a href="/index.php/share/currency/type/currency" class="hover">Flash代码</a>
+        </div>
+        
+        <div class="fla_code">
+			<ul style="height:60px;">
+                <li class="gray6_11b">HTML格式：支持博客、空间、论坛中发表文章、回复适合于猫扑、SOHU社区、西祠胡同等BBS </li>
+                <li>
+					<span class="input_fla"><input type="text" name="html_flash" id="html_flash" value="<?=$html_flash?>" /></span>
+					<span><a href="javascript:copyCode('html_flash');"><img src="<?=$image_site_url?>/images/component/implant/copy_btn.jpg" /></a></span>
+				</li>
+            </ul>  
+			<ul>
+                <li class="gray6_11b">UBB格式：支持博客、空间、论坛中发表文章、回复适合于21CN、chinaren社区、泡泡网等BBS </li>
+                <li>
+					<span class="input_fla"><input type="text" name="ubb_flash" id="ubb_flash" value="<?=$ubb_flash?>" /></span>
+					<span><a href="javascript:copyCode('ubb_flash');"><img src="<?=$image_site_url?>/images/component/implant/copy_btn.jpg" /></a></span>
+				</li>
+            </ul>        
+			<ul style="height:60px;">
+                <li class="gray6_11b">URL格式：支持博客、空间、论坛中发表文章、回复适合于可视操作的BBS社区，如TOM社区等 </li>
+                <li>
+					<span class="input_fla"><input type="text" name="url_flash" id="url_flash" value="<?=$url_flash?>" /></span>
+					<span><a href="javascript:copyCode('url_flash');"><img src="<?=$image_site_url?>/images/component/implant/copy_btn.jpg" /></a></span>
+				</li>
+            </ul>          
+      	</div>
+      <div class="clr"></div>
+	  <div class="help_a" style=" margin-top:145px;*margin-top:133px;_margin-top:113px;">
+         <p class="bianji_p"><a href="javascript:top.window.location.href='/index.php/show/frameset';" class="blue_by12">继续编辑形象</a></p>
+     </div>
+     <!--<div class="help_a"><a href="#" class="blue_by12">查看教程</a></div>   -->
+  </div>

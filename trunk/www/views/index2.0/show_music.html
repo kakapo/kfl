@@ -1,0 +1,90 @@
+<?include_once(APP_DIR_V.'/index2.0/include/head.html')?>
+<script language="javascript" type="text/javascript" src="<?=$image_site_url?>/js/control/show.js?v=<?=$version?>"></script>
+<link href="<?=$image_site_url?>/css/user_manage.css?v=<?=$version?>" rel="stylesheet" type="text/css" />
+</head>
+<body style="width:800px;">
+<!--弹出层容器 开始 -->
+<? include APP_DIR_V."/index2.0/include/alertdiv.html";?>
+<!--弹出层容器 结束 -->
+<!--player   EE-->
+
+<div class="right_f">
+            <div class="banner_f">
+                <? if(isset($show_yy_banner_688x90)) include($show_yy_banner_688x90)?>
+                          
+            </div>
+
+	<div class="mu_bg">
+    	<div class="clr"></div>
+   	  <div class="mu_play">
+		<div style="float:left;margin-left:10px !important;margin-left:5px;margin-top:15px;width:455px;">
+		<p id="player3"></p>
+		<script type="text/javascript" src="<?=$image_site_url?>/js/control/music.js"></script>
+		<!--<script type="text/javascript">
+			var s3 = new SWFObject("<?=$image_site_url?>/flash/mp3player.swf", "line", "455", "20", "7");
+			s3.addVariable("file","<?=$userMusic?>");
+			s3.addVariable("repeat","true");
+			s3.addVariable("showdigits","false");
+			s3.addVariable("showdownload","true");
+			s3.addVariable("wmode","transparent");
+			s3.addVariable("width","455");
+			s3.addVariable("height","20");
+			s3.write("player3");
+		</script>-->
+        <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="455" height="20" id="line">
+        <param name="movie" value="<?=$image_site_url?>/flash/mp3player.swf" />
+        <param name="quality" value="high" />
+        <param name="bgcolor" value="#869ca7" />
+        <param name="allowScriptAccess" value="always" />
+        <param name="allowFullScreen" value="true" />
+        <param name="wmode" value="transparent">
+        <param name="flashvars" value="file=<?=$userMusic?>">
+        <embed id="line" width="455" height="20" flashvars="file=<?=$userMusic?>" quality="high" name="line" style="" wmode="transparent" src="<?=$image_site_url?>/flash/mp3player.swf" type="application/x-shockwave-flash" lk_mediaid="lk_juiceapp_mediaPopup_1247630396717" lk_media="yes"/>
+        </object>
+		</div>
+	</div>
+      <div class="clr"></div>
+	  <form action="index.php" method="post" name="music" id="music">
+	  <input type="hidden" name="action" value="show"/>
+   	  <input type="hidden" name="op" value="updatemusic"/>
+      <div class="mu_url">
+      	<div class="<? if(empty($userMusic))echo 'in_txt';else echo 'in_txt2';?>"><input type="text" class="ct" name="music_url" id="music_url" value="<?=$userMusic?>" /></div>
+        <div class="ok_div">
+			<input type="button" class="<? if(empty($userMusic))echo 'ok_btn';else echo 'xg_btn';?>" onClick="addmusic(<?=$is_login?>,<?=$user_vip?>,<?=$user_coin?>,<?=$user_cash?>);" style="cursor:pointer" />
+		</div>
+	  </div>
+      </form>
+
+      <div class="mu_logo">
+		<div class="logo_list">
+			<a href="http://mp3.baidu.com/" target="_blank"><img src="<?=$image_site_url?>/images/user_manage/music_logo/baidu.gif" title="百度MP3搜索"/></a>
+		</div>
+		<div class="logo_list">
+			<a href="http://music.yahoo.com.cn/" target="_blank"><img src="<?=$image_site_url?>/images/user_manage/music_logo/yahoo.gif" title="雅虎MP3搜索"/></a>
+		</div>
+		<div class="logo_list">
+			<a href="http://music.soso.com/" target="_blank"><img src="<?=$image_site_url?>/images/user_manage/music_logo/soso.gif" title="SOSO音乐搜索"/></a>
+		</div>
+		<div class="logo_list">
+			<a href="http://d.sogou.com/" target="_blank"><img src="<?=$image_site_url?>/images/user_manage/music_logo/sogou.gif" title="搜狗音乐搜索"/></a>
+		</div>
+		<div class="logo_list">
+			<a href="http://mp3.yodao.com/" target="_blank"><img src="<?=$image_site_url?>/images/user_manage/music_logo/youdao.gif" title="有道音乐搜索"/></a>
+		</div>
+		<div class="logo_list">
+			<a href="http://www.google.cn/music/homepage" target="_blank"><img src="<?=$image_site_url?>/images/user_manage/music_logo/google.gif" title="谷歌音乐搜索"/></a>
+		</div>
+		<div class="logo_list">
+			<a href="http://mp3.zhongsou.com/" target="_blank"><img src="<?=$image_site_url?>/images/user_manage/music_logo/zhongsou.gif" title="中搜Mp3搜索"/></a>
+		</div>
+		<div class="logo_list">
+			<a href="http://m.iask.com/" target="_blank"><img src="<?=$image_site_url?>/images/user_manage/music_logo/aiwen.gif" title="爱问音乐搜索引擎"/></a>
+		</div>
+      </div>
+
+	</div>
+</div>
+<? include(APP_DIR_V.'/index2.0/include/framefoot.html'); ?>
+</body>
+</html>
+

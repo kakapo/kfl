@@ -1,0 +1,102 @@
+<? include APP_DIR_V."/index2.0/include/head.html";?>
+<script language="javascript" type="text/javascript" src="<?=$image_site_url?>/js/control/show.js?v=<?=$version?>"></script>
+</head>
+
+<body style="width:800px;">
+<!--弹出层容器 开始 -->
+<? include APP_DIR_V."/index2.0/include/alertdiv.html";?>
+<!--弹出层容器 结束 -->
+
+<div class="right_f">
+  	        <div class="banner_f">
+            <? if(isset($show_tjdp_banner_688x90)) include($show_tjdp_banner_688x90)?>         
+            </div>
+    <div class="tjdp_sort">
+        <div class="sort_txt">
+        	排序: <a href="/index.php/show/recommend/sort/id" class="<? if($cur_sort=='id') echo 'yellowf3_12b none'; else echo 'gray6_12 noneline';?>">最新搭配</a>  <a href="/index.php/show/recommend/sort/hits" class="<? if($cur_sort=='hits') echo 'yellowf3_12b none'; else echo 'gray6_12 noneline';?>">人气搭配</a>
+        </div>
+        <div class="wysb_btn"><a href="javascript:user_example('<?=$is_login?>');"><img src="<?=$image_site_url?>/images/component/G_bl/wysb_btn.jpg" /></a></div>
+    </div>
+<div class="g_bl_bg">
+
+    <div class="g_bl_tj">
+        <div style="padding-bottom:20px;"></div>
+
+	 <?php
+	       if($cur_sort=='hits'){
+	     	 $changimage='hot_pico_in.png';
+	       }else{
+	     	 $changimage='new_pico_in.png';
+	       }
+	  	 	if(isset($items['records']) && is_array($items['records'])) {
+	  	 		foreach ($items['records'] as $key=>$item){
+                    
+	  	 	?>
+
+        <div class="list">
+          <div class="pic_bg">
+            <div class="clr"></div>
+            <div class="pic">
+                <span class="new_hot" style=" width:53px; height:59px;background:url(<?=$image_site_url?>/images/<?=$changimage?>) 0 0 no-repeat; +background:none;"><img src="<?=$image_site_url?>/images/blank.gif" style="background:url(<?=$image_site_url?>/images/<?=$changimage?>)!important;background:none;filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='<?=$image_site_url?>/images/<?=$changimage?>',sizingMethod='image');" /></span>
+                <a href="javascript:top.leftFrame.setAllModelsById(<?=$item['id']?>);"><span class="jiage_add_gg"><b class="guoguo"><?=$item['coins']?></b><b class="add_bg"></b><b class="g_bg"><?=$item['cash']?></b></span><img src="<?=$image_site_url?>/recomenddiy/images/<?=$item['pic']?>" /></a>
+            </div>
+            <div class="name"><a href="javascript:top.leftFrame.setAllModelsById(<?=$item['id']?>);" class="yellow_13 noneline"><?=$item['title']?></a></div>
+
+          </div>
+          <div class="bottom_txt">
+            <div class="btn">
+                <a href="javascript:top.leftFrame.setAllModelsById(<?=$item['id']?>);"><img src="<?=$image_site_url?>/images/component/r_flist/drass_btn.png" /></a>
+                <a href="javascript:addAllToCart(<?=$item['id']?>);"><img src="<?=$image_site_url?>/images/component/r_flist/buy_btn.png" /></a>
+            </div>
+          </div>
+        </div>
+	<?php
+	  	 		}
+	  	 	}else{
+	  	 		?>
+			<p>&nbsp;</p>
+	  	 	 <table border="0" cellspacing="10" cellpadding="0" align="center">
+			  <tr>
+			    <td><img src="<?=$image_site_url?>/images/index/v.gif" /></td>
+			    <td>没有数据<br /><a href="javascript:history.go(-1)" class="blue_by12 noneline">返回</a> </td>
+			  </tr>
+			</table>
+	  	 		<?
+	  	 	}
+	 		?>
+
+
+    </div>
+    <div class="clr"></div>
+
+
+    	  <!-- 道具分页开始-->
+	 	<?
+		if(isset($items['page']->total) && ($items['page']->total > $items['page']->onepage))
+		{
+		?>
+		<form method="GET" action="/index.php" name='form1'>
+			<input type='hidden' name="action" value="show" />
+			<input type='hidden' name="view" value="recommend" />
+			<input type='hidden' name="sort" value="<?=$con['order']?>" />
+	    <div class="page">
+	    	<div class="pre_page"><?=$items['page_array']['prePage']?></div>
+	        <div class="list_page">
+	        	<?=$items['page_array']['numBar'];?>
+	        </div>
+	        <div class="next_page"><?=$items['page_array']['nextPage']?></div>
+	    </div>
+	    </form>
+	 	<?}?>
+		<!-- 道具分页结束-->
+
+      <div style="padding-bottom:20px;"></div>
+
+   </div>
+
+
+</div>
+<? include(APP_DIR_V.'/index2.0/include/framefoot.html'); ?>
+</body>
+</html>
+

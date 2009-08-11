@@ -1,0 +1,157 @@
+<?include_once(APP_DIR_V.'/index2.0/include/head.html')?>
+<link href="<?=$image_site_url?>/css/user_manage.css?v=<?=$version?>" rel="stylesheet" type="text/css" />
+<script language="javascript" type="text/javascript" src="<?=$image_site_url?>/js/control/show.js?v=<?=$version?>"></script>
+<script language="javascript">
+function checkFrom(form)
+{
+	if ( form.is_login.value == '0' )
+	{
+		show_loginwin();
+		return false;
+	}
+	if ( form.vip.value == '0' )
+	{
+		var html = 'VIP成员可以在widget内添加自定义图片,<a href="javascript:join_vip(<?=$user_coin?>,<?=$user_cash?>);" class="blue_by12">现在就加入</a>';
+		AlertShow(300,html);
+		return false;
+	}
+	if ( form.num.value <= 0 )
+	{
+		AlertShow(300,'您只能上传' + <?=$uploadImageTotal?> + '张自定义图片!',{
+						  'ok':{til:'好，我知道了',
+								fuc:function (){
+									 AlertHidden();
+									}
+								}
+					  });
+		return false;
+	}
+	if ( form.pic_upload.value == "" )
+	{
+		AlertShow(300,'请选择图片!',{
+						  'ok':{til:'好，我知道了',
+								fuc:function (){
+									 AlertHidden();
+									}
+								}
+					  });
+		return false;
+	}
+	return true;
+}
+
+function view_pic(obj)
+{
+	var path = getFullPath(obj);
+
+	//ie 
+	if (window.navigator.userAgent.indexOf("MSIE")>=1) 
+	{ 
+		document.getElementById("img").style.display = "none";
+		document.getElementById("view_div").style.display = "block";
+		document.getElementById("view_div").filters.item("DXImageTransform.Microsoft.AlphaImageLoader").src = path;
+	} 
+	//firefox 
+	else if(window.navigator.userAgent.indexOf("Firefox")>=1) 
+	{ 
+		document.getElementById("view_div").style.display = "none";
+		document.getElementById("img").style.display = "block";
+		document.getElementById("img").setAttribute("src",path);
+	} 
+	$('view_pic_div').style.display = 'block';
+}
+
+function getFullPath(obj) 
+{ 
+	if(obj) 
+	{ 
+		//ie 
+		if (window.navigator.userAgent.indexOf("MSIE")>=1) 
+		{ 
+			obj.select(); 
+			return document.selection.createRange().text; 
+		} 
+		//firefox 
+		else if(window.navigator.userAgent.indexOf("Firefox")>=1) 
+		{ 
+			if(obj.files) 
+			{ 
+				return obj.files.item(0).getAsDataURL(); 
+			} 
+			return obj.value; 
+		} 
+		return obj.value; 
+	} 
+} 
+
+</script>
+</head>
+<body style="width:800px;">
+<!--弹出层容器 开始 -->
+<? include APP_DIR_V."/index2.0/include/alertdiv.html";?>
+<!--弹出层容器 结束 -->
+
+<div class="right_f">
+            <div class="banner_f">
+                <? if(isset($show_diy_banner_688x90)) include($show_diy_banner_688x90)?>
+            </div>
+	<div class="con">
+		<div class="pro_class">
+          <div class="class_p">
+			<a href="/index.php/show/diy" class="yellowf3_12b none" style="width:42px;">图片</a>
+			<a href="/index.php/show/txtdiy" class="gray6_12 noneline" style="width:42px;">文字</a>
+          </div>
+        </div>
+
+      <div class="con_div">
+	  <form action="index.php" method="post" name='form1' id="form1" enctype="multipart/form-data" onSubmit="return checkFrom(this);">
+	  <input type="hidden" name="action" value="show"/>
+   	  <input type="hidden" name="op" value="addpic"/>
+	  <input type="hidden" name="num" value="<?=$uploadImageTotal-$picCount?>"/>
+	  <input type="hidden" name="vip" value="<?=$user_vip?>"/>
+	  <input type="hidden" name="is_login" value="<?=$is_login?>"/>
+        <div class="uppic_bg">
+            <label>
+            <input type="file" class="up_input" size="55" name="pic_upload" id="pic_upload" onChange="document.getElementById('tt').value=this.value;view_pic(this);" />
+            <input type="text" id="tt" readonly="true" class="fileText" />
+			<input type="button" class="view_btn" value="">
+			<input type="submit" class="up_btn" value="" style="cursor:pointer">
+          	</label>
+        </div>
+        <div class=""></div>
+
+	  </form>
+	  <div id="view_pic_div" style="display:none; margin-left:40px;">
+	  	预览
+	  	<div id="view_div" style="filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(sizingMethod=scale);width:100px;height:100px;"></div>
+        <img id="img" style="width:100px;height:100px;" />
+	  </div>
+
+        <div "<?if($picCount) echo 'class="pic_tishi yellowf3_12"';?>"><?if($picCount){?>您还可以添加<?=$uploadImageTotal-$picCount?>张图片<?}?></div>
+        <div class="pic_list">
+		<?
+		if ( !empty( $pic ))
+		{
+
+			foreach ( $pic as $key => $value )
+			{
+		?>
+        	<div class="list">
+                <a href="javascript:top.leftFrame.setImageUrls('<?=$user_site_url?>/<?=$value['picUrl']?>','0',-1,100);" class="pic">
+					<img src="<?=$user_site_url?>/<?=$value['picUrl']?>" width="102" height="102" />
+				</a>
+                <a href="javascript:deldiyimage(<?=$key?>,<?=$value['picId']?>,'<?=$value['tmpPicUrl']?>');top.leftFrame.deleteDiy('<?=$user_site_url?>/<?=$value['picUrl']?>');" class="dele gray9_12 noneline">删除</a>
+            </div>
+        <?}}?>
+
+        </div>
+
+      <div class="clr"></div>
+      </div>
+
+
+  </div>
+</div>
+<? include(APP_DIR_V.'/index2.0/include/framefoot.html'); ?>
+</body>
+</html>

@@ -1,0 +1,283 @@
+<? include APP_DIR_V."/index2.0/include/head.html";?>
+<meta name="KEYWords" content="空间免费代码,空间FLASH模块,3D装饰,空间装饰,qq空间装饰,非主流qq空间 ">
+<meta name="description" content="果动网3D人物能创建出动感十足的3D挂件、3D名片、3D背景，嵌入qq空间，校内网，51，搜狐博客等个人空间">
+<style type="text/css">
+
+.left_2 .wysb{ width:190px; height:163px; border:5px solid #ffacd0; margin-bottom:10px; background-color:#FFFFFF}
+.left_2 .wysb .tit{ width:86px; height:20px; margin:12px auto 9px auto;}
+.left_2 .wysb .txt{ width:158px; height:63px; line-height:19px; margin:0 auto 8px auto;}
+.left_2 .wysb .wysb_btn{ width:172px; height:36px; margin:0 auto;}
+
+.girl,.boy{ width:773px; float:left; margin-left:13px; margin-bottom:10px;}
+.girl .til{  width:700px; padding-left:10px; height:27px; clear:both;}
+.girl .til a{ color:#FF0066; font: bold 14px "宋体"}
+.boy .til{ width:700px; padding-left:10px; height:27px; clear:both;}
+.boy .til a{ color:#0099CC; font: bold 14px "宋体"}
+
+
+.girl .box_top,.boy .box_top{ }
+.girl .box_mid,.boy .box_mid{ background:url(<?=$image_site_url?>/images/banyang/bangyan_midbg.jpg) center center repeat-y;}
+
+.content{ width:728px; height:550px; margin:0 auto;}
+.content .item_div{ width:168px; height:250px; float:left; margin-top:12px; margin-bottom:7px; margin-left:4px; margin-right:10px;_margin-right:8px;}
+.content .item{ width:164px;height:188px; _height:194px;  border:1px solid #a5a5a5; padding:1px; background-color:#fff}
+.content .item p{ text-align:center;}
+.content .item p.user_name{ height:29px; line-height:26px;}
+
+.content .item_div p.woman_url{ margin-top:3px; height:46px; line-height:46px; text-align:center; background:url(<?=$image_site_url?>/images/banyang/woman_urlbg.jpg) center center no-repeat;}
+.content .item_div p.man_url{ margin-top:3px; height:46px; line-height:47px; text-align:center; background:url(<?=$image_site_url?>/images/banyang/man_urlbg.jpg) center center no-repeat;}
+
+
+.content .item a.dis,
+.content .item a.dis2{ display:block; width:164px; height:164px; text-decoration:none; }
+.content .item a.dis .bp,
+.content .item a.dis2 .bp{ display:none;}
+
+.content .item a.dis .ip,
+.content .item a.dis2 .ip{display:block;}
+.content .item a.dis .name,
+.content .item a.dis2 .name{display:block; text-align:center; font:14px/25px "宋体"; color:#666;}
+.content .item a.dis:hover,
+.content .item a.dis2:hover{ position:absolute; display:block; border:0px solid #FF0066; margin-top:-3px; margin-left:-2px;_margin-left:-3px; padding:0px; width:168px; height:192px;}
+.content .item a.dis:hover .bp,
+.content .item a.dis2:hover .bp{display:block; width:168px;_width:169px; height:193px;_height:199px;}
+
+
+.content .item a.dis:hover .ip,
+.content .item a.dis2:hover .ip{display:none;}
+.content .item a.dis:hover .name,
+.content .item a.dis2:hover .name{display:none;}
+
+
+.content .item a.dis2:hover{ position:absolute; display:block; border:0px solid #0099cc; margin-top:-3px; margin-left:-3px; padding:1px; width:170px; height:193px; }
+
+
+.content .item .fblog{ color:#CCCCCC;}
+
+
+.alert_div{ height:175px;}
+.alert_div .aler_right{ width:265px; height:175px; float:left; margin-left:0px;}
+.alert_div .aler_right .f_div{ margin-top:20px; width:220px; margin-left:0px; height:55px;}
+.alert_div .aler_right .in_div{ margin-top:6px; width:210px; height:30px; margin-left:0px;}
+.alert_div .aler_right .in_div input{ height:20px; border:#CCCCCC solid 1px; width:210px;}
+.alert_div .aler_right .but_div{ height:30px; line-height:30px; margin-left:5px;}
+</style>
+
+
+<script type="text/javascript">
+
+</script>
+</head>
+
+<body>
+<? include(APP_DIR_V.'/index2.0/include/menu.html'); ?>
+<div class="main">
+	<div class="user_subnav">
+    	<div class="user_lujin gray6_12">
+        <a href="/" class="gray6_12 noneline">首页</a><span>&gt;</span>
+        <a href="/index.php/index/example" class="gray6_12 noneline">果动榜样</a>
+    	</div>
+    </div>
+    <div class="clr"></div>
+    <div class="left_2">
+        <!--reg and login B-->
+    	<div class="in_login">
+
+            <? include(APP_DIR_V.'/index2.0/include/login.html'); ?>
+        </div>
+        <!--reg and login E-->
+        <div class="clr"></div>
+         <!--我也要上榜 B-->
+        <div class="wysb">
+        	<div class="tit"><img src="<?=$image_site_url?>/images/banyang/wysb_tit.jpg" /></div>
+            <div class="txt gray6_12">你的3D人物够漂亮吗？你的服饰搭配够时尚吗？想不想立即榜上有名！？</div>
+            <div class="wysb_btn"><a href="javascript:user_example('<?=$is_login?>');"><img src="<?=$image_site_url?>/images/banyang/wysb.jpg" alt="我要上榜" align="absmiddle" /></a></div>
+        </div>
+         <!--我也要上榜 B-->
+        <div class="clr"></div>
+         <!--活动公告 B-->
+          <div class="hdgg">
+            	<? include(APP_DIR_V.'/index2.0/include/gonggao.html'); ?>
+          </div>
+
+ 	</div>
+    
+	<div class="girl">
+		<div class="til"><img src="<?=$image_site_url?>/images/banyang/mm_tag.jpg" alt="果动美女榜" /></div>
+        <div class="box_top"><img src="<?=$image_site_url?>/images/banyang/bangyan_topbg.jpg" /></div>
+        <div class="box_mid">
+            <div class="content">                    
+            <? if(!empty($girl_example)){foreach($girl_example as $k=>$v){?>
+                <div class="item_div">
+                    <div class="item">
+                            <a class="dis" href="<?=$v['user_blog_path']?>" target="_blank">
+                                <img class="bp" src="<?=$image_site_url?>/images/user_example/<?=$v['user_blog_pic']?>" /><img class="ip" src="<?=$image_site_url?>/images/user_example/<?=$v['user_pic']?>" width="164" height="164" />
+            
+                            </a> 
+                            <p class="user_name gray6_14b"><?=$v['user_nickname']?></p>        					
+                            <div class="clr"></div>
+                        </div> 
+                        <div class="clr"></div>                                           
+                        <p class="woman_url"><span><a href="/index.php/user/defaults/<?=$v['user_name']?>" class="green8f_12 noneline" target="_blank">她的果动个人主页</a></span></p>
+                    </div>
+            <?}}?>
+
+    		<div class="clr"></div>
+            </div>
+        </div>
+        <div class="box_but"><img src="<?=$image_site_url?>/images/banyang/bangyang_butbg.jpg" /></div>
+
+		
+	</div>
+    
+    
+    <div class="girl">
+		<div class="til"><img src="<?=$image_site_url?>/images/banyang/gg_tag.jpg" alt="果动帅哥榜" /></div>
+        <div class="box_top"><img src="<?=$image_site_url?>/images/banyang/bangyan_topbg.jpg" /></div>
+        <div class="box_mid">
+            <div class="content">
+            <? if(!empty($boy_example)){foreach($boy_example as $k=>$v){?>
+                <div class="item_div">
+                    <div class="item">
+                            <a class="dis" href="<?=$v['user_blog_path']?>" target="_blank">                            
+                                
+                                <img class="bp" src="<?=$image_site_url?>/images/user_example/<?=$v['user_blog_pic']?>" /><img class="ip" src="<?=$image_site_url?>/images/user_example/<?=$v['user_pic']?>" width="164" height="164" />
+            
+                            </a> 
+                            <p class="user_name gray6_14b"><?=$v['user_nickname']?></p>        					
+                            <div class="clr"></div>
+                        </div> 
+                        <div class="clr"></div>
+                        <p class="man_url"><span><a href="/index.php/user/defaults/<?=$v['user_name']?>" class="blue_by12 noneline" target="_blank">他的果动个人主页</a></span></p>                         
+                    </div>
+			<?}}?>
+                
+			<div class="clr"></div>
+            </div>
+        </div>
+        <div class="box_but"><img src="<?=$image_site_url?>/images/banyang/bangyang_butbg.jpg" /></div>
+
+		
+	</div>
+    
+</div>
+<? include(APP_DIR_V.'/index2.0/include/foot.html'); ?>
+</body>
+</html>
+
+<script type="text/javascript">
+function copy_clip(text2copy) 
+{
+	if (window.clipboardData) 
+	{
+		window.clipboardData.setData("Text",text2copy);
+	} 
+	else 
+	{
+		var flashcopier = 'flashcopier';
+		if(!document.getElementById(flashcopier)) 
+		{
+			var divholder = document.createElement('div');
+			divholder.id = flashcopier;
+			document.body.appendChild(divholder);
+		}
+		document.getElementById(flashcopier).innerHTML = '';
+		var divinfo = '<embed src="<?=$image_site_url?>/images/banyang/_clipboard.swf" FlashVars="clipboard='+escape(text2copy)+'" width="0" height="0" type="application/x-shockwave-flash"></embed>';//这里是关键
+		document.getElementById(flashcopier).innerHTML = divinfo;
+	}
+	return true;
+}
+
+
+var timer = null;
+var ele_a = ele_b = null;
+var wait = null;
+var lasttip = null;
+
+function copy(v_str , tip_obj)
+{
+	if (lasttip != null)
+	{		
+		var lastobj = $(lasttip);
+		lastobj.style.display = "none";		
+	}	
+	lasttip = tip_obj;
+	wait = 0;
+	
+	if (copy_clip(v_str))
+	{
+		//alert("网址复制成功！\n你可以利用快捷方式Ctrl+V键粘贴到QQ或MSN里。");
+		var obj = $(tip_obj) ;
+		obj.style.display = "block";
+	
+		//$("mytip").style.display = "block";
+		fade(tip_obj);
+	}
+}
+
+
+function fade(a) 
+{
+	ele_a = document.getElementById(a);
+	if(!ele_a ){return;}
+	if(document.all) 
+	{
+		ele_a.filters.alpha.opacity = 100;
+	//ele_b.filters.alpha.opacity = 0;
+	}
+	else
+	{
+		ele_a.style.opacity = 1;
+		//ele_b.style.opacity = 0;
+	}
+	ele_a.style.zIndex = 1;
+	//ele_b.style.zIndex = 0;
+	fade_opacity();
+}
+
+function fade_opacity() 
+{
+	wait = wait + 1;
+
+	if (wait>4)
+	{
+		var ifstop = false;
+		if(document.all) 
+		{
+			if(ele_a.filters.alpha.opacity > 0) 
+			{
+				ele_a.filters.alpha.opacity -= 5;
+			}
+			else
+			{
+				ifstop = true;
+			}
+		} 
+		else 
+		{
+			if(ele_a.style.opacity > 0) 
+			{
+				ele_a.style.opacity -= 0.05;
+			}
+			else
+			{
+				ifstop = true;
+			}
+		}
+		if(ifstop==true) 
+		{
+			window.clearTimeout(timer);
+		}
+		else
+		{
+			timer = window.setTimeout('fade_opacity()', 250);
+		}
+	}	
+	else
+	{
+		timer = window.setTimeout('fade_opacity()', 500);
+	}
+}
+
+
+</script>

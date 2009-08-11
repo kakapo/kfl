@@ -1,0 +1,61 @@
+<? include APP_DIR_V."/index2.0/include/head.html";?>
+<script language="javascript" type="text/javascript" src="<?=$image_site_url?>/js/control/control.js?v=<?=$version?>"></script>
+<script language="javascript" type="text/javascript" src="<?=$image_site_url?>/js/datacom.js?v=<?=$version?>"></script>
+<script language="javascript" type="text/javascript" src="<?=$image_site_url?>/js/control/invite.js?v=<?=$version?>"></script>
+</head>
+<style type="text/css">
+#invitetishi { margin:30px 20px;}
+ #invitetishi input{ margin:0px 5px; height:19px; background:url(<?=$image_site_url?>/images/component/min_component/alert_btn_bg.gif) top repeat-x; color:#000; text-align:center; border:#606F13 solid 1px; }
+</style>
+<body>
+<!--弹出层容器 开始 -->
+<? include APP_DIR_V."/index2.0/include/alertdiv.html";?>
+<!--弹出层容器 结束 -->
+<FORM METHOD='POST' name="form1" ACTION="index.php">
+<input type="hidden" value="invite" name="action" id='action'>
+<input type="hidden" value="displayall" name="op">
+<input type="hidden" name="userid" id="userid">
+<div class="invite">
+	<!--邀请标题-->
+<div class="tit"><div class="pic_tit"><img src="<?=$image_site_url?>/images/invite/tit_pic_index.jpg" /></div></div>
+  <div class="inv_main" id="loading" style="display:none;">
+    <div style="margin-top:120px;margin-left:170px;">
+      <div class="pic_tit"><div class="pic"><img src="<?=$image_site_url?>/images/invite/buy/com_titpic.jpg" /></div></div>
+      <div class="com_c" ><div  class="no_m" id="showinfo"></div></div>    
+      <div id="invitetishi"><input type="button" class="input" value="好，我知道了" onclick="ask_ok();"></div>
+     </div>
+  </div>
+    <!--邀请主要内容-->
+  <div class="inv_main" id="loaded">
+    <div class="green_14b">&nbsp;&nbsp;&nbsp;以下是该通讯录里的其它联系人，请选择邀请对象</div>
+    <div class="f_yaomid">
+            <div class="clekall"><input class="chkbox" name="idall" id="idall" type="checkbox" value="" checked="checked" onclick="checkall();"/>
+              &nbsp;<span class="black_12_blod">全选</span></div>
+             <table class="gray_12_blod" width="96%" border="0" cellspacing="0" cellpadding="5">
+             <?if($count<1){?>
+               <tr bgcolor="#ffffff">  <td  class="gray6_12" align="center">您的通讯录里没有联系人！</td> </tr>
+			 <?}
+			 for($i=0; $i<$count;$i++){
+			 ?>
+             <?if($i%2==0){?>
+              <tr bgcolor="#ffffff">
+              <?}else{?>
+               <tr bgcolor="#f5f5f5">
+               <?}?>
+                <td width="6%" height="40" align="center">
+                  <input name="key" type="checkbox" value="<?=$userinfo[1][$i]?>" checked="checked" />
+                </td>
+                <td width="25%" class="gray6_12"><?=$userinfo[0][$i]?></td>
+                <td width="69%" class="gray6_12">&lt;<?=$userinfo[1][$i]?>&gt;</td>
+              </tr>
+           <?}?>
+
+      </table>
+    </div>
+      <div class="invbut"><span><a href="index.php?action=invite&amp;view=index" class="gray0_12 underline">跳过这一步</a></span><span>
+      <a href="javascript:invit_fav();"><img src="<?=$image_site_url?>/images/invite/send_inv.jpg" alt="开始邀请" /></a>
+  </div>
+</div>
+</form>
+</body>
+</html>

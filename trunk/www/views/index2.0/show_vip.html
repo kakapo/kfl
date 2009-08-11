@@ -1,0 +1,131 @@
+<?include_once(APP_DIR_V.'/index2.0/include/head.html')?>
+<script language="javascript" type="text/javascript" src="<?=$image_site_url?>/js/control/show.js?v=<?=$version?>"></script>
+
+</head>
+<body style="width:800px;">
+<!--弹出层容器 开始 -->
+<? include APP_DIR_V."/index2.0/include/alertdiv.html";?>
+<!--弹出层容器 结束 -->
+<div class="right_f">
+  	<div class="g_bl_ad" style="background:url(<?=$image_site_url?>/images/component/G_bl/g_blad.jpg)">
+		<div class="clr"></div>
+		<a href="javascript:check_vip(<?=$is_login?>,<?=$user_vip?>,<?=$user_coin?>,<?=$user_cash?>);" style="display:block; width:123px; height:34px; margin:450px auto 0 auto;"></a>
+	</div>
+    <div class="g_bl_bg">
+   	  <div class="tit"></div>
+      <div class="g_bl_tj">
+	  <?php
+	  	 	if(isset($commendItems['records']) && is_array($commendItems['records']))
+			{
+	  	 		foreach ($commendItems['records'] as $key=>$item)
+				{
+
+	  	 	?>
+
+        <div class="list">
+          <div class="pic_bg">
+            <div class="clr"></div>
+            <div class="pic">
+                <span class="new_hot"  style=" width:53px; height:59px;background:url(<?=$image_site_url?>/images/new_pico_in.png) 0 0 no-repeat; +background:none;"><img src="<?=$image_site_url?>/images/blank.gif" style="background:url(<?=$image_site_url?>/images/new_pico_in.png)!important;background:none;filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='<?=$image_site_url?>/images/new_pico_in.png',sizingMethod='image');" /></span>
+                <a href="javascript:vip_allSetModel(<?=$user_vip?>,<?=$item['id']?>,<?=$user_coin?>,<?=$user_cash?>);"><span class="jiage_add_gg"><b class="guoguo"><?=$item['coins']?></b><b class="add_bg"></b><b class="g_bg"><?=$item['cash']?></b></span><img src="<?=$image_site_url?>/recomenddiy/images/<?=$item['pic']?>" /></a>
+            </div>
+            <div class="name"><a href="javascript:vip_allSetModel(<?=$user_vip?>,<?=$item['id']?>,<?=$user_coin?>,<?=$user_cash?>);" class="yellow_13 noneline"><?=$item['title']?></a></div>
+
+          </div>
+          <div class="bottom_txt">
+            <div class="btn">
+                <a href="javascript:vip_allSetModel(<?=$user_vip?>,<?=$item['id']?>,<?=$user_coin?>,<?=$user_cash?>);"><img src="<?=$image_site_url?>/images/component/r_flist/drass_btn.png" /></a>
+                <a href="javascript:vip_addToCart(<?=$user_vip?>,<?=$item['id']?>,<?=$user_coin?>,<?=$user_cash?>);"><img src="<?=$image_site_url?>/images/component/r_flist/buy_btn.png" /></a>
+            </div>
+          </div>
+        </div>
+	<?php
+	  	 		}
+	  	 	}
+	  	 		?>
+
+    </div>
+    <div class="clr"></div>
+    <div class="book_bg">
+    	<div class="clr"></div>
+   	  <div class="list_div" style="height:100%;">
+
+	  <?
+	  	$grade  = $GLOBALS ['showConfig']['grade_star'];
+		$count=count($grade);
+		$starfh="★";
+	  	if ( isset( $items['records'] ) && is_array( $items['records'] ) )
+	  	{
+			foreach ( $items['records'] as $key => $item )
+			{
+			  	 	for($i=0;$i<$count;$i++){
+				  	   if($item['item_hit']>=$grade[$i][0]){
+				  	     $starfh=$grade[$i][1];
+				  	   }
+				  	 }
+	  ?>
+
+      	<div class="list" id="list_<?=$key?>">
+        	<div class="pic">
+				<a href="javascript:vip_setModel(<?=$user_vip?>,<?=$item['item_id']?>,<?=$user_coin?>,<?=$user_cash?>);"  onMouseOver="javascript:over($('list_<?=$key?>'));" onMouseOut="javascript:out($('list_<?=$key?>'));">
+					<img src="<?=$image_site_url?>/images/itemimages/<?=$item['item_name']?>_109x109.jpg" style="cursor:pointer" width="103" height="103" />
+				</a>
+				<span class="author">
+		                <b class="time"><?=date('m/d/y',$item['item_regtime'])?>发布</b>
+		                <b class="time">作者：<i class="white_12"><?=$item['item_author']?></i></b>
+		                <b class="time">人气值：<?=$item['item_hit']?></b>
+		                <b class="time white_12"><?echo $starfh;?></b>
+		                <b class="time">加入VIP全场道具免费更换。</b>
+		          </span>
+			</div>
+            <div class="name yellow_13"><?=$item['item_title']?></div>
+            <div class="vip_p"><span class="vip_bg yellowf3_12b">独享</span></div>
+            <div class="btn_div">
+              <div class="btn"><a href="javascript:vip_setModel(<?=$user_vip?>,<?=$item['item_id']?>,<?=$user_coin?>,<?=$user_cash?>);"><img src="<?=$image_site_url?>/images/component/r_flist/drass_btn.png" alt="试穿" /></a></div>
+              <div class="btn"><a href="javascript:vip_addToCart(<?=$user_vip?>,<?=$item['item_id']?>,<?=$user_coin?>,<?=$user_cash?>);"><img src="<?=$image_site_url?>/images/component/r_flist/buy_btn.png" alt="购买" /></a></div>
+            </div>
+        </div>
+
+		<?	}
+		}else{
+	  	 		?>
+			<p>&nbsp;</p>
+	  	 	 <table border="0" cellspacing="10" cellpadding="0" align="center">
+			  <tr>
+			    <td><img src="<?=$image_site_url?>/images/index/v.gif" /></td>
+			    <td>没有道具<br /><a href="javascript:history.go(-1)" class="blue_by12 noneline">返回</a> </td>
+			  </tr>
+			</table>
+	  	 		<?
+	  	 	}
+	 		?>
+
+        <div class="clr"></div>
+		<?
+		if(isset($items['page']->total) && ($items['page']->total > $items['page']->onepage))
+		{
+		?>
+		<form method="GET" action="/index.php" name='form1'>
+		<input type='hidden' name="action" value="show" />
+		<input type='hidden' name="view" value="vip" />
+	    <div class="page">
+	    	<div class="pre_page"><?=$items['page_array']['prePage']?></div>
+	        <div class="list_page">
+	        	<?=$items['page_array']['numBar'];?>
+	        </div>
+	        <div class="next_page"><?=$items['page_array']['nextPage']?></div>
+	    </div>
+	    </form>
+	 	<?}?>
+      </div>
+
+      <div class="clr"></div>
+    </div>
+
+
+  </div>
+</div>
+<? include(APP_DIR_V.'/index2.0/include/framefoot.html'); ?>
+</body>
+</html>
+

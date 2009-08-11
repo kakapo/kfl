@@ -1,0 +1,87 @@
+  <? include APP_DIR_V."/index2.0/include/head.html";?>  
+    <link href="<?=$image_site_url?>/css/user_manage.css" type="text/css" rel="stylesheet" />
+    </head>     
+    <body style="background-color:#f0eee1;">
+    <div class="right_f" style="boder:0; margin:0; width:688px;">
+	  <div class="con">  
+		<div class="pro_class">
+          <div class="class_p">
+             <a href="/index.php/charge/alipay" class="yellowf3_12b none">充值中心</a>
+             <a href="/index.php/charge/history" class="gray6_12 underline">充值记录</a>
+            <a href="/index.php/charge/consume" class="gray6_12 underline">消费记录</a>
+          </div>
+         </div>  
+         <div class="con_div">
+               
+           <div class="pay_nav">
+           	<div class="clr"></div>
+			<a href="/index.php/charge/tenpay" class="hover">财付通</a>
+			<a href="/index.php/charge/alipay">支付宝</a>
+			<!--<a href="/index.php/charge/99bill">快钱</a>-->
+           </div>  
+          
+           <div class="pay_menoy">
+          	 <div class="pay_method gray4_12">您选择了<img src="<?=$image_site_url?>/images/user_manage/tenpay_buy.gif" />方式充RMB，请填写以下信息</div> 
+			  <div class="pay_table">
+               <form method="POST" name="charge" id="charge" action="<?=$search['sendurl']?>" style="margin-top:27px;" target="_blank">
+	           <input name="reurl" type="hidden" value="<?=$search['reurl']?>">
+			   <input name="user_id" type="hidden" value="<?=$search['user_id']?>">
+			   <input name="user_name" type="hidden" value="<?=$search['user_name']?>">
+            	<table width="400" border="0" cellspacing="0" cellpadding="0">
+                  <tr>
+                    <td class="rmb_num gray4_12">RMB数量：</td>
+                    <td class="rmb_list"><label>
+                      <input type="radio" name="money" id="money10" value="10" />
+                    <span class="gray4_12b font_v">10RMB</span><span class="gray9_12 font_v">(10元可以充10G币)</span></label>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="rmb_num">&nbsp;</td>
+                    <td class="rmb_list"><label>
+                     <input type="radio" name="money" id="money10" value="20" />
+                    <span class="gray4_12b font_v">20RMB</span><span class="gray9_12 font_v">(20元可以充20G币)</span></label>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="rmb_num">&nbsp;</td>
+                    <td class="rmb_list"><label>
+                      <input type="radio" name="money" id="money10" value="30" />
+                    <span class="gray4_12b font_v">30RMB</span><span class="gray9_12 font_v">(30元可以充30G币)</span></label>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="rmb_num">&nbsp;</td>
+                    <td class="rmb_list"><label>
+                     <input type="radio" name="money" id="money10" value="50" />
+                    <span class="gray4_12b font_v">50RMB</span><span class="gray9_12 font_v">(50元可以充50G币)</span></label>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="rmb_num">&nbsp;</td>
+                    <td class="rmb_list"><label>
+                     <input type="radio" name="money" id="money10" value="100" checked/>
+                    <span class="gray4_12b font_v">100RMB</span><span class="gray9_12 font_v">(100元可以充100G币)</span></label>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="rmb_num">&nbsp;</td>
+                    <td class="rmb_list"> </td>
+                  </tr>
+                  <tr>
+                    <td class="rmb_num">&nbsp;</td>
+                      <td class="rmb_list"><input type="image" name="imageurl" src="<?=$image_site_url?>/images/user_manage/pay_btn.jpg" onClick="parent.AlertAnswer();"></td>
+                  </tr>
+              </table>
+              </form>
+              </div>
+              <div class="pay_tishi">
+              <div class="clr"></div>
+              <p class="tishi_txt gray6_12">用财付通充值G币，1元可充值1个币<img src="<?=$image_site_url?>/images/component/r_flist/g_ico.gif" alt="G币"></p>              
+              </div>  
+             </div>    
+             <div class="clr"></div>          
+            </div>
+           </div>
+         </div>
+     </body>
+</html>

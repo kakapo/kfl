@@ -1,0 +1,75 @@
+<? include APP_DIR_V."/index2.0/include/head.html";?>
+<script language="javascript" type="text/javascript" src="<?=$image_site_url?>/js/control/control.js?v=<?=$version?>"></script>
+<script language="javascript" type="text/javascript" src="<?=$image_site_url?>/js/datacom.js?v=<?=$version?>"></script>
+<script language="javascript" type="text/javascript" src="<?=$image_site_url?>/js/control/invite.js?v=<?=$version?>"></script>
+
+</head>
+<style type="text/css">
+#invitetishi { margin:30px 20px;}
+ #invitetishi input{ margin:0px 5px; height:19px; background:url(<?=$image_site_url?>/images/component/min_component/alert_btn_bg.gif) top repeat-x; color:#000; text-align:center; border:#606F13 solid 1px; }
+</style>
+<body>
+<!--弹出层容器 开始 -->
+<? include APP_DIR_V."/index2.0/include/alertdiv.html";?>
+<!--弹出层容器 结束 -->
+ <FORM METHOD='POST' name="form1" ACTION="index.php">
+ <input type="hidden" value="invite" name="action" id='action'>
+<input type="hidden" value="favourite" name="op">
+<input type="hidden" name="userid" id="userid">
+<div class="invite">
+	<!--邀请标题-->
+  <div class="tit"><div class="pic_tit"><img src="<?=$image_site_url?>/images/invite/tit_pic_index.jpg" /></div></div>
+  <div class="inv_main" id="loading" style="display:none;">
+    <div style="margin-top:120px;margin-left:170px;">
+      <div class="pic_tit"><div class="pic"><img src="<?=$image_site_url?>/images/invite/buy/com_titpic.jpg" /></div></div>
+      <div class="com_c" ><div  class="no_m" id="showinfo"></div></div>    
+      <div id="invitetishi"><input type="button" class="input" value="好，我知道了" onclick="ask_ok();"></div>
+     </div>
+  </div>
+    <!--邀请主要内容-->
+  <div class="inv_main" id="loaded">
+    <div class="green_14b"><? if($count!=0){?>您的联系人中已有<? echo $count?>人在<?echo $GLOBALS['gSiteInfo']['site_title']?>中.你可以收藏TA们<? }else{?>没有可收藏的联系人,您可以选择跳过以邀请联系人<?}?> </div>
+    <div class="f_yaomid">
+      <div class="clekall" style="width:472px;"><input class="chkbox" name="idall" id="idall" type="checkbox" value="" checked="checked" onclick="checkall();"/>
+      &nbsp;<span class="black_12_blod">全选</span></div>
+             <table class="gray_12_blod" width="95%" border="0" cellspacing="0" cellpadding="5">
+			  <?
+			 $i=0;
+			 foreach($userinfo as $k=>$v){?>
+			    <? if($v['gender']=='1'){
+					$gender='男';
+				}else{
+					$gender='女';
+				}
+				 if(empty($v['province'])){
+					$v['province']="";
+				}
+				?>
+				<?if($i%2==0){?>
+                 <tr bgcolor="#ffffff">
+			   <?}else{?>
+                 <tr bgcolor="#f5f5f5">
+			  <?}?>
+                <td width="6%" height="40" align="center">
+                  <input type="checkbox" name="key" value="<?=$v['userid']?>" checked="checked" />
+                </td>
+                <td width="14%" class="gray6_12"><div class="f_txpic">
+				<a href="/index.php?action=user&defaults=<?=$v['username']?>" target="_blank"><img src="<?=$v['user_pic']?>" onerror="this.src='<? if($v['gender']=='1') echo $image_site_url."/images/defchar/boy.jpg";if($v['gender']==2) echo $image_site_url."/images/defchar/girl.jpg";?>'" width="60" height="60" /></a>
+
+				</div></td>
+                 <td width="80%" class="gray6_12"><a class="gray6_12" href="/index.php?action=user&defaults=<?=$v['username']?>" target="_blank"> <?=$v['nickname']?></a><br />
+                <?=$gender?>&nbsp;&nbsp;<?=$v['province']?></td>
+              </tr>
+			  <?
+			  $i++;
+			  }?>
+      </table>
+    </div>
+      <div class="invbut"><span><a href="/index.php?action=invite&view=displayall" class="gray0_12 underline">跳过这一步</a></span><span>
+      <a href="javascript:invit_fav();"><img src="<?=$image_site_url?>/images/invite/sctm_but.jpg" alt="收藏他们" width="79" height="24" /></a>
+	  </span></div>
+  </div>
+</div>
+</FORM>
+</body>
+</html>

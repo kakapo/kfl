@@ -1,0 +1,136 @@
+<? include APP_DIR_V."/index2.0/include/head.html";?>
+<script language="javascript" type="text/javascript" src="<?=$image_site_url?>/js/control/control.js?v=<?=$version?>"></script>
+<script language="javascript" type="text/javascript" src="<?=$image_site_url?>/js/datacom.js?v=<?=$version?>"></script>
+<script language="javascript" type="text/javascript" src="<?=$image_site_url?>/js/control/invite.js?v=<?=$version?>"></script>
+<script language="JavaScript" src="<?=$image_site_url?>/js/control/invite_qq_safeauth.js?v=<?=$version?>"></script>		
+</head>
+<style type="text/css">
+ #invitetishi { margin:30px 20px;}
+ #invitetishi input{ margin:0px 5px; height:19px; background:url(<?=$image_site_url?>/images/component/min_component/alert_btn_bg.gif) top repeat-x; color:#000; text-align:center; border:#606F13 solid 1px; }
+</style>
+<body onload="form2.login.focus();">
+<!--弹出层容器 开始 -->
+<? include APP_DIR_V."/index2.0/include/alertdiv.html";?>
+<!--弹出层容器 结束 -->
+
+<div class="invite">
+	<!--邀请标题-->
+<div class="tit"><div class="pic_tit"><img src="<?=$image_site_url?>/images/invite/tit_pic_index.jpg" /></div></div>
+
+<div class="inv_main" id="loading" style="display:none;">
+    <div style="margin-top:90px;margin-left:170px;">
+      <div class="pic_tit"><div class="pic"><img src="<?=$image_site_url?>/images/invite/buy/com_titpic.jpg" /></div></div>
+      <div class="com_c" ><div  class="no_m" id="showinfo"></div></div>    
+      <div id="invitetishi"><input type="button" class="input" value="好，我知道了" onclick="ask_ok();"></div>
+     </div>
+  </div>
+  <!--邀请主要内容-->
+ <div class="inv_main" id="loaded">
+  <div class="gray4_12b">&nbsp;&nbsp;&nbsp;从我的邮箱导入通讯录，选择待邀请人并发送邀请邮件</div>
+  <div class="qq_inv">
+  <form action="index.php" method="post"  name="form2" id="form2">
+  <input type="hidden"  name="action" value="invite"/>
+  <input type="hidden" name="op" value="freemail"/>
+  <table width="103%" border="0" cellspacing="0">
+   <tr>
+    <td width="19%" align="right" valign="top" class="gray6_12">邮箱地址&nbsp;&nbsp;<br /></td>
+    <td><div class="input_qq"><input class="in intxt_11" type="text" name="login" id="login" tabindex="1" /></div></td>
+    <td> <select name="mailtype" id="mailtype" class="green6_12" style="width:40" onchange="changeEmail(this.value)"   >
+   		<option value="hotmail">@hotmail.com</option>
+        <option value="sina">@sina.com</option>
+        <option value="yahoo">@yahoo.com.cn</option>
+        <option value="163" selected="selected">@163.com</option>
+        <option value="126">@126.com</option>
+        <option value="yeah">@yeah.net</option>
+        <option value="gmail">@gmail.com</option>
+        <option value="tom">@tom.com</option>
+        <option value="qq">@qq.com</option>
+        <option value="sohu">@sohu.com</option>
+         </select>
+        <label class="red_12" id="tip"></label>
+	</td>
+  </tr>
+  <tr>
+    <td align="right" valign="top" class="gray6_12">邮箱密码&nbsp;&nbsp;</td>
+    <td><div class="input_qq"><input class="in intxt_11" type="password" id="password" name="password" value="" tabindex="2" /></div></td>
+    <td class="gray9_12"> 我们不会存储你的相关密码，<br />请放心使用</td>
+  </tr>
+  <tr>
+    <td align="right" valign="top" class="gray6_12">&nbsp;</td>
+    <td width="25%"></td>
+    <td width="56%"> <?=$msg?></td>
+  </tr>
+  </table>
+  </form>
+  <form name="form1" id="form1" method="post" action="index.php" style="display:none">
+  <input type="hidden"  name="action" value="invite"/>
+  <input type="hidden" name="op" value="qq"/>
+  <INPUT type="hidden" name="starttime" id="starttime"/>
+  <INPUT type=hidden name="ts" value="<?=time()?>" id="ts" />
+  <INPUT type="hidden" name="p" id="p"/>
+  <table id="table1" width="103%" border="0" cellspacing="10"   >
+  <tr>
+    <td width="19%" align="right" valign="top" class="gray6_12">邮箱地址<br /></td>
+    <td><input class="in_qq5 intxt_11" type="text" id="uin" name="uin" value="" tabindex="1" style="ime-mode: disabled;" /></td>
+    <td> <select name="mailtype" id="mailtype" style="width:40" onchange="changeEmail(this.vlaue);"  >
+   		<option value="hotmail">@hotmail.com</option>
+        <option value="sina">@sina.com</option>
+        <option value="yahoo">@yahoo.com.cn</option>
+        <option value="163">@163.com</option>
+        <option value="126">@126.com</option>
+        <option value="yeah">@yeah.net</option>
+        <option value="gmail">@gmail.com</option>
+        <option value="tom">@tom.com</option>
+        <option value="qq"  selected="selected">@qq.com</option>
+        <option value="sohu">@sohu.com</option>
+      </select>
+	</td>
+  </tr>
+  <tr>
+    <td align="right" valign="top" class="gray6_12">邮箱密码</td>
+    <td><input class="in_qq5 intxt_11" type="password" id="pp" name="pp" value="" tabindex="2" /></td>
+    <td class="red_12"><div id="msgContainer"></div></td>
+  </tr>
+    <tr>
+    <td align="right" class="gray6_12">验证码</td>
+    <td><span style="height:22px"><input class="in_qq5 intxt_11" type="text" id="vc" name="verifycode" value="" tabindex="3" style="ime-mode: disabled;" autocomplete="off" maxlength="4"/></span></td>
+    <td class="red_12">
+	<script type="text/javascript">
+	document.write("<img id='vfcode' src='/index.php?action=invite&view=getimage&aid=23000101&",Math.random(),"' style='cursor:pointer;border:1px solid #e4eef9'>");
+	</script>
+	<a href="javascript:changeimg()"  class="gray6_12 underline">看不清楚？&nbsp;换一个</a>
+	</td>
+  </tr>
+  <tr>
+    <td align="right" valign="top" class="gray6_12">&nbsp;</td>
+    <td width="21%"><img src="<?=$image_site_url?>/images/invite/send_inv.jpg" alt="发送邀请" width="78" height="24" name="button" onclick="importQQ();" style="cursor:pointer;"/></td>
+    <td width="60%"> <?=$msg?></td>
+  </tr>
+  </table>
+  </form>
+   </div>
+      <div class="mail_pic">
+            <div class="gray4_12b" style="margin-bottom:5px;">目前支持以下免费邮箱导入：</div>
+            <a href="javascript:changeMailType('hotmail');" ><img src="<?=$image_site_url?>/images/invite/mail_hot.gif" border=0 /></a>
+            <a href="javascript:changeMailType('163')" ><img src="<?=$image_site_url?>/images/invite/mail_163.gif" border=0 /></a>
+            <a href="javascript:changeMailType('126')" ><img src="<?=$image_site_url?>/images/invite/mail_126.gif" border=0 /></a>
+            <a href="javascript:changeMailType('yeah')" ><img src="<?=$image_site_url?>/images/invite/mail_yea.gif" border=0 /></a>
+             <a href="javascript:changeMailType('gmail')" ><img src="<?=$image_site_url?>/images/invite/mail_gmail.gif" border=0 /></a>
+            <a href="javascript:changeMailType('yahoo')" ><img src="<?=$image_site_url?>/images/invite/mail_yah.gif" border=0 /></a>
+
+            <a href="javascript:changeMailType('sina')" ><img src="<?=$image_site_url?>/images/invite/mail_sina.gif" border=0 /></a>
+            <a href="javascript:changeMailType('sohu')" ><img src="<?=$image_site_url?>/images/invite/mail_sohu.gif" border=0 /></a>
+            <a href="javascript:changeMailType('tom')" ><img src="<?=$image_site_url?>/images/invite/mail_tom.gif" border=0 /></a>
+            <a href="javascript:changeEmail('qq')" ><img src="<?=$image_site_url?>/images/invite/mail_mai.gif" border=0 /></a>
+            </div>
+            <ul style="margin:15px auto auto auto; width:250px;">
+            <li style="width:100px; float:left;"><a href="javascript:void(0);"><img src="<?=$image_site_url?>/images/invite/inport.jpg" alt="开始导入" onclick="javascript:loadingFreeMail();" /></a>
+            </li>
+            <li style="width:120px; float:left; line-height:25px;">
+             <a href="index.php?action=invite&view=index" class="blue_by12 underline">返回查看其他邀请方式</a>
+             </li>
+ 			</ul>
+  </div>
+</div>
+</body>
+</html>

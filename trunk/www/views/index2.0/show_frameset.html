@@ -1,0 +1,24 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta name="Keywords" content=""/>
+<meta name="Description" content=""/>
+<meta http-equiv="Content-Type" content="text/html; charset=<?=$webcharset?>"/>
+<meta http-equiv="Content-Language" content="<?=$webcharset?>"/>
+<meta name="robots" content="all"/>
+<meta name="author" content="GuoDong-Team"/>
+<meta name="Copyright" content="GuoDong"/>
+<title><?=$title?></title>
+<script>
+document.domain="<?=substr(COOKIE_DOMAIN,1)?>";
+</script>
+</head>
+
+<frameset rows="107,*" cols="*" frameborder="no" border="0" framespacing="0">
+  <frame src="/index.php/show/topfrm/<?=$content?>" name="topFrame" frameborder="no" scrolling="no" noresize="noresize" marginwidth="0" marginheight="0" id="topFrame" title="topFrame" />
+  <frameset rows="*" cols="294,*" framespacing="0" frameborder="no" border="0">
+    <frame src="/index.php/show/playfrm" name="leftFrame" frameborder="no" scrolling="No" noresize="noresize" marginwidth="0" id="leftFrame" title="leftFrame" />
+    <frame src="/index.php/show/<?=$content?>" name="mainFrame" frameborder="no" marginwidth="0" marginheight="0" id="mainFrame" title="mainFrame" />
+  </frameset><noframes><body><p>不支持框架结构，无法正常显示该站点！<a href="http://www.guodong.com">www.guodong.com</a></p></body></noframes>
+</frameset>
+</html>

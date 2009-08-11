@@ -1,0 +1,67 @@
+<? include APP_DIR_V."/index2.0/include/head.html";?>
+<script language="javascript" type="text/javascript" src="<?=$image_site_url?>/js/control/forget.js?v=<?=$version?>"></script>
+<style type="text/css">
+.Interce{ margin-top:40px;}
+.Interce .top{width:550px;margin-left:auto;margin-right:auto;padding-left:18px;height:450px;}
+.Interce .txt{border:solid 1px #D0D0D0;height:20px;width:110px;padding-left:5px;padding-top:2px;*padding-top:0px;line-height:21px;color:#DDDDDD;}
+.Interce .head_t{ height:198px;background:#FFFFFF url(<?=$image_site_url?>/images/regist/tiback_06.jpg) repeat-x center top;border-left:solid 1px #BFBFBF;border-right:solid 1px #BFBFBF;}
+.Interce .direct{width:335px;margin-top:10px;margin-left:5px;}
+.Interce .try{color:#EB6100;font-weight:bold;float:left;padding-top:10px;}
+.Interce .log{background:url(<?=$image_site_url?>/images/regist/Interce_09.gif) no-repeat 0 0;border:0px;height:54px;width:48px;cursor:pointer;}
+.Interce .zc_btn{margin-left:10px;border:0px;cursor:pointer;}
+.Interce .log_w{float:left;margin-left:10px;*margin-left:5px;}
+
+.Interce .net{margin-top:7px;}
+.Interce .tle{padding-left:50px;font-size:13px;}
+.Interce .Guide{text-align:center;width:171px;margin-top:10px;border:solid 1px #D0D0D0;height:26px;padding-top:10px;padding-left:6px;}
+.intxt_11{height:20px;*height:25px;width:192px;border:solid 1px #D0D0D0;color:#D0D0D0;padding-top:5px;*padding-top:0px;*line-height:25px;text-align:center;}
+</style>
+<script type="text/javascript">
+ function submit_forget()
+	{
+		var url = '/index.php';
+		if(loginValidate()){
+		 	Post_forget($('forget').serialize());
+		 	return false;
+		 }
+	}
+</script>
+</head>
+
+<body>
+<? include(APP_DIR_V.'/index2.0/include/menu.html'); ?>
+<div class="main">
+	<div class="user_subnav">
+    	<div class="user_lujin gray6_12">
+        <a href="/index.php" class="gray6_12 noneline">首页</a><span>&gt;</span>
+        <a href="/index.php/passport/forget" class="gray6_12 noneline">忘记密码</a>
+    	</div>
+    </div>
+   <div class="clr"></div>
+<div class="Interce">
+<div class="top">
+<div><img src="<?=$image_site_url?>/images/regist/tit_03.jpg" /></div>
+<div class="head_t">
+<div style="text-align:center;padding-top:9px;color:#666666;">没关系，完整填写下列两项信息，我们帮您找回密码！</div>
+
+<div>
+<form method="POST" name="forget" id="forget" action="index.php" style="margin-top:27px;">
+	  <input type="hidden"  name="action" value="passport"/>
+	  <input type="hidden" name="op" value="forget"/>
+
+    <div style="width:200px;height:60px;margin-left:auto;margin-right:auto;text-align:center">
+           <input class="input intxt_11" type="text" name="username" id="username" value="注册时使用的用户名" onFocus="javascript:this.value='';this.style.color='black';"/></td>
+           <input class="input intxt_11" type="text" name="email" id="email" value="注册时使用的邮箱" style="margin-top:2px;" onFocus="javascript:this.value='';this.style.color='black';"/></td>
+        <div class="log_but" style="margin-top:15px;"><img src="<?=$image_site_url?>/images/regist/zhmm_07.jpg" alt="立即找回密码" width="132" height="36" onClick="submit_forget();" style="cursor:pointer"/></div>
+    </div>
+	</form>
+</div>
+</div>
+<div><img src="<?=$image_site_url?>/images/regist/tit_06.jpg" /></div>
+</div>
+</div>
+</div>
+
+<? include(APP_DIR_V.'/index2.0/include/foot.html'); ?>
+</body>
+</html>

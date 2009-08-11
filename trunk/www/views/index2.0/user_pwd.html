@@ -1,0 +1,69 @@
+<?include_once(APP_DIR_V.'/index2.0/include/head.html')?>
+<link href="<?=$image_site_url?>/css/user_manage.css?v=<?=$version?>" rel="stylesheet" type="text/css" />
+</head>
+<body onLoad="javascript:div_display();">
+<!--header   BB-->
+<? include(APP_DIR_V.'/index2.0/include/menu.html'); ?>
+<!--header   EE-->
+<div class="main">
+
+<!--player   BB-->
+<div class="player">
+  <div class="pla_cbg_over">
+ 	 <div class="fla_titbg">
+	      <div class="user_name white_13b">
+		  	<?if ( $user_vip ){?>
+		  	<img src="<?=$image_site_url?>/images/component/player/vip_ico.gif">
+			<?}?><?=$user_nickname?>
+		  </div>     
+	  </div>
+  	<div class="flash_ok"><img src="<?=$userInfo['user_pic']?>" onerror="this.src='<?=$image_site_url?>/images/def_<?=$user_gender?>.jpg'" width="283" height="383"/></div>
+    <div class="fla_save">
+		<ul class="gg_ul gray6_12"><li>果果：<?=$userInfo['user_coin']?></li><li>G币 ：<?=$userInfo['user_cash']?></li></ul>
+		<a href="<?=$www_site_url?>/index.php/user/defaults/<?=$user_name?>" target="_blank"><img src="<?=$image_site_url?>/images/component/player/grzy_btn.jpg" /></a>
+	</div>
+  </div>
+</div>
+<!--player   EE-->
+
+<div class="right_f">
+	<div class="my_guodong">
+		<div class="table_mima">
+			<form method="post" name="updatepwd" id="updatepwd" action="index.php">
+			<input type="hidden" name="action" value="user"/>
+			<input type="hidden" name="op" value="changepwd">
+				<table width="312" cellpadding="0" cellspacing="0">
+					<tr>
+						<td width="79" height="30" align="right" valign="top"><div class="tab_padding gray4_12">原  密  码：</div></td>
+						<td width="231" height="30" align="left" valign="top">
+							<div class="txt_div"><input type="password" class="txt_in" name="org" id="org" /></div>
+						</td>
+					</tr>
+					<tr>
+						<td height="30" align="right" valign="top"><div class="tab_padding gray4_12">新  密  码：</div></td>
+						<td height="30" align="left" valign="top">
+							<div class="txt_div"><input type="password" class="txt_in" name="new1" id="new1" /></div>
+						</td>
+					</tr>
+					<tr>
+						<td height="30" align="right" valign="top"><div class="tab_padding gray4_12">确认新密码：</div></td>
+						<td height="30" align="left" valign="top">
+							<div class="txt_div"><input type="password" class="txt_in" name="new2" id="new2" /></div>
+						</td>
+					</tr>
+					<tr>
+						<td height="30" align="right" valign="top"></td>
+						<td height="30" align="left" valign="bottom">
+							<input class="pwd_but" type="button" style="cursor:pointer;" onClick="change_pwd()" />
+						</td>
+					</tr>
+				</table>
+			</form>
+		</div>
+	</div>
+</div>
+</div>
+<? include(APP_DIR_V.'/index2.0/include/foot.html'); ?>
+</body>
+</html>
+

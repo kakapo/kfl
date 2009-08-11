@@ -1,0 +1,120 @@
+<? include APP_DIR_V."/index2.0/include/head.html";?>
+<script language="javascript" type="text/javascript" src="<?=$image_site_url?>/js/control/show.js?v=<?=$version?>"></script>
+
+</head>
+
+<body style="width:800px;">
+<!--弹出层容器 开始 -->
+<? include APP_DIR_V."/index2.0/include/alertdiv.html";?>
+<!--弹出层容器 结束 -->
+
+<div class="right_f">
+            <div class="banner_f">
+                <? if(isset($show_dz_banner_688x90)) include($show_dz_banner_688x90)?>
+                
+            </div>
+  <div class="right_f_list">
+  	<div class="pro_class">
+   	  <div class="class_p gray6_12"></div>
+      <div class="class_px">排序:&nbsp;<a href="/index.php/show/motion/sort/item_id" class="<? if($cur_sort=='item_id') echo 'yellowf3_12b none'; else echo 'gray6_12 noneline';?>">按时间</a>&nbsp;<a href="/index.php/show/motion/sort/item_hit" class="<? if($cur_sort=='item_hit') echo 'yellowf3_12b none'; else echo 'gray6_12 noneline';?>">按人气</a></div>
+
+    </div>
+  	<div class="class_list">
+            <div class="del_item_bg"><a href="javascript:top.leftFrame.clearAll(7);" class="yellow_12 underline">移除形象上的所有动作</a></div>
+	   	 <?php
+	  	 	$grade  = $GLOBALS ['showConfig']['grade_star'];
+	        $count=count($grade);
+	        $starfh="★";
+	  	 	if(isset($items['records']) && is_array($items['records'])) {
+	  	 		foreach ($items['records'] as $key=>$item){
+
+			  	 	for($i=0;$i<$count;$i++){
+				  	   if($item['item_hit']>=$grade[$i][0]){
+				  	     $starfh=$grade[$i][1];
+				  	   }
+				  	 }
+
+	  	 	?>
+	  	 	<!-- list start-->
+	   	  <div class="list" id="list_<?=$key?>">
+		      	<div class="pic">
+		        	<a href="javascript:top.leftFrame.setModelById(<?=$item['item_id']?>,'<?=$item['item_type']?>');"  onMouseOver="javascript:over($('list_<?=$key?>'));" onMouseOut="javascript:out($('list_<?=$key?>'));">
+		        		<?if($item['item_hit'] >= $GLOBALS ['showConfig']['favor']){?> <span class="new_hot" style=" width:53px; height:59px;background:url(<?=$image_site_url?>/images/hot_pico_in.png) 0 0 no-repeat; +background:none;"><img style="filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='<?=$image_site_url?>/images/hot_pico_in.png',sizingMethod='image'); BACKGROUND: url(<?=$image_site_url?>/images/hot_pico_in.png);" src="<?=$image_site_url?>/images/blank.gif" complete="complete" /></span><?}?>
+			            <?if($item['leftime'] <= $GLOBALS ['showConfig']['newer']){?>  <span class="new_hot" style=" width:53px; height:59px;background:url(<?=$image_site_url?>/images/new_pico_in.png) 0 0 no-repeat; +background:none;"><img style="filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='<?=$image_site_url?>/images/new_pico_in.png',sizingMethod='image'); BACKGROUND: url(<?=$image_site_url?>/images/new_pico_in.png);" src="<?=$image_site_url?>/images/blank.gif" complete="complete" /></span><?}?>
+		                <img src="<?=$image_site_url?>/images/itemimages/<?=$item['item_name']?>_109x109.jpg" width="103" height="103" />
+		            </a>
+		            <span class="author">
+		                <b class="time"><?=date('m/d/y',$item['item_regtime'])?>发布</b>
+		                <b class="time">作者：<i class="white_12"><?=$item['item_author']?></i></b>
+		                <b class="time">人气值：<?=$item['item_hit']?></b>
+		                <b class="time white_12"><?echo $starfh;?></b>
+		                <b class="time">加入VIP全场道具免费更换。</b>
+		          </span>
+		        </div>
+		        <div class="name yellow_13"><?=$item['item_title']?></div>
+		        <div class="vip_p"><span class="<?  if($item['item_price_type']=='GB') echo 'g_bg'; elseif($item['item_price_type']=='GG') echo 'guoguo_bg'; ?> yellowf3_12b"><?=$item['item_price']?></span></div>
+
+		        <div class="btn_div">
+		   	      <div class="btn"><a href="javascript:top.leftFrame.setModelById(<?=$item['item_id']?>,'<?=$item['item_type']?>');"><img src="<?=$image_site_url?>/images/component/r_flist/drass_btn.png" alt="试穿" /></a></div>
+		   	      <div class="btn"><a href="javascript:addToCart(<?=$item['item_id']?>)""><img src="<?=$image_site_url?>/images/component/r_flist/buy_btn.png" alt="购买" /></a></div>
+		   	    </div>
+	   	  </div>
+		<!-- list end-->
+	 		<?php
+	  	 		}
+	  	 	}else{
+	  	 		?>
+			<p>&nbsp;</p>
+	  	 	 <table border="0" cellspacing="10" cellpadding="0" align="center">
+			  <tr>
+			    <td><img src="<?=$image_site_url?>/images/index/v.gif" /></td>
+			    <td>没有道具<br /><a href="javascript:history.go(-1)" class="blue_by12 noneline">返回</a> </td>
+			  </tr>
+			</table>
+	  	 		<?
+	  	 	}
+	 		?>
+
+
+      <div class="clr"></div>
+  	<!-- 道具分页开始-->
+	 	<?
+		if(isset($items['page']->total) && ($items['page']->total > $items['page']->onepage))
+		{
+		?>
+		<form method="GET" action="/index.php" name='form1'>
+			<input type='hidden' name="action" value="show" />
+			<input type='hidden' name="view" value="clothes" />
+			<input type='hidden' name="cate_id" value="<?=$con['cate_id']?>" />
+			<input type='hidden' name="sort" value="<?=$con['order']?>" />
+	    <div class="page">
+	    	<div class="pre_page"><?=$items['page_array']['prePage']?></div>
+	        <div class="list_page">
+	        	<?=$items['page_array']['numBar'];?>
+	        </div>
+	        <div class="next_page"><?=$items['page_array']['nextPage']?></div>
+	    </div>
+	    </form>
+	 	<?}?>
+		<!-- 道具分页结束-->
+    </div>
+	<!-- class_list 结束-->
+
+
+  </div>
+<!-- right_f_list end-->
+
+    <!-- 推荐搭配开始-->
+  <? include(APP_DIR_V.'/index2.0/include/recommend.html'); ?>
+  <!-- 推荐搭配结束-->
+
+</div>
+<!-- right_f end -->
+<div class="clr"></div>
+
+
+<? include(APP_DIR_V.'/index2.0/include/framefoot.html'); ?>
+</body>
+</html>
+
+

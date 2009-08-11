@@ -1,0 +1,37 @@
+
+  <div class="right_tjdp">
+  	<div class="tjdp_tit"><img src="<?=$image_site_url?>/images/component/r_flist/tj_tit.png" /></div>
+<?php
+	  	 	if(isset($recItems['records']) && is_array($recItems['records'])) {
+	  	 		foreach ($recItems['records'] as $key=>$item){
+
+	  	 	?>
+     <div class="list">
+   	  <div class="pic_bg">
+      	<div class="clr"></div>
+      	<div class="pic">
+      		<?if($item['item_hit'] >= $GLOBALS ['showConfig']['favor']){?>
+        	<span class="new_hot" style=" width:53px; height:59px;background:url(<?=$image_site_url?>/images/new_pico_in.png) 0 0 no-repeat; +background:none;"><img src="<?=$image_site_url?>/images/blank.gif" style="background:url(<?=$image_site_url?>/images/new_pico_in.png)!important;background:none;filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='<?=$image_site_url?>/images/new_pico_in.png',sizingMethod='image');" /></span>
+        	<?}?>
+        	<a href="javascript:top.leftFrame.setAllModelsById(<?=$item['id']?>);"><span class="jiage_add_gg"><b class="guoguo"><?=$item['coins']?></b><b class="add_bg"> </b><b class="g_bg"><?=$item['cash']?></b></span><img src="<?=$image_site_url?>/recomenddiy/images/<?=$item['pic']?>" /></a>
+        </div>
+        <div class="name"><a href="javascript:top.leftFrame.setAllModelsById(<?=$item['id']?>);" class="yellow_13 none"><?=$item['title']?></a></div>
+
+      </div>
+      <div class="bottom_txt">
+        <div class="btn">
+        	<a href="javascript:top.leftFrame.setAllModelsById(<?=$item['id']?>);"><img src="<?=$image_site_url?>/images/component/r_flist/drass_btn.png" /></a>
+            <a href="javascript:addAllToCart(<?=$item['id']?>);"><img src="<?=$image_site_url?>/images/component/r_flist/buy_btn.png" /></a>
+        </div>
+      </div>
+    </div>
+<?php
+	  	 		}
+	  	 	}
+
+	  	 		?>
+    <div class="more_dp">
+    	<a href="/index.php/show/recommend" class="more_btn"><img src="<?=$image_site_url?>/images/component/r_flist/more_dp.png" /></a>
+    </div>
+
+  </div>

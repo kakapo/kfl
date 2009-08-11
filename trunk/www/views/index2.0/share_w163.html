@@ -1,0 +1,77 @@
+<?include_once(APP_DIR_V.'/index2.0/include/head.html')?>
+<script language="javascript" type="text/javascript" src="<?=$image_site_url?>/js/control/share.js?v=<?=$version?>"></script>
+<script language="javascript" type="text/javascript" src="<?=$image_site_url?>/js/datacom.js?v=<?=$version?>"></script>
+<script>
+function loading()
+{
+	var username = document.userInfo.username.value;
+	var password = document.userInfo.password.value;
+	if(username=='' || password=='')
+	{
+		parent.AlertShow(300,"请正确输入账号或密码!",{
+					  'ok':{til:'好，我知道了',
+					  		fuc:function (){
+									parent.AlertHidden();
+								}
+							}
+				  });
+		return false;
+	}
+	var path = document.userInfo.path.value;	
+	var url = 'index.php';
+	Post_share($('userInfo').serialize());
+	return false;
+}
+</script>
+<div class="implant_right" style="border:0;">
+    	<div class="implant_tit3">
+			<a href="/index.php/share/index" class="s_1" title="选择你要嵌入的空间"></a>
+        	<a href="/index.php/share/size/type/<?=$type?>" class="s_2" title="选取显示位置"></a>
+			<a href="/index.php/share/<?=$type?>/type/<?=$type?>" class="s_3" title="嵌入空间"></a>
+		</div>
+        <div class="clr"></div>
+        <div class="im_nav">
+        	<a href="/index.php/share/w163/type/w163" class="hover">一键嵌入</a>
+        	<a href="/index.php/share/copy/type/w163">复制代码</a>
+        </div>
+        
+        <div class="im_comp">
+		<form method="post" action="index.php" id="userInfo" name="userInfo">
+		<input type="hidden" name="action" value="share"/>
+		<input type="hidden" name="op" value="blog"/>
+		<input type="hidden" name="path" id="path" value="w163" />
+		<input type="hidden" name="flash" id="flash" value='<?=$flash?>' />
+		<input type="hidden" name="blog_path" id="blog_path" value=".blog.163.com" />
+          <table width="273" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+              <td width="90" height="30" align="right"><span class="gray4_12">网易账号：</span></td>
+            <td width="121" height="30">
+				  <div class="input_lbg"><input type="text" name="username" id="username" tabindex="1" /></div>
+			  </td>
+              <td width="121" rowspan="2" align="left"><span class="gray9_12">我们不会储存或泄露您的密码。请放心填写！</span></td>
+            </tr>
+            <tr>
+              <td width="90" height="30" align="right"><span class="gray4_12">网易密码：</span></td>
+            <td width="121" height="30">
+				  <div class="input_lbg"><input type="password" name="password" id="password" tabindex="2"/></div>
+			  </td>
+            </tr>
+            <tr>
+              <td height="47" align="right">&nbsp;</td>
+              <td height="47" colspan="2" align="left" valign="middle">
+			  	<img src="<?=$image_site_url?>/images/component/implant/implant_btn.jpg" onClick="loading();" style="cursor:pointer" width="87" height="25" />
+			  </td>
+            </tr>
+            <!--<tr>
+              <td width="76" height="35" align="right">&nbsp;</td>
+              <td height="35" colspan="2" align="left"><img src="<?=$image_site_url?>/images/component/implant/tishi_img.jpg" width="180" height="77" /></td>
+            </tr>-->
+        </table>
+	  </form>
+      </div>
+      <div class="clr"></div>
+     <div class="help_a" style=" margin-top:253px;">
+         <p class="help_p"><a href="javascript:copy_help('w163');" class="blue_by12">查看教程</a></p>
+         <p class="bianji_p"><a href="javascript:top.window.location.href='/index.php/show/frameset';" class="blue_by12">继续编辑形象</a></p>
+     </div>   
+  </div>

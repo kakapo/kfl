@@ -1,0 +1,187 @@
+<?include_once(APP_DIR_V.'/index2.0/include/head.html')?>
+<style type="text/css">
+#Fill_ral{font-size:12px;background:#FFFFFF;}
+#Fill_ral p{margin:0;margin-top:5px;line-height:120%;}
+#Fill_ral ul{wilih:100%;margin-top:10px;}
+#Fill_ral li{float:left;margin-right:10px;}
+#Fill_ral .tit,.tit_sec{float:left;}
+#Fill_ral .tit{width:100px;text-align:right;padding-right:10px;}
+#Fill_ral .l{clear:both;}
+#Fill_ral .tit_f{padding-bottom:10px;}
+#Fill_ral p{color:#EC6000;}
+#Fill_ral .tl{font-size:16px;font-weight:bold;}
+#Fill_ral{width:920px;margin-left:auto;margin-right:auto;margin-bottom:15px;float:left;margin-left:44px;}
+</style>
+<script>
+     function choicewstype(o)
+     {
+     	if(o.value==0){
+     	 document.getElementById('meishu1').style.display='';
+     	 document.getElementById('meishu2').style.display='';
+     	 document.getElementById('zhuti').style.display='none';
+     	}else{
+     	 document.getElementById('meishu1').style.display='none';
+     	 document.getElementById('meishu2').style.display='none';
+     	 document.getElementById('zhuti').style.display='';
+     	}
+     }
+</script>
+<script language="javascript">
+function checkFrom(form){
+
+	if(form.worksname.value==""){
+			 AlertShow(300,'作品名称不能为空!',{
+					  'ok22':{til:'好了,我知道了',
+					  		fuc:function (){
+
+					  			 	AlertHidden();
+									form.worksname.focus();
+								}
+							}
+				  });
+      return false;
+
+
+	}
+
+		if(form.remark.value==""){
+			 AlertShow(300,'作品简介不能为空!',{
+					  'ok22':{til:'好了,我知道了',
+					  		fuc:function (){
+
+					  			 	AlertHidden();
+									form.remark.focus();
+								}
+							}
+				  });
+      return false;
+
+
+	}
+
+	if(form.file1.value==""){
+			 AlertShow(300,'请选择作品!',{
+					  'ok22':{til:'好了,我知道了',
+					  		fuc:function (){
+
+					  			 	AlertHidden();
+									form.file1.focus();
+								}
+							}
+				  });
+      return false;
+
+
+	}
+	if(form.file2.value==""){
+			 AlertShow(300,'请选择缩略图!',{
+					  'ok22':{til:'好了,我知道了',
+					  		fuc:function (){
+
+					  			 	AlertHidden();
+									form.file2.focus();
+								}
+							}
+				  });
+      return false;
+
+
+	}
+ 	//checkitemid();
+	//return false;
+
+}
+
+
+</script>
+</head>
+<body>
+<? include(APP_DIR_V.'/index2.0/include/menu.html'); ?>
+<form action="/index.php" method="POST" name='form1' id="form1" enctype="multipart/form-data" onSubmit="return checkFrom(this);">
+<input type="hidden"  name="action" value="works"/>
+<input type="hidden" name="op" value="uploadws"/>
+<div id="Fill_ral">
+<div style="margin:15px 35px;" class="gray3_12">
+<div style="margin-left:auto;margin-right:auto;">
+<span class="tl">请严格按照下面规格填写作品</span>
+<div>
+<div style="width:500px;float:left;">
+<div><img src="<?=$image_site_url?>/images/onload/images/load_fill_03.gif" /></div>
+<div>
+<div class="tit_f">
+<div class="tit">作&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;者</div><div class="tit_sec"><strong style="font-size:1.3em;"><?=$author?></strong></div><div class="l"></div>
+</div>
+<div class="tit_f">
+<div class="tit">作品类别</div><div class="tit_sec"><input type="radio" value="0"  name="wstype" <?if($type==0){echo "checked=checked";}?> style="border:0;" onClick="choicewstype(this)"/>&nbsp;美术资源&nbsp;&nbsp;<input type="radio" value="1" name="wstype" <?if($type==1){echo "checked=checked";}?> style="border:0;" onClick="choicewstype(this)"/>&nbsp;主题背景</div><div class="l"></div>
+</div>
+<div class="tit_f">
+<div class="tit">作品名称</div>
+<div class="tit_sec">
+<input type="text" name="worksname" value="" style="border:solid 1px #C4C4C4;background:#EFEFEF;line-height:18px;"/></div>
+<div class="l"></div>
+</div>
+<div class="tit_f">
+<div class="tit">作品简介</div>
+<div class="tit_sec">
+<textarea  style="border:solid 1px #C4C4C4;overflow:auto;width:385px;height:120px;background:#EFEFEF;" name="remark"></textarea>
+<div style="width:385px;"><p>请用简短文字概括您的创作说明，心得体会。作品主要与要表现的思想，</p><p>也可以说说您使用的软件及创作过程（300字以内）</p></div>
+</div><div class="l"></div>
+</div>
+<div class="tit_f">
+<div class="tit">选择文件</div>
+<div class="tit_sec">
+<input type="file" name="file1" style="*border:solid 1px #C4C4C4;background:#EFEFEF;width:380px;height:21px;" size="51"/>
+<div style="width:380px;">
+<p>请上传ZIP或RAR格式文件包</p>
+<p>注意:</p>
+<p>参榜作品必须为原始作品，且作者拥有作品的著作权。</p>
+<p>参版作品必须为成品，创作中的作品请勿提交。</p>
+<p id="meishu1">上传美术资源内容为标准MAX文档，3D文件贴图尺寸不得超过512*512，格式</p>
+<p id="meishu2">为PNG或者PSD。单个文件大小不能超3MB。</p>
+<p id="zhuti" style="display:none;">上传主题内容，尺寸为800*600，格式为JPG和swf，单个文件大小不能超过1M。</p>
+<p>上传文件请用英文字母命名，请不“"”,”'“,”&“,“%”以及中文和</p><p>空格等非法字符</p>
+</div>
+</div>
+<div class="l"></div>
+</div>
+<div class="tit_f">
+<div class="tit">缩&nbsp;略&nbsp;图</div>
+<div class="tit_sec">
+<input type="file" name="file2" style="*border:solid 1px #C4C4C4;background:#EFEFEF;width:380px;height:21px;" size="51"/>
+<div style="width:380px;">
+<p>注意:</p>
+<p>缩略图必须尺寸为190*133，格式为JPG，否则会员以缩略图的方式浏</p><p>览排行榜作品时，将影响到您的作品效果。</p></div>
+</div>
+<div class="l"></div>
+</div>
+<div class="fill_tfoot" style="margin-top:30px;">
+<span style="margin-left:180px;"><a style="margin-right:30px;"href="javascript:history.back()"><img src="<?=$image_site_url?>/images/onload/images/onload_Rule_07.gif" /></a><input id="loginBtn" type="image" src="<?=$image_site_url?>/images/onload/images/load_fill_07.gif" alt="提交" ></span>
+</div>
+</div>
+
+</div>
+<div style="width:300px;float:left;margin-left:20px;background:#FAFAFA;border:solid 1px #C4C4C4;padding:30px 12px;">
+<p style="color:#434343;line-height:150%;">1、侵权责任：</p>
+<p style="color:#434343;line-height:150%;">
+您的所提交上传作品必须是原创作品，且享有该作品的著作权。如果是上传的是他人作品，那么，请先征询作者同意。否则，由此引起的版权纠纷由上传该作品者自己承担，与果动网站（<a href="www.guodong.com">www.guodong.com</a>）无关。
+</p>
+<p style="color:#434343;line-height:150%;">
+尚传作品中使用的素材，摄影，电影，照片以及音乐等所以该作品内出现的内容必须要得到著作权所有者的同意才能使用。如果出现第三者提出侵权，要求赔偿的情况的话，所有责任将由上传者本人承担，“果动网”不负任何责任。
+</p>
+<p style="color:#434343;line-height:150%;margin-top:20px;">
+2、版权归属：
+</p>
+<p style="color:#434343;line-height:150%;">
+您参与 “果动原创上传”，提交作品的同时，就意味着您已经同意将您作品的出版和发表权授权给“果动网”。否则请不要上传您或者他人的作品。</p>
+<p style="color:#434343;line-height:150%;">
+“果动网”在发表原创分享上传结果，进行广告宣传，进行作品征集活动等的无偿放映，复制，印刷，以及在网页上公开相关的上传作品。但是您将拥有作品署名的权利。</p>
+</div>
+<div class="l"></div>
+</div>
+</div>
+</div>
+</div>
+</form>
+<? include(APP_DIR_V.'/index2.0/include/foot.html'); ?>
+</body>
+</html>
