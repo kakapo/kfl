@@ -1,5 +1,5 @@
 <?php
-class component_authen
+class authenCom
 {
 	var $mAuthPrivs;
 	var $mUserPrivs;
@@ -11,7 +11,7 @@ class component_authen
      * @param $name difine component main object name
      * @return void
      */
-	function initComponent($name){
+	function __construct($name){
 	    $GLOBALS[$name] = $this;
 	}
 	/**

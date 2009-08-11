@@ -1,7 +1,6 @@
 <?php
 
 if(!defined("KFL_DIR")) define("KFL_DIR", dirname(__FILE__));
-if(!defined("USE_DATABASE")) define("USE_DATABASE", 1);
 
 //////////////////////////////////////////////////////
 //					PEAR							//

@@ -1,8 +1,8 @@
 <?php
 define("SESSION_LIVE_TIME", 1440); // Timeout
-class component_session
+class sessionCom
 {
-	function initComponent(){
+	function __construct(){
 		if(SESSION_HANDLE=='file'){
 			session_start();
 		}elseif(SESSION_HANDLE=='mysql'){
@@ -27,6 +27,7 @@ class component_session
 		}
 	}
 }
+
 class SessionHandleMySQL extends Model
 {
 	static $db_static;
@@ -106,6 +107,7 @@ class SessionHandleMySQL extends Model
         return true;
     }   //end function
 }
+
 class SessionHandleMemcache
 {
 	static $mMemcacheObj;

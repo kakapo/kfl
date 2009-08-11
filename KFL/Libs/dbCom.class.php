@@ -1,6 +1,6 @@
 <?php
 /**
- * mypdo.class.php :: 数据库操作类
+ * dbCom.class.php :: 数据库操作类
  *2009-01-06做了以下更新,by zswu:
  *1、去掉getRowByMM,getAllByMM,getOneByMM,closeMM,disposal();
  *2、将memcache功能整合到getRow,getOne,getAll
@@ -13,7 +13,7 @@ if(version_compare(PHP_VERSION, "5.1.0", "<") && !class_exists("PDO"))
 	trigger_error('Current PHP version: ' . PHP_VERSION . ' is too low for PDO.',E_USER_ERROR);
 	die();
 }
-class mypdo extends PDO
+class dbCom extends PDO
 {
 	public $debug = 1;	   //是否开启DEBUG信息 true|false
 	private $errorMsg;            //SQL语句错误记录
@@ -383,25 +383,9 @@ class mypdo extends PDO
 		return $this->execute($sql);
 	}
 	//取得上一步 INSERT 操作产生的 ID
-	function insertId()
-	{
-		return $this->lastInsertId();
-	}
+
 	//事务开始 start transaction
-	function beginTrans()
-	{
-		$this->beginTransaction();
-	}
-	//事务提交 commit
-	function commitTrans()
-	{
-		$this->commit();
-	}
-	//事务回滚 rollback
-	function rollbackTrans()
-	{
-		$this->rollBack();
-	}
+
 	//sql语句执行
 	function query($sql,$query_type = 1)   //$query_type = 1 返回影响记录数量；2，返回查询数组,3,返回单条数据
 	{

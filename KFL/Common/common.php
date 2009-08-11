@@ -115,6 +115,7 @@ function error_debug_handler($errno, $errstr, $errfile, $errline, $context, $bac
 		echo "</td></tr></table>";
 	}
 }
+
 function log_error($msg,$filename,$linenum)
 {
 	if(!is_dir(LOG_FILE)){
@@ -128,6 +129,7 @@ function log_error($msg,$filename,$linenum)
 	@fclose($fp);
 	return $linenum;
 }
+
 function log_index_word($filename,$linenum)
 {
 	if(!is_dir(LOG_FILE)){
@@ -143,6 +145,7 @@ function log_index_word($filename,$linenum)
 	@fclose($fp2);
 
 }
+
 function get_error_type($errno)
 {
 	switch($errno)
@@ -171,6 +174,7 @@ function get_error_type($errno)
 
 	return $errortype;
 }
+
 function add_misc_error_info()
 {
 	$info = array();
@@ -187,6 +191,7 @@ function add_misc_error_info()
 
 	return $info;
 }
+
 function get_misc_error_info()
 {
 	$info = add_misc_error_info();
@@ -239,6 +244,7 @@ function get_misc_error_info()
 	$ret .= "</table>";
 	return $ret;
 }
+
 function error_live_handler($errno, $errmsg, $filename, $linenum, $vars)
 {
 	// 错误发生时间
@@ -332,6 +338,7 @@ function error_live_handler($errno, $errmsg, $filename, $linenum, $vars)
 	}
 
 }
+
 function fetch_backtrace($full = false)
 {
 	if (function_exists("debug_backtrace"))
@@ -446,6 +453,7 @@ td, th { border: 1px solid #000000; font-size: 75%; vertical-align: baseline;}
 
 	return $backtrace;
 }
+
 function check_word($filename,$linenum)
 {
 	$today = date("Y-m-d");
@@ -467,21 +475,28 @@ function check_word($filename,$linenum)
 }
 
 //***************************KFL常用方法库 *******************************/
+function getmicrotime() {
+	list ( $usec, $sec ) = explode ( " ", microtime () );
+	return (( float ) $usec + ( float ) $sec);
+}
 function show_message($msg=''){
 	echo '<meta http-equiv="Content-Type" content="text/html; charset='.$GLOBALS ['gSiteInfo'] ['webcharset'].'" />';
 	echo "<div style='width:300px; margin:auto; padding:3px; font-size:12px;color:#000; background:#FFF repeat-x left top'>".$msg."</div>";
 
 }
+
 function show_message_goback($msg=''){
 	show_message($msg);
 	goback();
 }
+
 function goback($delay='1000') {
 	echo "<SCRIPT>";
 	echo 'setTimeout("history.go(-1)",'.$delay.');';
 	echo "</SCRIPT>";
 	die;
 }
+
 function redirect( $URL, $redirectType = 3)
 {
 	switch($redirectType)
@@ -504,6 +519,7 @@ function redirect( $URL, $redirectType = 3)
 	}
 	exit();
 }
+
 function encrypt($s, $key='key')
 {
 	$r="";
@@ -515,6 +531,7 @@ function encrypt($s, $key='key')
 	}
 	return urlencode(base64_encode($s));
 }
+
 function decrypt($s, $key='key')
 {
 	$r ='';
@@ -527,6 +544,7 @@ function decrypt($s, $key='key')
 	}
 	return $r;
 }
+
 function authenticate(){
 	if(!empty($_COOKIE['IDOL_TOKEN']) && !empty($_COOKIE['IDOL_STATE']) && !empty($_COOKIE['IDOL_INFO'])){
 		$token = $_COOKIE['IDOL_TOKEN'];
@@ -546,6 +564,7 @@ function authenticate(){
 		return false;
 	}
 }
+
 function selfURL() {
 	$s = empty($_SERVER["HTTPS"]) ? ''
 	: ($_SERVER["HTTPS"] == "on") ? "s"
@@ -572,6 +591,7 @@ function selfURL() {
 
 	return urlencode($protocol."://".$_SERVER['HTTP_HOST']. $port . $_SERVER['PHP_SELF'] . $requestURI);
 }
+
 function send_email($from="no-reply@guodong.com",  $to, $subject, $message)
 {
 	/*  your configuration here  */
@@ -686,6 +706,7 @@ function send_email($from="no-reply@guodong.com",  $to, $subject, $message)
 	//a return value of 221 in $retVal["quitcode"] is a success
 	return 1;
 }
+
 function getip(){
 	if (getenv("HTTP_CLIENT_IP") && strcasecmp(getenv("HTTP_CLIENT_IP"), "unknown"))
 		$ip = getenv("HTTP_CLIENT_IP");
@@ -699,6 +720,7 @@ function getip(){
 		$ip = "unknown";
 	return($ip);
 }
+
 function print_sql($show_include_files=0){
 	if($show_include_files){
 		foreach (get_included_files() as $key=>$value) {
@@ -724,6 +746,7 @@ function print_sql($show_include_files=0){
 		echo 'no query!';
 	}
 }
+
 function memcache_get_content($servers,$key){
 	$memcache= new Memcache;
 	if(is_array($servers)){
@@ -736,6 +759,7 @@ function memcache_get_content($servers,$key){
 	return $host;
 
 }
+
 function memcache_set_content($servers,$key,$value,$lifetime=0){
 	$memcache= new Memcache;
 	if(is_array($servers)){
@@ -747,6 +771,7 @@ function memcache_set_content($servers,$key,$value,$lifetime=0){
 	$memcache->set($key,$value,0,$lifetime);
 	$memcache->close();
 }
+
 function curl_get_content($url){
 	if(function_exists('curl_init')){
 		$ch = curl_init ();
