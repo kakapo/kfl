@@ -51,10 +51,11 @@ class phptemplate
 	function display($template){
 		
 		extract($this->_tpl_vars);
+		unset($this->_tpl_vars);
 		if(file_exists($this->template_dir."/".$template)){
 			$r = @include($this->template_dir."/".$template);
 		}else{
-			trigger_error("KFC Error: {$template} template file not exist!",E_USER_ERROR);
+			trigger_error("KFL Error: {$template} template file not exist!",E_USER_ERROR);
 			die();
 		}
 		

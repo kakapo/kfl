@@ -10,40 +10,49 @@ require_once(dirname(__FILE__) . "/Common/config.php");
 */
 class KFL
 {
-	private $mComponents = array();
+	/**
+	 * core component
+	 * @param array
+	 */
+	private $mCore;
+	/**
+	 * start time
+	 * @param string
+	 */
+	private $mStartTime ;
 	/**
 	 * default controller
-	 * @var string
+	 * @param string
 	 */
 	private $mDefaultController = "defaults";
 
 	/**
 	 * default view style
-	 * @var string
+	 * @param string
 	 */
 	private $mDefaultView = "defaults";
 
 	/**
 	 * core settings
-	 * @var array
+	 * @param array
 	 */
-	private $mCoreSettings = array('is_session'=>1,'is_phptpl'=>1,'is_authen'=>0,'is_database'=>USE_DATABASE);
+	private $mCoreSettings = array('is_session'=>1,'is_phptpl'=>1,'is_authen'=>1,'is_database'=>1);
 
 	/**
 	 * is caching
-	 * @var int
+	 * @param int
 	 */
 	public  $mIsCache = 0;
 
 	/**
 	 * cache time
-	 * @var int
+	 * @param int
 	 */
 	public  $mCacheTime = 300;
 
 	/**
 	 * cache dir
-	 * @var string
+	 * @param string
 	 */
 	public  $mCacheDir = "/tmp/";
 
@@ -62,6 +71,8 @@ class KFL
 		}
 		require_once("Common/common.php");
 		include_once("Common/file.php");
+		$this->mStartTime = getmicrotime ();
+		
 
 	}
 
@@ -86,25 +97,6 @@ class KFL
 			define("APP_TPLSTYLE",$defView);
 		}
 		$this->mDefaultView = $defView;
-	}
-
-	/**
-	 * useAuthen
-	 * @access public
-	 * @return void
-	 */
-	public function useAuthen(){
-		$this->mCoreSettings['is_authen'] = 1;
-	}
-
-	/**
-	 * useDataBase
-	 * @access public
-	 * @param int $yes
-	 * @return void
-	 */
-	public function useDataBase($yes=1){
-		$this->mCoreSettings['is_database'] = $yes;
 	}
 
 	/**
@@ -133,7 +125,9 @@ class KFL
 	    	if(time()-$modify_time < $this->mCacheTime){
 	    		echo file_get_contents($this->mCacheDir.$cache_file);
 	    		$end_time2 = getmicrotime();
-	    		die("<center>cache exec-time: ".($end_time2-$GLOBALS['start_time'])."</center>");
+	    		$this->costtime();
+	    		die();
+	    		
 	    	}else{
 	    		ob_start();
 	    	}
@@ -151,31 +145,28 @@ class KFL
 	public function setup(){
 		global $tpl;
 		if($this->mCoreSettings['is_database']){
-			require_once("Libs/mypdo.class.php");
-
-			$this->mComponents[] = 'database';
+			require_once("Libs/dbCom.class.php");
+			$this->mCore[] = 'database';
 		}
 
 		//add core components
 		if($this->mCoreSettings['is_session']){
-			require_once("Libs/session_component.php");
-			$component_session = new component_session();
-			$component_session->initComponent();
-			$this->mComponents[] = 'session';
+			require_once("Libs/sessionCom.class.php");
+			new sessionCom();
+			$this->mCore[] = 'session';
 		}
 
 		if($this->mCoreSettings['is_authen']){
-			require_once("Libs/authen_component.php");
-			$component_authen = new component_authen();
-			$component_authen->initComponent('authen');
-			$this->mComponents[] = 'authen';
+			require_once("Libs/authenCom.class.php");
+			new authenCom('authen');
+			$this->mCore[] = 'authen';
 		}
 		// init view engine
 		if($this->mCoreSettings['is_phptpl']){
 			require_once("Libs/phptemplate.class.php");
 	    	$tpl = new phptemplate();
 	    	$tpl->template_dir = APP_DIR_V;
-	    	$this->mComponents[] = 'phptpl';
+	    	$this->mCore[] = 'phptpl';
 		}
 
 	}
@@ -190,7 +181,7 @@ class KFL
 		$this->setup();
 
 		// use controller to dispatch
-		Controller::dispatch($this->mDefaultController,$this->mComponents);
+		Controller::dispatch($this->mDefaultController,$this->mCore);
 
 		// use view
 		View::display();
@@ -206,15 +197,21 @@ class KFL
 			write_file(ob_get_contents(),$cache_file);
 		}
 
+		
+		$this->costtime();
 	}
 
+	public function costtime(){
+		$end_time = getmicrotime ();
+		$this->pageExecTime = $end_time-$this->mStartTime;
+	}
 
 }
 
 class Controller{
     /**
      * mComponents
-     * @var array
+     * @param array
      */
     private static $mComponents = array();
 	private	static $mDispatcher;
@@ -256,14 +253,14 @@ class Controller{
 		 		show_message("你没有权限访问.");
 		 		die;
 		 	}
-		 	//记录操作
-		 	$s = substr($gCurPriv,0,strpos($gCurPriv,'.'));
-		 	if($s!=='frame'){
-		 		include("OpLogManage.class.php");
-		 		$oplog =new OpLogManage;
-		 		$data = array('user_id'=>$_SESSION['LoginUser']['user_id'],'operation'=>$gCurPriv,'user_name'=>$_SESSION['LoginUser']['user_name']);
-		 		$oplog->saveLog($data);
-		 	}
+//		 	//记录操作
+//		 	$s = substr($gCurPriv,0,strpos($gCurPriv,'.'));
+//		 	if($s!=='frame'){
+//		 		include("OpLogManage.class.php");
+//		 		$oplog =new OpLogManage;
+//		 		$data = array('user_id'=>$_SESSION['LoginUser']['user_id'],'operation'=>$gCurPriv,'user_name'=>$_SESSION['LoginUser']['user_name']);
+//		 		$oplog->saveLog($data);
+//		 	}
 		 }else{
 		 	//trigger_error("KFL Error: add \$KFL->useAuthen(); in /index.php",E_USER_ERROR);
 		 	//die();
@@ -334,7 +331,7 @@ class Model
 {
 	/**
 	 * result
-	 * @var
+	 * @param
 	 */
 	public $result;
 	public $mWheres;
@@ -358,7 +355,7 @@ class Model
 	    }else{
 			$dsn = $options['type'].":host=".$options['host'].";port=".$options['port'].";dbname=".$options['dbname'];
 			try{
-				$GLOBALS[$db_resource] = new mypdo($dsn,$options['user'],$options['passwd'],array(PDO::ATTR_PERSISTENT => false));
+				$GLOBALS[$db_resource] = new dbCom($dsn,$options['user'],$options['passwd'],array(PDO::ATTR_PERSISTENT => false));
 			}catch (PDOException $e){
 				trigger_error("db connect failed!".$e->getMessage(),E_USER_ERROR);
 				die();
