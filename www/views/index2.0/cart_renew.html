@@ -1,0 +1,68 @@
+<? include APP_DIR_V."/index2.0/include/head.html";?>
+<script language="javascript" type="text/javascript" src="<?=$image_site_url?>/js/control/show.js?v=<?=$version?>"></script>
+<script>
+function updatePrice(n,dw){
+	if(dw=='GG') $('total_gg').innerHTML = n*$('item_price_v').innerHTML +'果果';
+	if(dw=='GB') $('total_gb').innerHTML = n*$('item_price_v').innerHTML +'G币';
+}
+</script>
+</head>
+<body>
+ <div class="buy_dj_alt">
+        <div class="tit">
+            <div class="pic_tit"><img src="<?=$image_site_url?>/images/invite/buy/buy_djtit.jpg" alt="购买道具" /></div>
+        </div>
+<form action="/index.php" method="POST" >
+		<input type="hidden" name="action" value="cart">
+		<input type="hidden" name="op" value="rebuy">
+		<input type="hidden" name="wealth_id" value="<?=$wealth['wealth_id']?>">
+		<input type="hidden" name="item_price" value="<?=$item['item_price']?>">
+		<input type="hidden" name="item_price_type" value="<?=$item['item_price_type']?>">
+      <div class="mid_c">
+        <div class="dj_pic"><img src="<?=$image_site_url?>/images/itemimages/<?=$item['item_name']?>_109x109.jpg" /></div>
+        <div class="dj_txt">
+            <table width="250" border="0" cellspacing="0" cellpadding="0">
+                  <tr>
+                  <td height="34" colspan="2" valign="top"><span class="yellowf3_12b"><?=$wealth['wealth_item_title']?></span></td>
+                  </tr>
+                  <tr>
+                    <td width="53" height="26" align="left"><span class="gray4_12">有效期：</span></td>
+                    <td width="197" height="26" align="left">
+                    <label>
+                      <select name="usetime" id="usetime" onChange="updatePrice(this.options[this.selectedIndex].value,'<?=$item['item_price_type']?>');">
+                      <? for ($i=1;$i<=12;$i++){?>
+                        <option class="green6_12" value="<?=$i?>"><?=$i?>个月</option>
+                       <? }?>
+                      </select>
+                    </label>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td height="26" align="left"><span class="gray4_12">单&nbsp;价：</span></td>
+                    <td height="26" align="left"><span class="<?if($item['item_price_type']=='GB') echo 'g_bg'; elseif($item['item_price_type']=='GG') echo 'guoguo_bg'; ?> yellowf3_12b"><label id='item_price_v'><?=$item['item_price']?></label><?if($item['item_price_type']=='GB') echo 'G币'; elseif($item['item_price_type']=='GG') echo '果果'; ?></span></td>
+                  </tr>
+
+                   <tr>
+                    <td height="26" colspan="2" align="left"><span class="yellowf3_12">您已经购买此道具，到期时间为<?=date("Y/m/d",$wealth['wealth_expiry_time'])?></span></td>
+                  </tr>
+
+
+              </table>
+
+        </div>
+        </div>
+
+
+
+        <div class="bot_c" style="height:55px; padding-top:5px;">
+        	<span class="yuer" style="width:250px; line-height:20px;"><b class="gray4_12">账户余额:</b><b class="yellowf3_12b"><?=$user_coin?> 果果&nbsp;&nbsp;<?=$user_cash?> G币</b><br /><b class="gray4_12">支付:</b><b class=" yellow_12b" id="total_gg"><?=$total_gg?> 果果</b>&nbsp;&nbsp;<b class=" yellow_12b" id="total_gb"><?=$total_gb?> G币</b></span>
+            <span class="chongzhi"><input type="image" src="<?=$image_site_url?>/images/invite/buy/djxf_btn.jpg" /></span>
+            <span class="chongzhi"><a href="/index.php/charge" class="blue_by12" target="_blank">立即充值</a></span>
+        </div>
+</form>
+</div>
+
+
+
+</body>
+</html>

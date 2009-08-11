@@ -1,0 +1,119 @@
+<? include APP_DIR_V."/index2.0/include/head.html";?>
+<style type="text/css">
+.new2s{padding-bottom:35px;}
+.new2s .Annount li{margin:5px;padding-bottom:4px;}
+.new2s a{text-decoration:underline;}
+.new2s .Annount{margin:5px;margin-top:15px;}
+.new2s .Annount .date{float:left;}
+.new2s .Annount .msg{float:left;width:98px;margin-left:5px;color:#2165A6;}
+.new2s .Annount .msg a{color:#2165A6;}
+.new2s .anut_left{width:192px;float:left;margin-right:8px;padding:4px;background:#E1E3DA;*padding-top:8px}
+.new2s .anut_left .anut_left_top{height:34px;background:url(<?=$image_site_url?>/images/new2s/new2s_03.gif) no-repeat 0 0;margin:4px;-margin:4px;}
+.new2s .anut_bot{background:url(<?=$image_site_url?>/images/new2s/new2s_17.gif) repeat-y 0 0;width:184px;height:170px;padding:3px;-padding:0px;}
+.new2s .Annount li{border-bottom:solid 1px #E5E5E5;width:158px;}
+.new2s .hdgg{ float:left; width:199px;}
+.new2s .hotactivity{ width:199px; height:56px; background:#999999; margin-top:10px; margin-bottom:-5px;}
+.new2s .hotactivity a{ display:block; margin-bottom:5px;}
+.new2s .anut_rit{width:750px;float:left;background:#FFFFFF;border:solid 1px #C7C9C2;position:relative; margin-left:15px; _margin-left:0px;}
+.new2s .anut_rit_tb{width:734px;margin:10px auto;height:30px;position:relative;}
+.new2s .tit{font-size:1.4em;font-weight:bold;}
+.new2s .bnt1{position:absolute;top:8px;right:15px;}
+.new2s .page_let{position:absolute;left:20px;bottom:25px;color:#666666;}
+.new2s .page_rit{position:absolute;right:20px;bottom:25px;color:#666666;}
+.new2s .Conte{width:640px;color:#666666;margin-top:15px;}
+.new2s .page_lets{float:left;margin-top:10px;cursor:pointer;}
+.new2s .page_letm{float:left;margin-left:10px;cursor:pointer;}
+.new2s .page_ritm{float:left;cursor:pointer;}
+.new2s .page_ritx{float:left;margin-top:10px;margin-left:10px;cursor:pointer;}
+.new2s .content{width:646px;margin-top:10px;+margin-top:-5px;-margin-top:0px;margin-left:auto;margin-right:auto;}
+
+.new2s .content .lef,.cen,.rig{float:left;text-align:left;}
+.new2s .content .lef{width:85px;color:#666666;}
+.new2s .content .cen{width:470px;}
+.new2s .content .rig{width:85px;color:#2165A6;}
+.new2s .content .cen a,.rig a{color:#2165A6;}
+.new2s .Numera{margin-left:5px;}
+.new2s .Numera:hover{cursor:pointer;text-decoration:underline;}
+.new2s .pag{margin-left:10px;}
+.new2s .pag{text-decoration:underline;}
+.new2s .page a{text-decoration:none;}
+.new2s .conter{background:url(<?=$image_site_url?>/images/new2s/tabu_bck_03.gif) repeat-x center bottom;}
+.new2s .conter_in{text-align:center;padding-bottom:20px;padding-top:5px;*padding-top:15px;}
+.new2s .conter_in ul{}
+.new2s .anut_rit_tb .bnt,.bnt2,.bnt3{float:left;}
+.new2s .anut_rit_tb .bnt2{background:url(<?=$image_site_url?>/images/new2s/top_back_05.gif) repeat-x center top;height:30px;width:84.3%;}
+</style>
+
+</head>
+
+<body>
+<? include(APP_DIR_V.'/index2.0/include/menu.html'); ?>
+<div class="main">
+	<div class="user_subnav">
+    	<div class="user_lujin gray6_12">
+        <a href="/index.php" class="gray6_12 noneline">首页</a><span>&gt;</span>
+        <a href="/index.php/help/hdgg" class="gray6_12 noneline">活动公告</a>
+    	</div>
+    </div>
+
+    <div class="clr"></div>
+
+    <div class="new2s">
+      <div class="hdgg">
+           <? include(APP_DIR_V.'/index2.0/include/gonggao.html'); ?>
+            <div class="clr"></div>
+            <?foreach($img_array as $key=>$list){?>
+		  <div class="hotactivity"><a href="/index.php/help/hdggContent/id/<?=$list['id']?>"><img src="<?=$list['img_url']?>" width="199" height="56"></a></div>
+		  <?}?>
+
+      </div>
+
+<div class="anut_rit">
+<div class="anut_rit_tb">
+<div class="bnt"><img src="<?=$image_site_url?>/images/new2s/top_back_03.gif" /></div>
+<div class="bnt2"></div>
+<div class="bnt3"><img src="<?=$image_site_url?>/images/new2s/top_back_07.gif" /></div>
+<div class="clr"></div>
+</div>
+
+<div class="conter">
+<div class="conter_in" style="height:auto !important; min-height:380px;height:380px;">
+<? if(!empty($list_array['record'])){ foreach($list_array['record'] as $k=>$v){?>
+<ul class="content">
+<li class="lef"><span><?=date('Y-m-d',$v['time'])?></span></li>
+<li class="cen"><span><a href="/index.php/help/hdggContent/id/<?=$v['id']?>" class="blue_by12 noneline"><?=$v['title']?></a></span></li>
+<li class="rig"><span><?if(isset($v['url'])){?> &gt;&gt;	<a href="<?=$v['url']?>">专题页面</a><?}?></span></li>
+<li class="clr"></li>
+</ul>
+ <?}}?>
+</div>
+ <?
+if(isset($list_array['page']->total) && ($list_array['page']->total > $list_array['page']->onepage))
+{
+?>
+<form method="GET" action="/index.php" name='form1'>
+<input type='hidden' name="action" value="help" />
+<input type='hidden' name="view" value="hdgg" />
+ <div class="page">
+ <div class="pre_page"><?=$list_array['page_array']['prePage']?></div>
+ <div class="list_page">
+ <?=$list_array['page_array']['numBar'];?>
+ </div>
+ <div class="next_page"><?=$list_array['page_array']['nextPage']?></div>
+ </div>
+ </form>
+ <?}?>
+</div>
+
+<div class="clr"></div>
+</div>
+<div class="clr"></div>
+</div>
+
+
+
+</div>
+
+<? include(APP_DIR_V.'/index2.0/include/foot.html'); ?>
+</body>
+</html>

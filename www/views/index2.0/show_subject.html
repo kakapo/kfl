@@ -1,0 +1,61 @@
+<?include_once(APP_DIR_V.'/index2.0/include/head.html')?>
+<script language="javascript" type="text/javascript" src="<?=$image_site_url?>/js/control/show.js?v=<?=$version?>"></script>
+<link href="<?=$image_site_url?>/css/user_manage.css?v=<?=$version?>" rel="stylesheet" type="text/css" />
+</head>
+<body style="width:800px;">
+<? include APP_DIR_V."/index2.0/include/alertdiv.html";?>
+<div class="right_f">
+	<div class="con">	
+		<div class="pro_class">
+          <div class="class_p">
+			专题     
+          </div>
+        </div>         
+      <div class="con_div">	   
+       <div class="con_tab" style="padding-top:20px;">
+        	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="gray4_12">
+              <tr>
+                <th class="date">标题</th>
+                <th class="item_name">提交时间</th>
+              </tr>
+             <?
+			  if(isset($list_array['record']) && $list_array['record']){
+			   foreach($list_array['record'] as $key=>$list){		
+			   ?>
+               <tr>
+                <td class="date"><a class="gray6_12 underline" href="<?=$image_site_url?>/edm/html/<?=$list['id']?>.html"><?=$list['title']?></a></td>
+                <td class="item_name"><?=date('Y-m-d',$list['times'])?></td>
+               </tr>
+              	<?}
+			    }else {
+			    ?>	
+                <tr><td colspan="2" align="center">目前还没有记录！</td> </tr>   
+               <?}?>   
+              </table>
+                <!--分页   B-->
+           <?
+		if(isset($list_array['page']->total) && ($list_array['page']->total > $list_array['page']->onepage))
+		{
+		?>
+		<form method="GET" action="/index.php" name='form1'>
+			<input type='hidden' name="action" value="show" />
+			<input type='hidden' name="view" value="subject" />
+	        <div class="page">
+	    	<div class="pre_page"><?=$list_array['page_array']['prePage']?></div>
+	        <div class="list_page">
+	        	<?=$list_array['page_array']['numBar'];?>
+	        </div>
+	        <div class="next_page"><?=$list_array['page_array']['nextPage']?></div>
+	    </div>
+	    </form>
+	 	<?}?>
+          <!--分页   E-->
+        </div> 
+        <div class="clr"></div>    
+      </div>      
+  </div>
+</div>
+<? include(APP_DIR_V.'/index2.0/include/framefoot.html'); ?>
+</body>
+</html>
+

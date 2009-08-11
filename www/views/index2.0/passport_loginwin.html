@@ -1,0 +1,55 @@
+<? include APP_DIR_V."/index2.0/include/head.html";?>
+<script language="javascript" type="text/javascript" src="<?=$image_site_url?>/js/datacom.js?v=<?=$version?>"></script>
+<script language="javascript" type="text/javascript" src="<?=$image_site_url?>/js/control/login.js?v=<?=$version?>"></script>
+<style>
+.loginwin { width:320px; height:250px;  background-color:#ffffff; margin-bottom:19px;}
+/*登陆前css*/
+.loginwin .in_login{ float:left; margin-bottom:11px; width:320px; height:250px; /*height:280px;*/ background-color:#FFFFFF; clear:both;}
+.loginwin .in_login .tit{ width:103px; height:27px; margin:9px auto;}
+.loginwin .in_login .log_div{ width:250px; height:56px; margin:0 auto;}
+.loginwin .in_login .log_div .in_div{ width:160px; height:56px; float:left; margin-right:10px;_margin-right:5px;}
+.loginwin .in_login .log_div .in_div .input{ width:150px; padding-left:6px; padding-right:4px; height:22px; line-height:22px; margin-bottom:4px; border:#d0d0d0 solid 1px;}
+.loginwin .in_login .log_div .in_div .login_but{ width:48px; height:54px; float:left;}
+.loginwin .in_login .log_chk{ width:250px; height:18px; line-height:18px; margin:11px auto;}
+.loginwin .in_login .log_chk span{ display:block; float:left;}
+.loginwin .in_login .log_chk span.chk{ width:24px; height:15px; margin-top:3px; margin-left:2px;+margin-top:-2px;}
+.loginwin .in_login .log_chk span.text{ width:79px; height:18px;}
+
+.loginwin .in_login .forget{ width:250px; height:31px; line-height:31px; text-align:center; margin:0 auto;}
+.loginwin .in_login .reg_but{ width:250px; height:50px; margin:16px auto 16px auto;}
+</style>
+</head>
+<body>
+
+<div class="loginwin">
+	<div class="in_login">
+		<div class="tit"><img src="<?=$image_site_url?>/images/index/reg_login.jpg" /></div>
+		<form method="POST" name="passfast_form" id="passfast_form" action="index.php" onSubmit="return parent.passport_check(this,$('passfast_form').serialize());">
+		<input type="hidden" name="action" value="passport" />
+		<input type="hidden" name="op" value="dologin">
+		<input type="hidden" name="redirect_url" value="<?=$redirect_url?>">
+	    <div class="log_div">
+	    	<div class="in_div">
+	       	  <input id="passport_user" name="passport_user" tabindex="10" class="input gray9_12" type="text" value="用户名" onFocus="javascript:this.value='';this.style.color='#666';"/>
+	          <input id="passport_passwd" name="passport_passwd"  tabindex="11" class="input gray9_12" type="password" value="密&nbsp;&nbsp;&nbsp;码"  onfocus="javascript:this.value='';this.style.color='#666';"/>
+	        </div>
+
+	        <div class="login_but"><input type="image" src="<?=$image_site_url?>/images/index/logo_b.png" /></div>
+	    </div>
+
+		<div class="log_chk"><span class="chk"><input id="remember" name="remember" value="1" tabindex="12" type="checkbox" /></span><span class="text gray6_12" onClick="javascript:if($('remember').checked ==true){$('remember').checked =false;}
+	else{$('remember').checked =true;}" style="cursor:pointer;">下次自动登录</span></div>
+
+		</form>
+		<div class="forget gray6_12"><div style="width:171px; height:31px; line-height:31px;border:#d0d0d0 solid 1px;"><a href="/index.php/passport/forget" target="_blank" class="gray6_12 noneline">忘记密码</a> / <a href="/index.php/help/newuser" target="_blank" class="gray6_12 noneline">新手指南</a></div></div>
+	    <div class="reg_but"><a href="/index.php/passport/reg" target="_blank"><img src="<?=$image_site_url?>/images/index/reg_b.png" /></a></div>
+	</div>
+</div>
+<script>
+var username = Cookies.getCookie('IDOL_USERNAME');
+if(username !==''){
+	$('passport_user').value =username;
+}
+</script>
+</body>
+</html>

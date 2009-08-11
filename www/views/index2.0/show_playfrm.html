@@ -1,0 +1,165 @@
+<? include APP_DIR_V."/index2.0/include/head.html";?>
+<script src="<?=$image_site_url?>/js/communicate.js" type="text/javascript"></script>
+<script>
+
+function changeGender(gender){
+
+	if(Cookies.getCookie("VIEW_GENDER")!=gender){
+		if(avatarChange){
+			top.mainFrame.comfirmShow('您现在的形象还未保存，是否保存？',"AlertHidden();Cookies.setCookie('VIEW_GENDER', '"+gender+"', '', '/',_COOKIE_DOMAIN);top.leftFrame.window.location.reload();top.mainFrame.window.location.href='"+_WWW_SITEURL+"index.php/show/clothes';");
+		}else{
+			Cookies.setCookie("VIEW_GENDER", gender, '', '/',_COOKIE_DOMAIN);
+			window.location.reload();
+			top.mainFrame.window.location.href=_WWW_SITEURL+"index.php/show/clothes";
+		}
+
+	}
+}
+
+function resetAvatar(){
+	if(avatarChange){
+		top.mainFrame.comfirmShow('您现在的形象还未保存，是否保存？',"AlertHidden();Cookies.setCookie('RESET_AVARTAR', 1, '', '/',_COOKIE_DOMAIN);top.leftFrame.window.location.reload();");
+	}else{
+		Cookies.setCookie('RESET_AVARTAR', 1, '', '/',_COOKIE_DOMAIN);
+		window.location.reload();
+	}
+}
+function latestAvatar(){
+	if(avatarChange){
+		top.mainFrame.comfirmShow('您现在的形象还未保存，是否保存？',"AlertHidden();top.leftFrame.window.location.reload();");
+	}else{
+		window.location.reload();
+	}
+}
+function gotoEmbedPage(){
+	if(avatarChange){
+		top.mainFrame.comfirmShow('您现在的形象还未保存，是否保存？',"AlertHidden();top.window.location.href ='/index.php/share';");
+	}else{
+		top.window.location.href ='/index.php/share';
+	}
+}
+
+
+
+
+//play 操作提示
+
+function register(name) {
+  Cookies.setCookie("ItDoor", name, '', '/',_COOKIE_DOMAIN);
+}
+function show_tip() {
+  var c = Cookies.getCookie("ItDoor");
+  if (c != null) {
+     if(c=="close"){
+	  return false;
+	 }
+  }
+  register("frist");//第一次显示时设置cookie为frist
+  $("play_tip").style.display = 'block';
+ }
+
+//关闭时将cookie的值得设置为close
+function close_tip(){
+  $("play_tip").style.display = 'none';
+  register("close");
+}
+
+</script>
+</head>
+<body>
+
+<!--弹出层容器 开始 -->
+<? include APP_DIR_V."/index2.0/include/alertdiv.html";?>
+<!--弹出层容器 结束 -->
+<div class="player">
+  <div class="pla_cbg">
+	  	<div class="fla_titbg">
+	      <div class="user_name white_13b" id="usernickname"><?if (isset($user_vip)&&$user_vip==1 ){?>
+		  	<img src="<?=$image_site_url?>/images/component/player/vip_ico.gif">
+			<?}?><? if(isset($user_nickname)) echo $user_nickname;?></div>
+	      <div class="user_sex"><a  id="boy" href="javascript:changeGender('boy');" class="sex_a">男</a><a id="girl" href="javascript:changeGender('girl');" class="sex_a">女</a></div>
+	    </div>
+
+		<div class="flash" id="altContent" style="margin-top:6px;z-index:0">
+        <div id="play_tip" style="display:none"><span class="close_tip" onClick="close_tip();"></span></div>
+			<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="100%" height="100%" id="guodongdev">
+                <param name="movie" value="<?=$image_site_url?>/flash/guodongdev.swf?userId=<?=$user_name?>" />
+                <param name="quality" value="high" />
+                <param name="bgcolor" value="#869ca7" />
+                <param name="allowScriptAccess" value="always" />
+                <param name="allowFullScreen" value="true" />
+                <param name="wmode" value="transparent" />
+
+                <embed width="100%"   height="100%" pluginspage="http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash"
+
+				  type="application/x-shockwave-flash" allowScriptAccess="always" wmode="transparent" swliveconnect="TRUE" id="guodongdev" name="guodongdev" wmode="" quality="high" bgcolor="#869ca7" src="<?=$image_site_url?>/flash/guodongdev.swf?userId=<?=$user_name?>"/>
+                <!--[if !IE]>
+                <object type="application/x-shockwave-flash" data="<?=$image_site_url?>/flash/guodongdev.swf" width="100%" height="100%">
+                    <param name="quality" value="high" />
+                    <param name="bgcolor" value="#869ca7" />
+                    <param name="allowScriptAccess" value="sameDomain" />
+                    <param name="allowFullScreen" value="true" />
+                <![endif]-->
+                <!--[if gte IE 6]>
+                	<p>
+                		Either scripts and active content are not permitted to run or Adobe Flash Player version
+                		9.0.124 or greater is not installed.
+                	</p>
+                <![endif]-->
+
+                <!--[if !IE]>
+                </object>
+                <![endif]-->
+
+
+            </object>
+		</div>
+
+        <div class="clr"></div>
+        <div class="fla_save">
+        	<a class="ivt" href="javascript:resetAvatar();"><img src="<?=$image_site_url?>/images/component/player/ivt.png" width="50" height="13" /></a>
+            <a class="pre_ivt" href="javascript:latestAvatar();"><img src="<?=$image_site_url?>/images/component/player/pre_ivt.png" width="50" height="13" /></a>
+            <a class="save_inport" href="javascript:saveUserInfo();"><img src="<?=$image_site_url?>/images/component/player/bzcx.png" /></a>
+            <a class="save_inport" href="javascript:gotoEmbedPage();"><img src="<?=$image_site_url?>/images/component/player/qrkj.jpg" /></a>
+        </div>
+  	</div>
+
+        <div class="pla_bot">
+			<a href="javascript:top.mainFrame.show_closet();"><img src="<?=$image_site_url?>/images/component/player/wdwp.jpg" alt="我的物品"></a>
+			<a href="javascript:top.mainFrame.show_cart();"><img src="<?=$image_site_url?>/images/component/player/buy_btn.jpg" alt="购物车"></a>
+			<a href="/index.php?action=works" target="_blank"><img src="<?=$image_site_url?>/images/component/player/uo_btn.jpg" alt="原创作品上传"></a>
+        </div>
+
+  </div>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+<script>
+if(Cookies.getCookie("VIEW_GENDER")=='boy') {
+	$('boy').className = 'sex_h';
+}else if(Cookies.getCookie("VIEW_GENDER")=='girl'){
+	$('girl').className = 'sex_h';
+}else{
+	$('boy').className = 'sex_h';
+}
+//if(top.mainFrame && top.mainFrame.window.document.body){
+	//top.mainFrame.window.onload = function() {top.mainFrame.AlertShow(300,'加载中......请稍候!');}
+//}
+
+show_tip();
+ 
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,75 @@
+<? include APP_DIR_V."/index2.0/include/head.html";?>
+<script language="javascript" type="text/javascript" src="<?=$image_site_url?>/js/control/control.js?v=<?=$version?>"></script>
+<script language="javascript" type="text/javascript" src="<?=$image_site_url?>/js/datacom.js?v=<?=$version?>"></script>
+<script language="javascript" type="text/javascript" src="<?=$image_site_url?>/js/control/invite.js?v=<?=$version?>"></script>
+<script language="JavaScript" src="<?=$image_site_url?>/js/control/invite_qq_safeauth.js?v=<?=$version?>"></script>
+<style type="text/css">
+ #invitetishi { margin:30px 20px;}
+ #invitetishi input{ margin:0px 5px; height:19px; background:url(<?=$image_site_url?>/images/component/min_component/alert_btn_bg.gif) top repeat-x; color:#000; text-align:center; border:#606F13 solid 1px; }
+</style>
+ <script type="text/javascript">
+
+</script>
+</head>
+<body>
+<? include APP_DIR_V."/index2.0/include/alertdiv.html";?>
+<div class="invite">
+ <div class="tit"><div class="pic_tit"><img src="<?=$image_site_url?>/images/invite/tit_pic_index.jpg" /></div></div>
+ <div class="inv_main" id="loading" style="display:none;">
+    <div style="margin-top:120px;margin-left:170px;">
+      <div class="pic_tit"><div class="pic"><img src="<?=$image_site_url?>/images/invite/buy/com_titpic.jpg" /></div></div>
+      <div class="com_c" ><div  class="no_m" id="showinfo"></div></div>    
+      <div id="invitetishi"><input type="button" class="input" value="好，我知道了" onClick="ask_ok();"></div>
+     </div>
+ </div>
+  <!--邀请主要内容-->
+ <div class="inv_main" id="loaded">
+   <div class="gray4_12b">&nbsp;&nbsp;&nbsp;从我的QQ导入朋友名单，选择可以邀请的朋友并发送邀请邮件</div>
+   <div class="qq_inv">
+    <form name="form1" method="post" action="index.php"   id="form1"  >
+    <input type="hidden"  name="action" value="invite"/>
+	<input type="hidden" name="op" value="qq"/>
+    <INPUT type="hidden" name="starttime" id="starttime"/>
+    <INPUT type="hidden" name="ts" value="<?=time()?>" id="ts" />
+    <INPUT type="hidden" name="p" id="p"/>
+     <table width="103%" border="0" cellspacing="0">
+      <tr style="height:30px;_height:15px;">
+       <td width="30%" align="right" class="gray6_12">QQ号码&nbsp;&nbsp;<br /></td>
+       <td width="17%"> <div class="input_qq"><input class="in intxt_11" type="text" id="uin" name="uin" tabindex="1" style="ime-mode:disabled;" /></div></td>
+       <td width="53%" class="gray9_12">* 我们不会记录你的密码，请放心使用。</td>
+      </tr>
+      <tr style="height:30px;_height:15px;">
+       <td align="right" class="gray6_12">QQ密码&nbsp;&nbsp;</td>
+       <td><div class="input_qq"><input class="in intxt_11" type="password" id="pp" name="pp" tabindex="2" /></div></td>
+       <td><div style="margin:10px 0;padding:4px 0 0 2px;"><div id="msgContainer"></div>
+			<noscript>
+			  <div class="infobar1">您的浏览器不支持或已经禁止网页脚本，您无法正常登录。 </div>
+		    </noscript>
+		   </div></td>
+      </tr>
+      <tr style="height:30px;_height:15px;">
+       <td align="right" class="gray6_12">验证码&nbsp;&nbsp;</td>
+       <td><div class="input_qq"><input class="in intxt_11" type="text" id="verifycode" name="verifycode" value="" tabindex="3" style="ime-mode: disabled;" autocomplete="off" maxlength="4" /></div></td>
+       <td></td>
+      </tr>
+      <tr style="height:30px;_height:15px;">
+       <td height="40">&nbsp;</td>
+       <td height="40">
+        <script type="text/javascript">
+		  document.write("<img id='vfcode' src='/index.php?action=invite&view=getimage&aid=23000101&",Math.random(),"' style='cursor:pointer;border:1px solid #e4eef9' onclick='changeimg()'>");
+		</script>				
+	   </td>
+       <td height="40"><div style="margin-left:10px"><a href="javascript:changeimg()"  class="blue_by12 underline">换一张</a><br /><span color="gray9_12">* 验证码区分大小写</span></div></td>
+      </tr>
+      <tr style="height:30px;_height:15px;">
+      <td height="45">&nbsp;</td>
+      <td height="45"><a href="javascript:importQQ();"><img src="<?=$image_site_url?>/images/invite/inport.jpg" alt="开始导入" /></a></td>
+      <td height="45"><a href="<?=$www_site_url?>/index.php?action=invite&view=index" class="blue_by12 underline">返回查看其他邀请方式</a> <?=$msg?></td>
+     </tr>
+    </table>
+    </form>
+   </div>
+ </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<? include APP_DIR_V."/index2.0/include/head.html";?>
+<script language="javascript">
+function abc(v){
+	var ppp = v.parentNode.getElementsByTagName('p')[0];
+	if(v.className == 'green_12'){
+		ppp.style.display = "none";
+		v.className = "gray6_12";
+		v.innerHTML = "详细内容 &#187;";
+	} else{
+		ppp.style.display = "block";
+		v.className = "green_12";
+		v.innerHTML = "关闭 &#187;";
+	}
+}
+</script>
+<style type="text/css">
+
+/*帮助导航样式*/
+.if_pard .vmenu{cursor:pointer; margin-left:2px; margin-top:15px;float:left; background:url(<?=$image_site_url?>/images/component/diylist/v_menu_butbg.jpg) top right no-repeat; line-height:31px; height:233px; width:94px;}
+.if_pard .vmenu .icon1{ position:absolute; left:55px; top:180px;}
+.if_pard .vmenu a{ display:block; float:left; line-height:31px; height:31px; width:92px; text-align:center;}
+.if_pard .vmenu a:hover{ background:url(<?=$image_site_url?>/images/component/diylist/v_menutopbg.jpg) top repeat-x;}
+.if_pard .vmenu a.ed{ background:url(<?=$image_site_url?>/images/component/diylist/v_menutopbg.jpg) top repeat-x;}
+
+.if_pard .if_main{ width:805px; float:left;}
+.if_pard .if_main .fla_pic{ width:153px; height:395px; margin:0 20px; float:left;}
+.if_pard .if_main .m_right{ width:756px; float:right; margin-right:2px;}
+.if_pard .if_main .m_right .m_font{ text-align:left;}
+.if_pard .if_main .m_right .m_font p{line-height:20px; margin-bottom:26px;}
+.if_pard .if_main .m_right ul.tit li{ float:left; height:31px; line-height:31px;}
+.if_pard .if_main .m_right ul.tit li a{ float:right;}
+.if_pard .if_main .m_right .list{ width:570px; height:77px; background-color:#fff2fa;}
+.ico_pic{ height:56px; width:56px; float:left; padding:1px; border:#d7d7d7 solid 1px; margin-top:9px; margin-left:6px; margin-right:4px;}
+
+	/*内容外框样式*/
+.if_pard .help{ width:780px; margin:30px auto;}
+.if_pard .help p a.a_pic{ display:block; float:left; width:88px; height:31px; margin-left:20px; margin-bottom:20px; text-align:center;}
+
+/*问题解答展开 和 问题关闭 样式*/
+.if_pard .help #box{ width:778px; margin:0px auto;}
+.if_pard .help #box li{ margin-bottom:28px;}
+.if_pard .help #box li h3{ margin:0 0 5px 0; padding:0;}
+.if_pard .help #box li p{ margin-top:10px;text-indent:24px;  display:none;}
+.hlep_foot{ width:975px; margin:0 auto;}
+
+</style>
+</head>
+<body>
+<? include(APP_DIR_V.'/index2.0/include/menu.html'); ?>
+<div class="main">
+	<div class="user_subnav">
+    	<div class="user_lujin gray6_12">
+        <a href="/index.php?action=index" class="gray6_12 noneline">首页</a><span>&gt;</span>
+        <a href="/index.php/help/hzhb" class="gray6_12 noneline">合作伙伴</a>
+    	</div>
+    </div>
+    <div class="clr"></div>
+<div class="about">
+
+<div class="content" style="width:750px;margin-left:auto;margin-right:auto;">
+<div><img src="<?=$image_site_url?>/images/About/About_10.gif" /></div>
+<div class="ctn">
+<div class="ctn_nxt"><img src="<?=$image_site_url?>/images/About/hzhb.jpg" /></div >
+<div class="clr"></div>
+<div class="jt_ctn" style="height:auto !important; min-height:450px;height:450px;">
+  <h3 class="green_14b">感谢各位合作伙伴</h3>
+                  <br />
+                  <p class="gray6_14">
+				  <?php
+				  foreach($img as $row){
+				   ?>
+				  <a href="<?php echo $row['url'];?>" class="a_pic" target="_blank"><img src="<?php echo  strpos($row['logo'], 'http://')!==false?$row['logo']:$GLOBALS ['gSiteInfo'] ['image_site_url'].'/'.$row['logo'];?>" alt="<?php echo $row['webname'];?>"></a>
+				  <?php
+				   }
+				  ?>
+                  </p>
+				  <div class="clr"></div>
+				  <p class="gray6_14">
+				  <?php
+				  foreach($txt as $row){
+				   ?>
+				  <a href="<?php echo $row['url'];?>" target="_blank" class="a_pic gray6_14 underline" title="<?php echo $row['webname'];?>"><?php echo $row['webname'];?></a>
+				  <?php
+				   }
+				  ?>
+
+                  </p>
+
+</div>
+
+</div>
+<div><img src="<?=$image_site_url?>/images/About/About_19.gif" /></div>
+
+</div>
+
+</div>
+</div>
+<? include(APP_DIR_V.'/index2.0/include/foot.html'); ?>
+</body>
+</html>

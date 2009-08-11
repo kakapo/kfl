@@ -1,0 +1,110 @@
+<? include APP_DIR_V."/index2.0/include/head.html";?>
+<script language="javascript" type="text/javascript" src="<?=$image_site_url?>/images/upload/festival/js/Festival.js"></script>
+<script>
+function menuBg(obj){
+	var ztg_subnav_a = $$('#ztg_subnav a[target="mainFrame"]');
+	for(var i=0;i< ztg_subnav_a.length;i++){
+		if(ztg_subnav_a[i].className.indexOf('vip_zq')!=-1)
+			ztg_subnav_a[i].className = 'vip_zq';
+		else
+			ztg_subnav_a[i].className = '';
+	}
+	if(obj.className.indexOf('vip_zq')!=-1) obj.addClassName('subcur');
+	else obj.addClassName('subcur_s');
+}
+</script>
+</head>
+
+<body>
+<!--弹出层容器 开始 -->
+<? include APP_DIR_V."/index2.0/include/alertdiv.html";?>
+<!--弹出层容器 结束 -->
+<div class="header">
+	<div class="header_c">
+   	  <div class="m_nav">
+   		<div class="date"><span class="gray7_12" id="festTitle"></span></div>
+        <div class="m_subnav gray6c_12">
+
+         <? if(isset($is_login)&&$is_login==1 ){?>
+
+         <a href="/index.php?action=passport&view=logout&url=/index.php/show/frameset" class="gray6c_12 noneline" target="_top">退出</a>
+         <span>|</span><a href="/index.php/help/newuser" class="gray6c_12 noneline" target="_top">帮助</a>
+         <span>|</span><a href="/index.php/help/hdgg" class="gray6c_12 noneline" target="_top">活动</a>
+         <span>|</span><a href="/index.php/charge" target="_top" class="gray6c_12 noneline">充值</a>
+         <span>|</span><a href="javascript:top.mainFrame.show_invite(508,440,'/index.php?action=invite&view=index');" class="green8f_12b noneline">获得果果</a>
+         <span>|</span><span class="yellowf3_12b" title="果果" style="padding:0;" id="guoguo"><?=$_COOKIE['IDOL_COIN_'.$user_name]?></span>
+         <span class="guo_ico"><img src="<?=$image_site_url?>/images/component/r_flist/guoguo.gif" /> </span>
+		 <? if(isset($_COOKIE['IDOL_MSGNUM_'.$user_name]) && $_COOKIE['IDOL_MSGNUM_'.$user_name]>0){?> <a href="/index.php/user/message/type/noread" class="gray6c_12 noneline" target="_top">[<?=$_COOKIE['IDOL_MSGNUM_'.$user_name]?>]</a>
+         <span class="maile_ico"><a href="/index.php/user/message/type/noread" target="_top"><img src="<?=$image_site_url?>/images/component/head_foot/mail.gif" /> </a></span>
+         <? }?><a href="/index.php/user/info" class="gray6c_12 noneline" target="_top"><?=$user_nickname?></a><span <? if($user_vip==1) echo 'class="vip_h"';?>>欢迎您</span>
+		 <? }
+		 if(isset($is_login)&&$is_login==0){?>
+         <a href="/index.php/help/newuser" target="_top" class="gray6c_12 noneline">帮助</a>
+         <span>|</span> <a href="<?=$GLOBALS ['gSiteInfo'] ['bbs_site_url']?>" target="_blank" class="gray6c_12 noneline">论坛</a>
+         <span>|</span>
+         <a href="/index.php/help/hdgg" accesskey="" class="gray6c_12 noneline" target="_top">活动</a>
+         <span>|</span><a href="/index.php/passport/reg" class="gray6c_12 noneline" target="_top">注册</a><span>|</span>
+		<a href="javascript:top.mainFrame.show_loginwin();" class="gray6c_12 noneline">登录</a>
+		 <? }?>
+		</div>
+      </div>
+
+	  <div class="logo_nav" style="_width:1007px;">
+      	<div class="logo">
+            <div class="logo_up" id="festImage"></div>
+            <a href="/index.php" target="_parent" class="logo_alink" title="果动网"></a>
+        </div>
+        <div class="nav" style=" _margin-right:0;">
+        	<div class="index"><a href="/index.php" target="_parent" <? if(!isset($_GET['view'])) echo 'class="cur"';?>></a></div>
+            <div class="xg3d"  onmouseover="show_subnav('ztg_subnav','xg3d_a');hid_subnav('wdgd_sub','wdgd_a')" >
+            	<a href="/index.php/show/mainfrm" id="xg3d_a" target="mainFrame" class="cur"></a>
+            	<div class="ztg_subnav" style="display:;" id="ztg_subnav">
+                	<a href="/index.php/show/recommend" target="mainFrame" onClick="menuBg(this);" <? if($cur=='recommend') echo 'class="subcur_s"'; else echo 'class=""'?>>搭配</a>
+                	<a href="/index.php/show/clothes" target="mainFrame" onClick="menuBg(this);" <? if($cur=='clothes') echo 'class="subcur_s"';?>>装扮</a>
+                	<a href="/index.php/show/motion" target="mainFrame" onClick="menuBg(this);" <? if($cur=='motion') echo 'class="subcur_s"';?> >动作</a>
+                    <a href="/index.php/show/background" target="mainFrame" onClick="menuBg(this);" <? if($cur=='background') echo 'class="subcur_s"';?>>场景</a>
+                    <a href="/index.php/show/music" target="mainFrame" onClick="menuBg(this);" <? if($cur=='music') echo 'class="subcur_s"';?>>音乐</a>
+                    <a href="/index.php/show/diy" target="mainFrame" onClick="menuBg(this);" <? if($cur=='diy') echo 'class="subcur_s"';?>>DIY</a>
+                    <a href="/index.php/show/subject" target="mainFrame" onClick="menuBg(this);" <? if($cur=='subject') echo 'class="subcur_s"';?>>专题</a>
+                    <a href="/index.php/show/vip" target="mainFrame" onClick="menuBg(this);" <? if($cur=='vip') echo 'class="vip_zq subcur"';else echo 'class="vip_zq"'?>>VIP专区<span><img src="<?=$image_site_url?>/images/component/head_foot/meng.gif" /></span></a>
+             	</div>
+            </div>
+
+            <div class="yx3d"><a href="/index.php/index/gameintro" target="_parent" <? if(isset($_GET['view']) && $_GET['view']=='gameintro') echo 'class="cur"';?>></a></div>
+            <div class="gdby"><a href="/index.php/index/example" target="_parent"  <? if(isset($_GET['view']) && $_GET['view']=='example') echo 'class="cur"';?>></a></div>
+            <div class="bbs"><a href="<?=$GLOBALS ['gSiteInfo'] ['bbs_site_url']?>" target="_blank"  <? if(isset($_GET['view']) && $_GET['view']=='hdgg') echo 'class="cur"';?>></a></div>
+            <div class="xszn"><a href="/index.php/help/newuser" target="_parent" ></a></div>
+            <div class="wdgd" onMouseOver="show_subnav('wdgd_sub','wdgd_a');hid_subnav('ztg_subnav','xg3d_a');" onMouseOut="show_subnav('ztg_subnav','xg3d_a');hid_subnav('wdgd_sub','wdgd_a')">
+            	<a href="/index.php/user/info"  id="wdgd_a" target="_parent" ></a>
+            	<div class="ztg_subnav" style="display:none;" id="wdgd_sub">
+            		<div class="subnav_l">
+                	<a href="/index.php/user/info" target="_parent"  class="vip_zq">个人资料</a>
+                    <a href="/index.php/user/pwd" target="_parent"  class="vip_zq">密码修改</a>
+                    <a href="/index.php/user/friends" target="_parent"  class="vip_zq">好友收藏</a>
+                    <a href="/index.php/user/message" target="_parent"  class="vip_zq">消息中心</a>
+                    <a href="/index.php/charge"  target="_parent" class="vip_zq">充值中心</a>
+                    </div>
+                    <div class="subnav_r"></div>
+             	</div>
+            </div>
+
+        </div>
+        <div class="clr"></div>
+      </div>
+	</div>
+</div>
+<script type="text/javascript">
+var todday="<? echo date('Y-m-d')?>";
+if(typeof(FA)!="undefined") {
+  for(var i=0;i<FA.length;i++){
+   arr=FA[i].split("|");
+   if(arr[0]==todday){
+     document.getElementById("festTitle").innerHTML=arr[1];
+     document.getElementById("festImage").innerHTML="<img src="+arr[2]+" />";
+     break;
+   }
+  }
+ }
+</script>
+</body>
+</html>

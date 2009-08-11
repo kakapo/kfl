@@ -1,0 +1,78 @@
+<? include APP_DIR_V."/index2.0/include/head.html";?>
+<script language="javascript" type="text/javascript" src="<?=$image_site_url?>/js/control/invite.js?v=<?=$version?>"></script>
+<script language="javascript" type="text/javascript" src="<?=$image_site_url?>/js/control/show.js?v=<?=$version?>"></script>
+
+<style type="text/css">
+.jl{height:32px;margin-bottom:12px;color:#666666;margin-left:65px;}
+.jl a{color:#666666; text-decoration:none;}
+.jl a:hover{color:#1F64A5;text-decoration:underline;}
+.grsy{display:block;background:url(<?=$image_site_url?>/images/help/help_map_03.jpg) no-repeat center center;width:84px;height:30px;float:left;margin-right:23px;}
+.xinx{display:block;background:url(<?=$image_site_url?>/images/help/help_map_06.jpg) no-repeat;width:84px;height:30px;float:left;margin-right:23px;}
+.youxi{display:block;background:url(<?=$image_site_url?>/images/help/help_map_08.jpg) center center no-repeat;width:84px;height:30px;float:left;margin-right:23px;}
+.xiazai{display:block;background:url(<?=$image_site_url?>/images/help/help_map_10.jpg) no-repeat;width:84px;height:30px;float:left;margin-right:23px;}
+.gdby1{display:block;background:url(<?=$image_site_url?>/images/help/help_map_12.jpg) no-repeat;width:84px;height:30px;float:left;margin-right:23px;}
+.xszn1{display:block;background:url(<?=$image_site_url?>/images/help/help_map_14.jpg) no-repeat;width:84px;height:30px;float:left;margin-right:23px;}
+.gywm{display:block;background:url(<?=$image_site_url?>/images/help/help_map_16.jpg) no-repeat;width:84px;height:30px;float:left;margin-right:23px;}
+.wb{padding-top:7px;float:left;}
+</style>
+</head>
+
+
+<body>
+<? include(APP_DIR_V.'/index2.0/include/menu.html'); ?>
+<div class="main" style="min-height:450px;-height:450px;">
+	<div class="user_subnav">
+    	<div class="user_lujin gray6_12">
+        <a href="/index.php" class="gray6_12 noneline">首页</a><span>&gt;</span>
+        <a href="/index.php/help/aboutme" class="gray6_12 noneline">网站地图</a>
+    	</div>
+    </div>
+    <div style="clear:both;"></div>
+<div class="about">
+<div class="tab" style="width:750px;margin-left:115px;">
+<div class="tag_pli">
+<a href="/index.php/help/map" class="web_map web_map_hover" title="网站地图"></a>
+</div>
+<div class="clr"></div>
+</div>
+
+<div class="content" style="width:750px;margin-left:auto;margin-right:auto;">
+<div><img src="<?=$image_site_url?>/images/About/About_10.gif" /></div>
+<div class="ctn">
+<div class="clr"></div>
+<div class="jt_ctn" style="height:auto !important; min-height:450px;height:450px;">
+<div class="jl" style="margin-top:55px;+margin-top:45px;">
+<a href="/index.php" class="grsy"></a><div class="wb"><a href="/index.php/passport/login">登录</a>&nbsp;&nbsp;<a href="/index.php/passport/reg">注册</a>&nbsp;&nbsp;<a href="/index.php/user/pwd">个人管理</a>&nbsp;&nbsp;<a href="/index.php/help/hdgg">活动中心</a>&nbsp;&nbsp;<a href="/index.php/charge">充值</a>&nbsp;&nbsp;<a href="javascript:show_invite(508,440,'/index.php?action=invite&view=index');">邀请好友</a>&nbsp;&nbsp;<a href="/index.php?action=user&defaults=<?=$username?>">个人主页</a></div><div style="clear:both;"></div>
+</div>
+<div class="jl">
+<a href="/index.php/show/frameset" class="xinx"></a>
+<div class="wb"><a href="/index.php/show/frameset/recommend">推荐搭配</a>&nbsp;&nbsp;<a href="/index.php/show/frameset/clothes">装扮</a>&nbsp;&nbsp;<a href="/index.php/show/frameset/motion">动作</a>&nbsp;&nbsp;<a href="/index.php/show/frameset/background">场景</a>&nbsp;&nbsp;<a href="/index.php/show/frameset/music">音乐</a>&nbsp;&nbsp;<a href="/index.php/show/frameset/diy">DIY</a>&nbsp;&nbsp;<a href="/index.php/show/frameset/subject">专题</a>&nbsp;&nbsp;<a href="/index.php/show/frameset/vip">VIP</a>&nbsp;&nbsp;<a href="/index.php?action=works">原创作品上传</a>&nbsp;&nbsp;<a href="/index.php/share/index">嵌入空间</a></div>
+<div style="clear:both;"></div>
+</div>
+<div class="jl">
+<a href="/index.php/index/gameintro" class="youxi"></a><div class="wb"><a href="/index.php/index/gameintro">3D游戏</a></div><div style="clear:both;"></div>
+</div>
+<div class="jl">
+<a href="/index.php/index/example" class="gdby1"></a><div class="wb"><a href="/index.php/index/example">果动榜样</a></div><div style="clear:both;"></div>
+</div>
+<div class="jl">
+<a href="/index.php/help/newuser" class="xszn1"></a>
+<div class="wb"><a href="<?=$GLOBALS ['gSiteInfo'] ['bbs_site_url']?>/index.php?gid=4">客服帮助</a>&nbsp;&nbsp;<a href="/index.php/help/newuser">新手指南</a></div>
+</div><div style="clear:both;"></div>
+<div class="jl">
+<a href="/index.php/help/aboutme" class="gywm"></a>
+<div class="wb"><a href="/index.php/help/clause">使用条款</a>&nbsp;&nbsp;<a href="/index.php/help/clause">个人信息保护政策</a>&nbsp;&nbsp;<a href="/index.php/help/newuser">帮助</a>&nbsp;&nbsp;<a href="/index.php/help/map">网站地图</a>&nbsp;&nbsp;<a href="/index.php/help/hzhb">合作伙伴</a></div><div style="clear:both;"></div>
+</div>
+
+</div>
+
+</div>
+<div><img src="<?=$image_site_url?>/images/About/About_19.gif" /></div>
+
+</div>
+
+</div>
+</div>
+<? include(APP_DIR_V.'/index2.0/include/foot.html'); ?>
+</body>
+</html>

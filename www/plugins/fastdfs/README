@@ -1,0 +1,12 @@
+Copyright (C) 2008 Happy Fish / YuQing
+
+FastDFS php client may be copied only under the terms of the BSD License.
+Please visit the FastDFS Home Page for more detail.
+English language: http://english.csource.org/
+Chinese language: http://www.csource.org/
+
+the FastDFS php client requres FastDFS server V1.18 or higher version.
+
+You should modify fdfs_common.php, config the global assoc array 
+$fdfs_tracker_servers correctly.
+

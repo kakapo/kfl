@@ -1,0 +1,27 @@
+<?include_once(APP_DIR_V.'/index2.0/include/head.html')?>
+<script language="javascript" type="text/javascript" src="<?=$image_site_url?>/js/communicate.js?v=<?=$version?>"></script>
+</head>
+<body>
+<!--header   BB-->
+<? include(APP_DIR_V.'/index2.0/include/menu.html'); ?>
+<!--header   EE-->
+
+<div class="main">
+<!--implant_left   BB-->
+	<div class="implant_left">
+    	<div class="flash" style="height:468px;"><? include(APP_DIR_V.'/index2.0/include/avatar.html'); ?><div class="clr"></div></div>
+        <!--<div class="fla_txt"><span class="gray4_12">本窗口大小与嵌入您空间的形象大小可能有差异，请点击此处</span>&nbsp;&nbsp;<a href="javascript:widgetPreview('1','2','3','4','5');" class="blue_by12b">预览实际大小</a></div>-->
+
+    </div>   
+<!--implant_left   EE-->
+
+<!--implant_right   BB-->
+	<div class="implant_right">
+		<iframe src="/index.php/share/index" id="diyifr" name="diyifr" frameBorder="0" scrolling="no" width="446" height="468"></iframe>
+    </div>
+	
+<!--implant_right   EE-->
+</div>
+<? include(APP_DIR_V.'/index2.0/include/foot.html'); ?>
+</body>
+</html>

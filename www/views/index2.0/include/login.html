@@ -1,0 +1,62 @@
+
+<!--登录前代码 B-->
+        <? if($is_login==0 ){
+			if(isset($_GET['view']) && ($_GET['view']=='login')){
+
+			}else{
+		?>
+       		<div class="tit"><img src="<?=$image_site_url?>/images/index/reg_login.jpg" /></div>
+       		<form method="POST" name="passfast_form" id="passfast_form" action="/index.php" onsubmit="return passport_check(this,$('passfast_form').serialize());">			<input type="hidden" name="action" value="passport" />
+			<input type="hidden" name="op" value="dologin">
+			<input type="hidden" name="redirect_url" value="">
+	            <div class="log_div">
+	            	<div class="in_div">
+	               	  <input id="passport_user" name="passport_user" tabindex="10" class="input gray9_12" type="text" value="用户名" onfocus="javascript:this.value='';this.style.color='#666';"/>
+	                  <input id="passport_passwd" name="passport_passwd"  tabindex="11" class="input gray9_12" type="password" value="密&nbsp;&nbsp;&nbsp;码"  onfocus="javascript:this.value='';this.style.color='#666';"/>
+	                </div>
+
+	                <div class="login_but"><input type="image" src="<?=$image_site_url?>/images/index/logo_b.png" /></div>
+	            </div>
+
+            	<div class="log_chk"><span class="chk"><input id="remember" name="remember" value="1" tabindex="12" type="checkbox" /></span><span class="text gray6_12" onClick="javascript:if($('remember').checked ==true){$('remember').checked =false;}
+else{$('remember').checked =true;}" style="cursor:pointer;">下次自动登录</span></div>
+
+		 	</form>
+			<script>
+			window.onload=function(){checkAutoLogin('')};
+			</script>
+            	<div class="forget gray6_12"><a href="/index.php/passport/forget" class="gray6_12 noneline">忘记密码</a> / <a href="/index.php/help/newuser" class="gray6_12 noneline">新手指南</a></div>
+            	<div class="reg_but"><a href="/index.php/passport/reg"><img src="<?=$image_site_url?>/images/index/reg_b.png" /></a></div>
+
+
+        <!--登录前代码 E-->
+          <? }}if($is_login==1){?>
+           <!-- 登录后代码 B-->
+           <div class="clr"></div>
+           <div class="name">
+            <span class="gray6_12">欢迎您</span><span class="gray6_12b"><?=$user_nickname?></span></div>
+            <div class="user_new">
+                <div class="user_ico">
+                <a href="/index.php/user/defaults/<?=$user_name?>"><img src="<?=$user_icon?>"   border="0" alt="访问个人页面" width="80" height="80" /></a>
+                </div>
+                <p class="gd_coin gray6_12"><span id="user_coin" class="yellowf3_12b underline">0</span></p>
+                <p>
+                    <?if (isset($user_vip)&&$user_vip==1 ){?>
+                    <img src="<?=$image_site_url?>/images/component/head_foot/vip_h.jpg">
+                    <?}?>
+            	</p>
+                <p><a href="/index.php?action=passport&view=logout&url=<?=urlencode($_SERVER["REQUEST_URI"])?>" class="gray6_12 noneline">退出</a></p>
+            </div>
+           <div class="zs3d_but"><a href="/index.php/show/frameset" title="立即装饰3D形象"><img src="<?=$image_site_url?>/images/index/zs3dxx.png" /></a></div>
+           <div class="zs3d_but">
+           	<a href="/index.php/user/info" title="我的果动"><img src="<?=$image_site_url?>/images/index/mygd_btn.jpg" /></a>
+            <a href="<?=$www_site_url?>/index.php/user/defaults/<?=$user_name?>" title="我的主页"><img src="<?=$image_site_url?>/images/index/myzy_btn.jpg" /></a>
+           </div>
+
+             <? }?>
+
+             <script>
+		if($('user_coin')) $('user_coin').innerHTML = Cookies.getCookie("IDOL_COIN_<?=$user_name?>");
+		</script>
+
+          <!-- 登录后代码 E-->

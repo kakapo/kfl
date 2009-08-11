@@ -1,0 +1,51 @@
+<? include APP_DIR_V."/index2.0/include/head.html";?>
+<script language="javascript" type="text/javascript" src="<?=$image_site_url?>/js/control/reg.js?v=<?=$version?>"></script>
+<style type="text/css">
+.main{ width:90%;}
+.regok_top{width:570px;height:210px;background:url(<?=$image_site_url?>/images/regist/reg_okbg.jpg) no-repeat center center;margin:40px auto;}
+
+.regok_top .img_btn{float:right;margin-right:75px;margin-top:125px;_margin-right:40px;}
+.regok_top .btn{cursor:pointer;}
+</style>
+</head>
+
+<body>
+<? include(APP_DIR_V.'/index2.0/include/menu.html'); ?>
+<div class="main">
+	<div class="user_subnav">
+    	<div class="user_lujin gray6_12">
+        <a href="/index.php" class="gray6_12 noneline">首页</a><span>&gt;</span>
+        <a href="#" class="gray6_12 noneline">注册成功</a>
+    	</div>
+    </div>
+    <div class="clr"></div>
+    <div class="regok_top">    
+    <div class="img_btn" style="width:195px;"> 
+    <!--自动跳转 开始-->
+    <span id="Layer1" style="padding-right:22px;">
+	<script type="text/javascript">     
+	function countDown(secs,surl){     
+	//alert(surl);     
+	$("jumpTo").innerHTML=secs;     
+	if(--secs>0){     
+		 setTimeout("countDown("+secs+",'"+surl+"')",900);     
+		 }     
+	else{       
+		 location.href=surl;     
+		 }     
+	}     
+	</script>     
+	<!--脚本结束-->      
+<span id="jumpTo">9</span>秒后自动跳转<script type="text/javascript">countDown(9,'/index.php/show/frameset');</script>
+</span> 
+<!--自动跳转  结束--> 
+    <a href="/index.php/show/frameset" class="blue_by12">立即编辑3D形象</a>
+    </div>
+    </div>
+    <? if(isset($user_regsucess_750x100)) include($user_regsucess_750x100);?>
+</div>
+
+<? include(APP_DIR_V.'/index2.0/include/foot.html'); ?>
+</body>
+</html>
+<img src="http://o1.unionete.cn/track.php?tpid=125&pid=599" width="1" height="1" border="0" style="display:block">

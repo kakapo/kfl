@@ -1,0 +1,75 @@
+<? include APP_DIR_V."/index2.0/include/head.html";?>
+<script language="javascript" type="text/javascript" src="<?=$image_site_url?>/js/control/show.js?v=<?=$version?>"></script>
+</head>
+<body>
+<div class="buy_gwc_alt">
+        <div class="tit">
+            <div class="pic_tit"><img src="<?=$image_site_url?>/images/invite/buy/gwc_tit.jpg" alt="购物车" /></div>
+  </div>
+      	<div class="mid_c">
+       	  <div class="tab">
+
+           	  <table width="100%" border="0" cellspacing="0" cellpadding="0" id="cart_item_list">
+           	     <tr>
+              <td width="65" height="30" align="center" valign="middle"></td>
+               <td width="140" height="30" align="center" valign="middle"><span class="gray4_12b">名称</span></td>
+               <td width="65" height="30" align="center" valign="middle"><span class="gray4_12b">单价</span></td>
+              <td width="72" height="30" align="center" valign="middle"><span class="gray4_12b">有效期</span></td>
+              <td width="72" height="30" align="center" valign="middle"><span class="gray4_12b">删除</span></td>
+              </tr>
+           	  <? if(is_array($cart)) {
+           	  	foreach ($cart as $item_id=>$row){
+           	  		$item = $row['iteminfo'];
+           	  		$usetime = $row['usetime'];
+           	  		?>
+
+				<tr id="<?=$item_id?>">
+                    <td width="65" height="77" align="center" valign="middle"><img src="<?=$image_site_url?>/images/itemimages/<?=$item['item_name']?>_109x109.jpg" width="56" height="56" /></td>
+                  	<td width="140" height="77" align="center" valign="middle"><span class="gray4_12"><?=$item['item_title']?></span></td>
+            		<td width="65" height="77" align="center" valign="middle"><span class="<?if($item['item_price_type']=='GB') echo 'g_bg'; elseif($item['item_price_type']=='GG') echo 'guoguo_bg';?> yellowf3_12b"><?=$item['item_price']?></span></td>
+          			<td width="72" height="77" align="center" valign="middle">
+		              <label>
+		                <select name="select" id="select" onChange="updateCart('<?=$item_id?>',this.options[this.selectedIndex].value);">
+		                <?php for($i=1;$i<7;$i++){?>
+		                  <option class="green6_12" value="<?=$i?>" <? if($i==$usetime) echo("selected");?>><?=$i?>个月</option>
+		                  <? } ?>
+		                </select>
+		              </label>
+          		</td>
+          		<td height="77" align="center" valign="middle"><a href="javascript:delItem('<?=$item_id?>');top.leftFrame.deleteRecordById('<?=$item_id?>');" class="gray4_12 underline">删除</a></td>
+                </tr>
+			<? }
+           	  }else{
+				?>
+ 			<table border="0" cellspacing="10" cellpadding="0" align="center">
+			  <tr>
+			    <td>没有道具,<a href="javascript:parent.closeAlert();">继续购买</a> </td>
+			  </tr>
+			</table>
+				<? }?>
+            </table>
+
+          </div>
+
+            <div class="clr"></div>
+        </div>
+		<form action="/index.php" method="POST" >
+		<input type="hidden" name="action" value="cart">
+		<input type="hidden" name="op" value="buy">
+		<input type="hidden" name="gg" value="<?=$total_gg?>">
+		<input type="hidden" name="gb" value="<?=$total_gb?>">
+          <div class="pay_dj_c">
+          	<span style="float:left;"><b class="gray4_12">所有道具需支付:</b>&nbsp;&nbsp;<b class=" yellow_12b" id="total_gg"><?=$total_gg?> 果果</b>&nbsp;&nbsp;<b class=" yellow_12b" id="total_gb"><?=$total_gb?> G币</b></span>
+            <span style="float:right; margin-right:15px;"><a href="/index.php/charge" target="_blank" class="blue_by12">立即充值</a>&nbsp;&nbsp;<a href="http://www.guodong.dev3/index.php/help/newuser" class="blue_by12" target="_blank">如何获得果果</a></span>
+          </div>
+<div class="bot_c">
+        	<span class="yuer"><b class="gray4_12">账户余额:</b><b class="yellowf3_12b"><?=$user_coin?> 果果&nbsp;&nbsp;<?=$user_cash?> G币</b></span>
+            <span class="chongzhi"><a href="javascript:parent.closeAlert();" class="blue_by12"><img src="<?=$image_site_url?>/images/invite/buy/cancel_btn.jpg" /></a></span>
+            <span class="chongzhi"><input type="image" src="<?=$image_site_url?>/images/invite/buy/buy_btn.jpg" /></span>
+            <span class="chongzhi" id="buyresult"></span>
+        </div>
+        </form>
+    </div>
+
+</body>
+</html>
