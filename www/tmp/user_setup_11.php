@@ -1,1 +1,0 @@
-<?php $total_user=4876438;$today_user_07_10=11;?>
