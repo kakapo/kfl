@@ -1,8 +1,0 @@
-<windowslivelogin>
-  <appid>000000004000CBBC</appid>
-  <secret>wwwguodongcomwwwguodongcom</secret>
-  <securityalgorithm>wsignin1.0</securityalgorithm>
-
-  <returnurl>http://www.guodong.dev3/plugins/export/msn/delauth-handler.php</returnurl>
-  <policyurl>http://www.guodong.dev3/plugins/export/msn/policy.html</policyurl>
-</windowslivelogin>
