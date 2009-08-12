@@ -1,5 +1,5 @@
 <?php
-class authenCom
+class Authenticate
 {
 	var $mAuthPrivs;
 	var $mUserPrivs;
