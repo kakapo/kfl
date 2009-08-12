@@ -1,6 +1,6 @@
 <?php
 define("SESSION_LIVE_TIME", 1440); // Timeout
-class sessionCom
+class SessionHandle
 {
 	function __construct(){
 		if(SESSION_HANDLE=='file'){
@@ -108,6 +108,7 @@ class SessionHandleMySQL extends Model
     }   //end function
 }
 
+
 class SessionHandleMemcache
 {
 	static $mMemcacheObj;
@@ -145,17 +146,21 @@ class SessionHandleMemcache
 	public static function Open($save_path, $session_name) {
 		return true;
 	}
+	
 	public static function Close() {
 		return true;
 	}
+	
 	public static function Read($sesskey) {
 		return self::$mMemcacheObj->get($sesskey);
 	}
+	
 	public static function Write($sesskey, $data) {
 		self::$mMemcacheObj->set($sesskey, $data,0, SESSION_LIVE_TIME);
 
 		return true;
 	}
+	
 	public static function Destroy($sesskey) {
 
 		self::$mMemcacheObj->delete($sesskey);
@@ -163,9 +168,11 @@ class SessionHandleMemcache
 
 		return true;
 	}
+	
 	public static function Gc($maxlifetime = null) {
 		return true;
 	}
+	
 	public static function _AddMemcacheServers(){
 		global $gMemcacheServer;
 		//print_r($gMemcacheServer);

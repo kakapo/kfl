@@ -5,7 +5,7 @@
  * @package PhpTemplate
  * @version 0.0.1
  */
-class phptemplate
+class PhpTemplate
 {
 	/**
      * PhpTemplate version number

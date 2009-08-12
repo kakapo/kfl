@@ -13,7 +13,7 @@ if(version_compare(PHP_VERSION, "5.1.0", "<") && !class_exists("PDO"))
 	trigger_error('Current PHP version: ' . PHP_VERSION . ' is too low for PDO.',E_USER_ERROR);
 	die();
 }
-class dbCom extends PDO
+class Database extends PDO
 {
 	public $debug = 1;	   //是否开启DEBUG信息 true|false
 	private $errorMsg;            //SQL语句错误记录

@@ -145,26 +145,26 @@ class KFL
 	public function setup(){
 		global $tpl;
 		if($this->mCoreSettings['is_database']){
-			require_once("Libs/dbCom.class.php");
+			require_once("Libs/Database.class.php");
 			$this->mCore[] = 'database';
 		}
 
 		//add core components
 		if($this->mCoreSettings['is_session']){
-			require_once("Libs/sessionCom.class.php");
-			new sessionCom();
+			require_once("Libs/SessionHandle.class.php");
+			new SessionHandle();
 			$this->mCore[] = 'session';
 		}
 
 		if($this->mCoreSettings['is_authen']){
-			require_once("Libs/authenCom.class.php");
-			new authenCom('authen');
+			require_once("Libs/Authenticate.class.php");
+			new Authenticate('authen');
 			$this->mCore[] = 'authen';
 		}
 		// init view engine
 		if($this->mCoreSettings['is_phptpl']){
-			require_once("Libs/phptemplate.class.php");
-	    	$tpl = new phptemplate();
+			require_once("Libs/PhpTemplate.class.php");
+	    	$tpl = new PhpTemplate();
 	    	$tpl->template_dir = APP_DIR_V;
 	    	$this->mCore[] = 'phptpl';
 		}
@@ -201,6 +201,7 @@ class KFL
 		$this->costtime();
 	}
 
+	
 	public function costtime(){
 		$end_time = getmicrotime ();
 		$this->pageExecTime = $end_time-$this->mStartTime;
@@ -329,14 +330,7 @@ class Controller{
 
 class Model
 {
-	/**
-	 * result
-	 * @param
-	 */
-	public $result;
-	public $mWheres;
-	public $mOrder;
-	public $mLimit;
+
 	/**
 	 * 数据库连接
 	 *@access public
@@ -355,7 +349,7 @@ class Model
 	    }else{
 			$dsn = $options['type'].":host=".$options['host'].";port=".$options['port'].";dbname=".$options['dbname'];
 			try{
-				$GLOBALS[$db_resource] = new dbCom($dsn,$options['user'],$options['passwd'],array(PDO::ATTR_PERSISTENT => false));
+				$GLOBALS[$db_resource] = new Database($dsn,$options['user'],$options['passwd'],array(PDO::ATTR_PERSISTENT => false));
 			}catch (PDOException $e){
 				trigger_error("db connect failed!".$e->getMessage(),E_USER_ERROR);
 				die();
@@ -366,53 +360,6 @@ class Model
 
     	return $GLOBALS[$db_resource];
 
-	}
-	/**
-	*  setWheres
-	* @param array $arr
-	* @access public
-	* @return void
-	**/
-	function setWheres($arr){
-		$con = '';
-		foreach ($arr as $k=>$v){
-			$con .= $v;
-		}
-		$con = !empty($con)?" where 1 ".$con:"";
-		$this->mWheres = $con;
-	}
-	/**
-	*  setLimit
-	* @param string $limit
-	* @access public
-	* @return void
-	**/
-	function setLimit($limit){
-		if(!empty($limit)){
-			$this->mLimit = " limit ".$limit;
-		}
-	}
-	/**
-	*  setOrder
-	* @param string $order
-	* @param string $sequence
-	* @access public
-	* @return void
-	**/
-	function setOrder($order,$sequence='desc'){
-		if(!empty($order)){
-			$this->mOrder = " order by  ".$order ." ". $sequence;
-		}
-	}
-	/**
-	 * isDbError
-	 * @param mix $rs
-	 * @access public
-	 * @return boolen
-	 */
-	function isDbError($rs){
-		if(!$rs) return false;
-		else return true;
 	}
 
 }
