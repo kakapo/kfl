@@ -66,10 +66,6 @@ $GLOBALS ['gSiteInfo'] ['pagenum'] = 5;
 //////////////////////////////////////////////////////
 $GLOBALS ['gDataBase'] ['main'] = array ('host' => '192.168.1.5', 'port' => '3306', 'type' => 'mysql', 'user' => 'newidol', 'passwd' => 'newidol', 'dbname' => 'gd_main', 'charset' => 'utf8', 'cache_time' => 3600 );
 
-$GLOBALS ['gDataBase'] ['ad'] = array ('host' => '192.168.1.5', 'port' => '3306', 'type' => 'mysql', 'user' => 'newidol', 'passwd' => 'newidol', 'dbname' => 'gd_ad', 'charset' => 'utf8', 'cache_time' => 3600 );
-
-$GLOBALS ['gDataBase'] ['event'] = array ('host' => '192.168.1.5', 'port' => '3306', 'type' => 'mysql', 'user' => 'newidol', 'passwd' => 'newidol', 'dbname' => 'guodong_event', 'charset' => 'utf8', 'cache_time' => 3600 );
-
 $GLOBALS ['gDataBase'] ['account_index'] = array ('host' => '192.168.1.5', 'port' => '3306', 'type' => 'mysql', 'user' => 'newidol', 'passwd' => 'newidol', 'dbname' => 'gd_account_index', 'charset' => 'utf8', 'cache_time' => 3600 );
 
 $GLOBALS ['gDataBase'] ['account_a'] = array ('host' => '192.168.1.5', 'port' => '3306', 'type' => 'mysql', 'user' => 'newidol', 'passwd' => 'newidol', 'dbname' => 'gd_account_a', 'charset' => 'utf8', 'cache_time' => 3600 );
@@ -130,74 +126,6 @@ $GLOBALS ['account'] ['content'] = '
 ';
 
 
-//进阶编辑尺寸
-$GLOBALS ['account'] ['size'] = array ('qq' => array ('0' => '171*245', '1' => '354*506' ), 'baidu' => array ('0' => '300*430' ), 'sina' => array ('0' => '190*271', '1' => '300*430' ), 'w163' => array ('0' => '198*283', '1' => '265*378' ), '51com' => array ('0' => '265*379', '1' => '527*753' ), 'sohu' => array ('0' => '215*307', '1' => '280*400' ), 'blogbus' => array ('0' => '180*257', '1' => '240*343' ), 'maopu' => array ('0' => '180*257' ), 'msn' => array ('0' => '300*430' ), 'myspace' => array ('0' => '300*430' ), '19lou' => array ('0' => '300*430' ), 'poco' => array ('0' => '215*307' ), 'tudou' => array ('0' => '215*307' ) );
 
-//商城变量配置
-$GLOBALS ['showConfig'] = array (//主分类
-'favor' => 10000,
-'newer' => 86400*30,
-'grade_star' => array (array('3000','★'),array('7000','★★'),array('12000','★★★'),array('20000','★★★★'),array('30000','★★★★★')),
-'item_price' => array ('1' => array ('title' => '1个月（原价*0.3）', 'discount' => '0.3', 'selected' => 0 ), '2' => array ('title' => '3个月（原价*0.65）', 'discount' => '0.65', 'selected' => 0 ), '3' => array ('title' => '6个月（原价）', 'discount' => '1', 'selected' => 1 ), '4' => array ('title' => '12个月（原价*1.8）', 'discount' => '1.8', 'selected' => 0 ) ) );
-
-//定义相册分页行数
-define ( "AM_PAGE_NUM", 6 );
-
-//整合论坛的私钥
-$GLOBALS ['bbs']['key']='dsfsdfsdfsdfsdfsdfsdsdf';
-
-//激活服务管理
-$gservices = array ('1' => array ('0' => '1', '1' => '动感聊天', '2' => 'dtlt.jpg', '3' => 'http://apps.xiaonei.com/guodongchat' ), '2' => array ('0' => '2', '1' => '炒房浮生记', '2' => 'fsclj.jpg', '3' => 'index.php?action=index&view=gameintro' ) );//http://space.sina.com.cn/plugin/app.php?id=002f5f6a14afe4c925477e6aa5735064_101
-
-
-/**
-* change me to correct tracker server list, assoc array element:
-*    ip_addr: the ip address or hostname of the tracker server
-*    port:    the port of the tracker server
-*    sock:    the socket handle to the tracker server, should init to -1 or null
-*/
-$fdfs_network_timeout = 30;  //seconds
-$fdfs_tracker_servers = array();
-$fdfs_tracker_server_index = 0;
-$fdfs_tracker_servers[0] = array(
-		'ip_addr' => '192.168.1.5',
-		'port' => 22122,
-		'sock' => -1);
-//$fdfs_tracker_servers[1] = array(
-//		'ip_addr' => '10.62.164.84',
-//		'port' => 22122,
-//		'sock' => -1);
-
-$fdfs_tracker_server_count = count($fdfs_tracker_servers);
-
-//存储服务器域名设置，group为key值。
-$fdfs_storage_settings = array(
-"group1"=>"http://user.guodong.dev3",
-"group2"=>"http://user2.guodong.dev3"
-);
-
-//用户添加的图片数量,10张
-$GLOBALS['uploadImageTotal'] = 8;
-
-//flash尺寸
-$GLOBALS['sizeArray'] = array(
-							'qzone' => array( 'width' => '300' , 'height' => '430' ),
-							'sina' => array( 'width' => '187' , 'height' => '400' ),
-							'w163' => array( 'width' => '265' , 'height' => '379' ),
-							'51com' => array( 'width' => '400' , 'height' => '268' ),
-							'blogbus' => array( 'width' => '240' , 'height' => '343' ),
-							'msn' => array( 'width' => '300' , 'height' => '430' ),
-							'myspace' => array( 'width' => '300' , 'height' => '430' ),
-							'19lou' => array( 'width' => '300' , 'height' => '430' ),
-							'poco' => array( 'width' => '215' , 'height' => '307' ),
-							'bbs' => array( 'width' => '300' , 'height' => '430' ),
-							'currency' => array( 'width' => '300' , 'height' => '430' ),
-							);
-
-//vip所需G币
-$GLOBALS['vip_cash'] = 5;
-
-//禁词
-$GLOBALS['blockword'] = array('fuck','他妈的','操你妈',"胡锦涛");
 
 ?>
