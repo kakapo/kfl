@@ -1,42 +1,5 @@
 <?php
 
-if(!defined("KFL_DIR")) define("KFL_DIR", dirname(__FILE__));
-
-//////////////////////////////////////////////////////
-//					PEAR							//
-//////////////////////////////////////////////////////
-
-
-//////////////////////////////////////////////////////
-//					Directory						//
-//////////////////////////////////////////////////////
-
-// define applications models dicrectory
-define("APP_DIR_M",APP_DIR. "/models");
-
-// define applications templates dicrectory
-define("APP_DIR_V",APP_DIR. "/views");
-
-// define applications controllers dicrectory
-define("APP_DIR_C",APP_DIR. "/controllers");
-
-// define applications temporary dicrectory
-define("APP_TEMP_DIR", APP_DIR. '/tmp');
-
-define("APP_LANG_DIR", APP_DIR. '/languages');
-
-// define error log file
-define("LOG_FILE", APP_DIR . "/tmp/logs");
-
-// define upload directory
-define("UPLOAD_DIR", APP_DIR . "/tmp/uploads");
-
-// if using the KFL/Components/libs instead of your systemwide pear libraries.
-if(PHP_OS=='Linux'){
-	ini_set('include_path', KFL_DIR. "/:". APP_DIR_M ."/:" . ini_get('include_path').':'); // FOR UNIX
-}elseif(PHP_OS=='WINNT'){
-	ini_set('include_path', KFL_DIR. "/;". APP_DIR_M."/;". ini_get('include_path')); // FOR WINDOWS
-}
 
 /**
  * 发送的邮件配置

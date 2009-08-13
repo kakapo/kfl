@@ -1,6 +1,34 @@
 <?php
 // KFL config File
-require_once(dirname(__FILE__) . "/Common/config.php");
+
+if(!defined("KFL_DIR")) define("KFL_DIR", dirname(__FILE__));
+
+// define applications models dicrectory
+define("APP_DIR_M",APP_DIR. "/models");
+
+// define applications templates dicrectory
+define("APP_DIR_V",APP_DIR. "/views");
+
+// define applications controllers dicrectory
+define("APP_DIR_C",APP_DIR. "/controllers");
+
+// define applications temporary dicrectory
+define("APP_TEMP_DIR", APP_DIR. '/tmp');
+
+define("APP_LANG_DIR", APP_DIR. '/languages');
+
+// define error log file
+define("LOG_FILE", APP_DIR . "/tmp/logs");
+
+// define upload directory
+define("UPLOAD_DIR", APP_DIR . "/tmp/uploads");
+
+// if using the KFL/Components/libs instead of your systemwide pear libraries.
+if(PHP_OS=='Linux'){
+	ini_set('include_path', KFL_DIR. "/:". APP_DIR_M ."/:" . ini_get('include_path').':'); // FOR UNIX
+}elseif(PHP_OS=='WINNT'){
+	ini_set('include_path', KFL_DIR. "/;". APP_DIR_M."/;". ini_get('include_path')); // FOR WINDOWS
+}
 
 /**
 * @abstract KFL: Kindly Fast Light, a light fast MVC framework, kindly to be used.
@@ -27,35 +55,17 @@ class KFL
 	private $mDefaultController = "defaults";
 
 	/**
-	 * default view style
-	 * @param string
-	 */
-	private $mDefaultView = "defaults";
-
-	/**
 	 * core settings
 	 * @param array
 	 */
-	private $mCoreSettings = array('is_session'=>1,'is_phptpl'=>1,'is_authen'=>1,'is_database'=>1);
-
+	private $mCoreSettings = array('is_session'=>1,'is_phptpl'=>1,'is_authen'=>0,'is_database'=>1);
+	
 	/**
-	 * is caching
-	 * @param int
+	 * cache object
+	 * @param object
 	 */
-	public  $mIsCache = 0;
-
-	/**
-	 * cache time
-	 * @param int
-	 */
-	public  $mCacheTime = 300;
-
-	/**
-	 * cache dir
-	 * @param string
-	 */
-	public  $mCacheDir = "/tmp/";
-
+	private $mCache;
+	
 	/**
      * initialize.
      * @param string $appPath Application directory;
@@ -63,17 +73,11 @@ class KFL
 	 * @access public
      * @return void
      */
-	public function KFL($cache=0)
+	public function KFL()
 	{
-
-		if($cache > 0){
-			$this->useCache($cache);
-		}
 		require_once("Common/common.php");
 		include_once("Common/file.php");
 		$this->mStartTime = getmicrotime ();
-		
-
 	}
 
 	/**
@@ -96,7 +100,6 @@ class KFL
 		if(!defined("APP_TPLSTYLE")){
 			define("APP_TPLSTYLE",$defView);
 		}
-		$this->mDefaultView = $defView;
 	}
 
 	/**
@@ -105,44 +108,30 @@ class KFL
 	 * @access public
 	 * @return void
 	 */
-	public function useCache($lifetime){
-
-		$this->mCacheTime = $lifetime;
-		// $_POST no cache
-		if($_SERVER["REQUEST_METHOD"]=='GET'){
-			$this->mIsCache = 1;
+	public function useCache($lifetime=300){
+		// only cache get request
+		if($_SERVER["REQUEST_METHOD"]!='GET'){
+			return ;
 		}
-
-		$this->mCacheDir = APP_TEMP_DIR.'/_cache/';
-		if(!is_dir($this->mCacheDir)){
-			mkdir($this->mCacheDir);
-			chmod($this->mCacheDir,0777);
+		include_once("Libs/Cache.class.php");
+    	$this->mCache = new Cache($lifetime);
+    	$cacheDir = APP_TEMP_DIR.'/_cache/';
+    	$cache_file = 'KFL_'.md5($_SERVER['REQUEST_URI']);
+	 
+		$this->mCache->setCacheDir($cacheDir);
+		$this->mCache->setCacheFile($cache_file);
+		if($this->mCache->isCached()){
+		 	$this->mCache->output();
+		 	$this->execTime();
 		}
-	    $cache_file = 'KFL_'.md5($_SERVER['REQUEST_URI']);
-
-	    if($this->mIsCache && is_file($this->mCacheDir.$cache_file)){
-	    	$modify_time = @filemtime($this->mCacheDir.$cache_file);
-	    	if(time()-$modify_time < $this->mCacheTime){
-	    		echo file_get_contents($this->mCacheDir.$cache_file);
-	    		$end_time2 = getmicrotime();
-	    		$this->costtime();
-	    		die();
-	    		
-	    	}else{
-	    		ob_start();
-	    	}
-	    }else{
-	    	ob_start();
-	    }
-
 	}
 
 	/**
      * setup
-	 * @access public
+	 * @access private
 	 * @return void
      */
-	public function setup(){
+	private function setup(){
 		global $tpl;
 		if($this->mCoreSettings['is_database']){
 			require_once("Libs/Database.class.php");
@@ -168,7 +157,6 @@ class KFL
 	    	$tpl->template_dir = APP_DIR_V;
 	    	$this->mCore[] = 'phptpl';
 		}
-
 	}
 
 	/**
@@ -184,27 +172,22 @@ class KFL
 		Controller::dispatch($this->mDefaultController,$this->mCore);
 
 		// use view
-		View::display();
+		View::display();	
 
-		// generate html page
-		Controller::generateHtml();
-
-		if($this->mIsCache){
-			if(!is_dir($this->mCacheDir)){
-				mkdirr($this->mCacheDir);
-			}
-			$cache_file = $this->mCacheDir.'KFL_'.md5($_SERVER['REQUEST_URI']);
-			write_file(ob_get_contents(),$cache_file);
+		if($this->mCache){
+			$this->mCache->save();
 		}
-
 		
-		$this->costtime();
+		$this->execTime();
+		
 	}
-
-	
-	public function costtime(){
-		$end_time = getmicrotime ();
-		$this->pageExecTime = $end_time-$this->mStartTime;
+	/**
+	 * execTime
+	 * @access public
+	 * @return void
+	 */	
+	public function execTime(){
+		exit(getmicrotime ()-$this->mStartTime);
 	}
 
 }
@@ -216,7 +199,6 @@ class Controller{
      */
     private static $mComponents = array();
 	private	static $mDispatcher;
-	private static $mHtmlFile;
 	/**
 	 * includeDispatcher
 	 * @access private
@@ -229,7 +211,6 @@ class Controller{
 		if(!defined("ENTRANCE")) define("ENTRANCE",$entrance);
 		$file =APP_DIR_C."/".$entrance."/".self::$mDispatcher.".class.php";
 
-
 		if(is_file($file)){
 			include_once($file);
 			return true;
@@ -238,6 +219,7 @@ class Controller{
 			return false;
 		}
 	}
+	
 	/**
 	 * authenticate
 	 * @access private
@@ -254,20 +236,10 @@ class Controller{
 		 		show_message("你没有权限访问.");
 		 		die;
 		 	}
-//		 	//记录操作
-//		 	$s = substr($gCurPriv,0,strpos($gCurPriv,'.'));
-//		 	if($s!=='frame'){
-//		 		include("OpLogManage.class.php");
-//		 		$oplog =new OpLogManage;
-//		 		$data = array('user_id'=>$_SESSION['LoginUser']['user_id'],'operation'=>$gCurPriv,'user_name'=>$_SESSION['LoginUser']['user_name']);
-//		 		$oplog->saveLog($data);
-//		 	}
-		 }else{
-		 	//trigger_error("KFL Error: add \$KFL->useAuthen(); in /index.php",E_USER_ERROR);
-		 	//die();
 		 }
 
 	}
+	
 	public static function dispatch($defaultdispatcher,$components){
 
 		self::$mDispatcher = !empty($GLOBALS['gDispatcher'])?$GLOBALS['gDispatcher']:$defaultdispatcher;
@@ -314,18 +286,7 @@ class Controller{
 	    $GLOBALS['gTplFile'] = $tplfile;
 	    $GLOBALS['gCurPriv'] = $u;
 	}
-	public static function generateHtml(){
-		if(!empty(self::$mHtmlFile)){
-			write_file(ob_get_contents(),self::$mHtmlFile);
-		}
-	}
-	public static function createHtml($html_file){
-		self::$mHtmlFile = $html_file;
-		ob_start ();
-	}
-	public static function destoryHtml($html_file){
-		unlink($html_file);
-	}
+
 }
 
 class Model
@@ -388,11 +349,7 @@ class View{
 			include_once($langfile);
 			self::$view->assign($GLOBALS['gLang']);
 		}
-		$adfile = APP_TEMP_DIR."/ad_setup.php";
-		if(file_exists($adfile)){
-			include_once($adfile);
-			self::$view->assign($adsetup);
-		}
+
 	}
 	/**
 	 * _assignGlobalSetting
