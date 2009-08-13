@@ -18,7 +18,7 @@ $kfl->setDefController ( 'index' );
 $kfl->setDefView ( 'index2.0' );
 
 // use cache
-//$kfl->useCache(200);
+$kfl->useCache(60);
 
 
 
