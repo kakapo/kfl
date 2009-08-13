@@ -384,8 +384,6 @@ class Database extends PDO
 	}
 	//取得上一步 INSERT 操作产生的 ID
 
-	//事务开始 start transaction
-
 	//sql语句执行
 	function query($sql,$query_type = 1)   //$query_type = 1 返回影响记录数量；2，返回查询数组,3,返回单条数据
 	{

@@ -9,7 +9,6 @@ else
 	$preht = "http://";
 }
 define("SCRIPT_URL", $preht . $_SERVER["HTTP_HOST"] . $_SERVER["SCRIPT_NAME"]);
-define("HOME_URL", dirname(SCRIPT_URL));
 
 
 //支持path_info
@@ -154,18 +153,18 @@ function get_error_type($errno)
 		case E_CORE_ERROR:
 		case E_COMPILE_ERROR:
 		case E_USER_ERROR:
-			$errortype = "Fatal Error";
+			$errortype = "User Fatal Error";
 			break;
 
 		case E_WARNING:
 		case E_CORE_WARNING:
 		case E_COMPILE_WARNING:
 		case E_USER_WARNING:
-			$errortype = "Warning";
+			$errortype = "User Warning";
 			break;
 		case E_NOTICE:
 		case E_USER_NOTICE:
-			$errortype = "Notice";
+			$errortype = "User Notice";
 			break;
 
 		default:
@@ -261,8 +260,8 @@ function error_live_handler($errno, $errmsg, $filename, $linenum, $vars)
 	E_COMPILE_ERROR      => 'Compile Error(编译错误)',
 	E_COMPILE_WARNING    => 'Compile Warning(编译警告)',
 	E_USER_ERROR         => 'User Error(用户错误)',
-	E_USER_WARNING       => 'User Warning',
-	E_USER_NOTICE        => 'User Notice',
+	E_USER_WARNING       => 'User Warning(用户警告)',
+	E_USER_NOTICE        => 'User Notice(用户提示)',
 	E_STRICT             => 'Runtime Notice',
 	E_RECOVERABLE_ERROR  => 'Catchable Fatal Error'
 	);
