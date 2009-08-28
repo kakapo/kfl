@@ -308,14 +308,19 @@ class Model
 	    if(isset($GLOBALS[$db_resource]) && is_object($GLOBALS[$db_resource])){
 			//echo 2;
 	    }else{
-			$dsn = $options['type'].":host=".$options['host'].";port=".$options['port'].";dbname=".$options['dbname'];
+			if('mysql'== $options['type']) $dsn = $options['type'].":host=".$options['host'].";port=".$options['port'].";dbname=".$options['dbname'];
+			if('sqlite'== $options['type']||'sqlite2'== $options['type']) $dsn = $options['type'].":".$options['path']."/".$options['dbname'];
 			try{
 				$GLOBALS[$db_resource] = new Database($dsn,$options['user'],$options['passwd'],array(PDO::ATTR_PERSISTENT => false));
+				$cache_setting = isset($GLOBALS ['packet'])?$GLOBALS ['packet']:'';
+				if($cache_setting) {
+					$GLOBALS[$db_resource]->setCache($cache_setting);
+				}
 			}catch (PDOException $e){
 				trigger_error("db connect failed!".$e->getMessage(),E_USER_ERROR);
 				die();
 			}
-			$GLOBALS[$db_resource] -> query("SET NAMES ".$options['charset']);
+			if('mysql'== $options['type']) $GLOBALS[$db_resource] -> query("SET NAMES ".$options['charset']);
 			//echo 1;
 	    }
 

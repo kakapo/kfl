@@ -1,12 +1,7 @@
 <?php
 /**
- * dbCom.class.php :: 数据库操作类
- *2009-01-06做了以下更新,by zswu:
- *1、去掉getRowByMM,getAllByMM,getOneByMM,closeMM,disposal();
- *2、将memcache功能整合到getRow,getOne,getAll
- *3、新增public方法useMemCache();setMemCacheLife;private方法：_generateKey()；_microTime();_execSql();_throwError,去掉getEorror;
- *4、归类了所有方法：分内部使用方法,基本SQL操作方法,快捷查询方法,本地缓存操作方法；
- *5、重构了query(),selectLimit();insert();update();delete();insertId();beginTrans();commitTrans();rollbackTrans();cacheQuery();
+ * Database.class.php :: 数据库操作类
+ 
  */
 if(version_compare(PHP_VERSION, "5.1.0", "<") && !class_exists("PDO"))
 {
@@ -15,18 +10,18 @@ if(version_compare(PHP_VERSION, "5.1.0", "<") && !class_exists("PDO"))
 }
 class Database extends PDO
 {
-	public $debug = 1;	   //是否开启DEBUG信息 true|false
-	private $errorMsg;            //SQL语句错误记录
-	private $lastSql;			//最后运行的SQL语句
-	private $lastData =''; //最后绑定数据
-	private $startTime;			//查询开始时间
+	
+	private $lastSql;						//最后运行的SQL语句
+	private $lastData 		=''; 			//最后绑定数据
+	private $startTime;						//查询开始时间
 
-	public $cacheTime = 3600;		//设置全局缓存时间
-	public $cacheDir = "/tmp";			//缓存存储路径
-	public $cacheDirLevel = 3;	//缓存 HASH 目录级别
-
-	private $memcache ;				//memcache 对象
-	private $memcache_life=3600;  	//memcache缓存时间;
+	public $cacheTime 		= 3600;			//设置全局缓存时间
+	public $cacheDir 		= "/tmp";		//缓存存储路径
+	public $cacheDirLevel 	= 3;			//缓存 HASH 目录级别
+	public $cacheClose		= 1 ;			//缓存开关,默认关闭
+	public $cacheStore		='file';     	//缓存存储方式
+	public $cacheServer	;					//memcached 服务器配置
+	
 
 
 	function __construct($dsn,$username='',$password='',$driver_options=array())
@@ -35,14 +30,14 @@ class Database extends PDO
 		try{
 			parent::__construct($dsn,$username,$password,$driver_options);
 		}catch (PDOException $e) {
-			$this->errorMsg = "Error:".$e->getMessage();
-		    trigger_error($this->errorMsg, E_USER_ERROR);
-			$this->showDebug();
+			trigger_error("Error:".$e->getMessage(), E_USER_ERROR);
+			
 		}
 		//$this->setAttribute(PDO::ATTR_STATEMENT_CLASS, array('mypdostatement', array($this)));
 	}
 
 	//============================= 内部方法=======================
+	
 	/**
 	 * 获得 Cache hash 路径
 	 * @access private
@@ -168,10 +163,129 @@ class Database extends PDO
 		if(isset($err_arr[2])) trigger_error("Error:".$err_arr[2], E_USER_ERROR);
 		//写入查询日志
 		$GLOBALS['gSqlArr'][] = $this->lastSql.' Second:'.($this->_microTime()-$this->startTime);
-
-		$this->errorMsg = $err_arr[2];
-		$this->showDebug();
+		
 	}
+	
+	/*
+	 * 启动memcached
+	 * @access private
+	 * @param array $server
+	 * @return void 
+	 * */
+	private function _setupMemcached($server){
+		if (!class_exists('Memcache'))
+        {
+        	trigger_error("Fatal Error: Memcache extension not exists!", E_USER_ERROR);
+            die();
+        }
+        if(!(isset($GLOBALS['dbMemcacheObj']) && is_object($GLOBALS['dbMemcacheObj']))){
+			if(isset($server) && is_array($server)){
+			 	$memcache  = new Memcache;
+			 	foreach ($server as $key => $v) {
+		 		  if(!empty($v['host']) && !empty($v['port'])){
+		 			$memcache->addServer($v['host'], $v['port']);
+		 		  }
+			 	}
+			}
+			$GLOBALS['dbMemcacheObj'] = $memcache;
+        }
+		
+		return $GLOBALS['dbMemcacheObj'];
+		
+	}
+	
+	
+	//================================缓存扩展方法==========================/
+	//设置缓存时间
+	public function setCache($setting)
+	{
+		
+		$this->cacheClose 	= isset($setting['cacheClose'])?$setting['cacheClose']:1;//开启
+		$this->cacheTime 	= isset($setting['cacheTime'])?$setting['cacheTime']:3600;
+		$this->cacheDir 	= isset($setting['cacheDir'])?$setting['cacheDir']:'';
+		$this->cacheStore 	= isset($setting['cacheStore'])?$setting['cacheStore']:"file";
+		$this->cacheServer 	= isset($setting['cacheServer'])?$setting['cacheServer']:'';
+
+	}
+	/**
+	 * 缓存查询
+	 * @access private
+	 * @param string $sql
+	 * @param string $type [fetch|fetchAll|fetchColumn]
+	 * @param int $cacheTime -1=not cache
+	 * @param string $cacheId 
+	 * @return array
+	 */
+
+	//
+	private function _cacheQuery($sql, $type, $cacheTime = -1, $cacheId = false)
+	{
+		
+		$cacheTime = $cacheTime == 0 ? '999999999' : $cacheTime ;
+		
+		$cacheTime = $cacheTime>=0 ? $cacheTime : $this->cacheTime;
+			
+		
+		$cacheId = $cacheId ? $this->_generateKey($cacheId) : $this->_generateKey($sql);
+		
+		if($this->cacheStore=='memcache'){
+			
+			$memcache = $this->_setupMemcached($this->cacheServer);
+			
+			//如果生命时间小于0，直接删除缓存
+			if($this->cacheTime < 0) $memcache->delete($cacheId);
+			$rs = $memcache->get($cacheId);
+			if($rs===false){
+				$rs = $this->_execSql($type);
+				$memcache->set($cacheId,$rs,0,$cacheTime);
+			}
+			//$memcache->close();
+		
+		}
+		
+		if($this->cacheStore=='file'){      
+			$cacheFile = ($this->cacheDir ? $this->cacheDir.'/' : '').$this->_hashCacheId($cacheId);
+			
+			if (!file_exists($cacheFile) || (filemtime($cacheFile) + $cacheTime) < time()){		
+				$rs =  $this->_execSql($type);
+				
+				//写入缓存
+				@write_file(serialize($rs),$cacheFile);
+			}else{
+				
+				//读取缓存
+				if(!($rs = unserialize(@read_file($cacheFile))))
+				{
+					unlink($cacheFile);
+				}
+				
+			}
+		}
+		return $rs;
+
+	}
+
+	//清除指定缓存
+	public function cleanCache($cacheId)
+	{
+		$cacheId = md5($cacheId);
+		$cacheFile = ($this->cacheDir ? $this->cacheDir.'/' : '').$this->_hashCacheId($cacheId);
+		@unlink($cacheFile);
+	}
+	//清除全部缓存
+	public function cleanAllCache()
+	{
+		$array = list_dir_file($this->cacheDir);
+		$array = $array ? $array : array();
+		foreach($array as $cacheFile)
+		{
+			if($cacheFile['extension'] == 'cache')
+			{
+				@unlink($cacheFile['path']);
+			}
+		}
+	}
+	
 
 	//============================= 最基本SQL语句操作方法=======================
 	/**
@@ -181,21 +295,12 @@ class Database extends PDO
 	 * @param array $arr
 	 * @return array
 	 */
-	public function getRow($sql,$arr=array())
+	public function getRow($sql,$arr=array(),$cacheTime = -1, $cacheId = false)
 	{
 		$this->lastSql = $sql;
 		$this->lastData = $arr;
-		if($this->memcache){
-			$key = $this->_generateKey($sql);
-			//如果生命时间小于0，直接删除缓存
-			if($this->memcache_life < 0) $this->memcache->delete($key);
-			$row = $this->memcache->get($key);
-			if($row===false){
-				$row = $this->_execSql('fetch');
-				$this->memcache->set($key,$row,0,$this->memcache_life);
-			}
-			$this->memcache->close();
-			return $row;
+		if($cacheTime>=0 && !$this->cacheClose){
+			return $this->_cacheQuery($sql,"fetch",$cacheTime, $cacheId);
 		}else{
 			return $this->_execSql('fetch');
 		}
@@ -207,21 +312,12 @@ class Database extends PDO
 	 * @param array $arr
 	 * @return array
 	 */
-	public function getAll($sql,$arr=array())
+	public function getAll($sql,$arr=array(),$cacheTime = -1, $cacheId = false)
 	{
 		$this->lastSql = $sql;
 		$this->lastData = $arr;
-		if($this->memcache){
-			$key = $this->_generateKey($sql);
-			//如果生命时间小于0，直接删除缓存
-			if($this->memcache_life < 0) $this->memcache->delete($key);
-			$row = $this->memcache->get($key);
-			if($row===false){
-				$row = $this->_execSql('fetchAll');
-				$this->memcache->set($key,$row,0,$this->memcache_life);
-			}
-			$this->memcache->close();
-			return $row;
+		if($cacheTime>=0 && !$this->cacheClose){
+			return $this->_cacheQuery($sql,"fetchAll",$cacheTime, $cacheId);
 		}else{
 			return $this->_execSql('fetchAll');
 		}
@@ -233,21 +329,12 @@ class Database extends PDO
 	 * @param array $arr
 	 * @return string
 	 */
-	public function getOne($sql,$arr=array())
+	public function getOne($sql,$arr=array(),$cacheTime = -1, $cacheId = false)
 	{
 		$this->lastSql = $sql;
 		$this->lastData = $arr;
-		if($this->memcache){
-			$key = $this->_generateKey($sql);
-			//如果生命时间小于0，直接删除缓存
-			if($this->memcache_life < 0) $this->memcache->delete($key);
-			$row = $this->memcache->get($key);
-			if($row===false){
-				$row = $this->_execSql('fetchColumn');
-				$this->memcache->set($key,$row,0,$this->memcache_life);
-			}
-			$this->memcache->close();
-			return $row;
+		if($cacheTime>=0 && !$this->cacheClose){
+			return $this->_cacheQuery($sql,"fetchColumn",$cacheTime, $cacheId);
 		}else{
 			return $this->_execSql('fetchColumn');
 		}
@@ -265,71 +352,9 @@ class Database extends PDO
 		$this->lastData = $arr;
 		return $this->_execSql('boolen');
 	}
-	/**
-	 * 启动memcache
-	 * @param array $server  memcached服务器配置
-	 * @return void
-	 */
-	public function useMemCache($server){
-		if (!class_exists('Memcache'))
-        {
-        	trigger_error("Fatal Error: Memcache extension not exists!", E_USER_ERROR);
-            die();
-        }
-		 if(isset($server) && is_array($server)){
-		 	$this->memcache  = new Memcache;
-		 	foreach ($server as $key => $v) {
-	 		  if(!empty($v['host']) && !empty($v['port'])){
-	 			$this->memcache->addServer($v['host'], $v['port']);
-	 		  }
-		 	}
-		}
-	}
-	/**
-	 * 设置memcache生命周期
-	 * @param int $life  秒数
-	 * @return void
-	 */
-	public function setMemCacheLife($life){
-		$this->memcache_life = $life;
-	}
-	/**
-	 * 调试使用
-	 * @return void
-	 */
-	function showDebug()
-	{
-		if($this->debug){
-			if($this->errorMsg)
-			{
-				$errinfo = '<li>'.$this->lastSql.'<hr size=1 noshadow><span style=\"font-family:Tahoma; font-size: 12px;\">'.$this->errorMsg.'</span>"';
-
-				echo "
-				<table cellpadding=0 cellspacing=5 width=100% bgcolor=white>
-				<tr>
-					<td>".$errinfo."</td>
-				</tr>
-
-				</table>";
-			}
-
-		}
-	}
-
-
 
 	//====================== 快捷查询扩展方法 ===================================
-	// 包括 selectLimit,insert,update,delete,insertId,beginTrans,commitTrans,rollbackTrans,query
-	//limit 查询
-	function selectLimit($sql,$start = 0,$length = -1)
-	{
-		$start = $start ? $start : 0 ;
-		$length < 0 ? $length = '1' : $length ;
-		return $this->getAll($sql." limit {$start},{$length}");
-	}
-	/**
-	 * 执行 insert update delete 语
-	 */
+	// 包括 insert,update
 	function insert($field, $table)
 	{
 		$tempNames='';
@@ -354,6 +379,7 @@ class Database extends PDO
 		$sql = "insert into {$table} (".trim($tempNames,',').") values (".trim($tempValues,',').")";
 		return $this->execute($sql);
 	}
+	
 	//插入数据库 $condition 为条件也就是 where 以后的语
 	function update($field, $table, $condition = false)
 	{
@@ -377,127 +403,12 @@ class Database extends PDO
 		$sql = "update {$table} set ".trim($tempData,',').( $condition ? " where {$condition}" : '');
 		return  $this->execute($sql);
 	}
-	//数据删除
-	function delete($sql)
-	{
-		return $this->execute($sql);
-	}
-	//取得上一步 INSERT 操作产生的 ID
 
-	//sql语句执行
-	function query($sql,$query_type = 1)   //$query_type = 1 返回影响记录数量；2，返回查询数组,3,返回单条数据
-	{
-		if(!$sql) return false;
-		switch ($query_type)
-		{
-			case 1:
-				$this->lastSql = $sql;
-				return $this->_execSql('rowCount');	//返回影响的记录数量
-			case 2:
-				return $this->getAll($sql);
-			case 3:
-				return $this->getOne($sql);	//单条记录返回
-		}
-	}
 	//创建查询对象
 	function select()
 	{
 		$select = new DB_Core_Select($this);
 		return $select;
-	}
-
-	//================================本地缓存扩展方法==========================/
-	//设置缓存时间
-	function setCacheTime($cacheTime)
-	{
-		$this->cacheTime = $cacheTime;
-	}
-	//设置缓存路径
-	function setCacheDir($dir)
-	{
-		$this->cacheDir = $dir;
-	}
-	//缓存查询
-	function cacheQuery($sql ,$cacheTime = 0, $cacheId = false)
-	{
-		$cacheTime = $cacheTime == -1 ? '999999999' : $cacheTime ;
-		$cacheTime = $cacheTime ? $cacheTime : $this->cacheTime;
-		$cacheId = $cacheId ? md5($cacheId) : md5($sql);
-		      
-		$cacheFile = ($this->cacheDir ? $this->cacheDir.'/' : '').$this->_hashCacheId($cacheId);
-		
-		if (!file_exists($cacheFile)){		
-			$rs['recordArray'] =  $this->getAll($sql);
-			$rs['cacheId'] = $cacheId;
-			//写入缓存
-			@write_file(serialize($rs),$cacheFile);
-		}else{
-			if((@filemtime($cacheFile) + $cacheTime) < time())
-			{
-				$rs['recordArray'] = $this->getAll($sql);
-				$rs['cacheId'] = $cacheId;
-				//写入缓存	
-				@write_file(serialize($rs),$cacheFile);
-			}
-			else
-			{
-				//读取缓存
-				if(!($rs = unserialize(@read_file($cacheFile))))
-				{
-					unlink($cacheFile);
-				}
-			}
-		}
-		return $rs;
-
-	}
-	//缓存返回第一条记录第一个字段
-	function cacheGetOne($sql,$cacheTime = 0,$cacheId = false) //注意必须为单行数据
-	{
-		$record = $this->cacheGetRow($sql,$cacheTime,$cacheId);
-		reset($record);
-		return current($record);
-	}
-	//缓存取之返回单行数据 组成的数组
-	function cacheGetRow($sql,$cacheTime = 0,$cacheId = false)
-	{
-		$rs = $this->cacheSelectLimit($sql,0,1,$cacheTime,$cacheId);
-		return $rs['recordArray'][0];;
-	}
-	//limit 缓存查询
-	function cacheSelectLimit($sql,$start = 0,$length = -1,$cacheTime = 0, $cacheId = false)
-	{
-		$start = $start ? $start : 0 ;
-		$length < 0 ? $length = '1' : $length ;
-		$rs = $this->cacheQuery($sql." limit {$start},{$length}",$cacheTime,$cacheId);
-		return $rs['recordArray'];
-
-	}
-	//缓存返回所有数据
-	function cacheGetAll($sql,$cacheTime = 0,$cacheId = false)
-	{
-		$rs = $this->cacheQuery($sql,$cacheTime,$cacheId);
-		return $rs['recordArray'];
-	}
-	//清除指定缓存
-	function cleanCache($cacheId)
-	{
-		$cacheId = md5($cacheId);
-		$cacheFile = ($this->cacheDir ? $this->cacheDir.'/' : '').$this->_hashCacheId($cacheId);
-		@unlink($cacheFile);
-	}
-	//清除全部缓存
-	function cleanAllCache()
-	{
-		$array = list_dir_file($this->cacheDir);
-		$array = $array ? $array : array();
-		foreach($array as $cacheFile)
-		{
-			if($cacheFile['extension'] == 'cache')
-			{
-				@unlink($cacheFile['path']);
-			}
-		}
 	}
 
 }
@@ -576,20 +487,7 @@ class DB_Core_Select
 			$this->sqlArray['group'] .= !preg_match('/group/i',$this->sqlArray['group']) ? " group by {$group} " : ",{$group}" ;
 		}
 	}
-	/*
-	 HAVING用户在使用SQL语言的过程中可能希望解决的一个问题就是对由sum或其它集合函数运算结果的输出进行限制。
-	 例如，我们可能只希望看到Store_Information数据表中销售总额超过1500美圆的商店的信息，这时我们就需要使用HAVING从句。语法格式为：
-	 SELECT store_name, SUM(sales)
-	 FROM Store_Information
-	 GROUP BY store_name
-	 HAVING SUM(sales) > 1500
-	 查询结果显示为：
-	 store_name SUM(Sales)
-	 Los Angeles $1800
-	 小注：
-	 SQL语言中设定集合函数的查询条件时使用HAVING从句而不是WHERE从句。通常情况下，HAVING从句被放置在SQL命令的结尾处
 
-	 */
 	function having($having)
 	{
 		if($having)
@@ -639,7 +537,7 @@ class DB_Core_Select
 	{
 		if($this->limit)
 		{
-			return $this->db->selectLimit($this->getSql(), $this->limit['start'], $this->limit['length']);
+			return $this->db->getAll($this->getSql()." limit ". $this->limit['start'].", " .$this->limit['length']);
 		}
 		else
 		{
@@ -650,25 +548,6 @@ class DB_Core_Select
 			else
 			{
 				return $this->db->getAll($this->getSql());
-			}
-		}
-	}
-
-	function cacheQuery($cacheTime = false, $cacheId = false)
-	{
-		if($this->limit)
-		{
-			return $this->db->cacheSelectLimit($this->getSql(), $this->limit['start'], $this->limit['length'],$cacheTime, $cacheId);
-		}
-		else
-		{
-			if($this->sqlArray['group'] && isset($this->rs))
-			{
-				return $this->rs;
-			}
-			else
-			{
-				return $this->db->cacheQuery($this->getSql(),$cacheTime,$cacheId);
 			}
 		}
 	}

@@ -507,7 +507,7 @@ function redirect( $URL, $redirectType = 3)
 			echo("<script language=\"JavaScript\" type=\"text/javascript\"> window.location.href = \"$URL\"; </script>");
 			break;
 		case 3:
-			echo ' <SCRIPT>
+			echo "<meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />".'<font style="font-size:12px"> 自动跳转中.....如果浏览器不支持，请点击<a href="'.$URL.'">此处。</a></font><SCRIPT>
        				 setTimeout("window.location.replace(\"'.$URL.'\")",1000);
         		   </SCRIPT>';
 			exit();
@@ -792,5 +792,10 @@ function curl_get_content($url){
 	}else{
 		return false;
 	}
+}
+
+function json_output($arr){
+	echo json_encode($arr);
+	die;
 }
 ?>
