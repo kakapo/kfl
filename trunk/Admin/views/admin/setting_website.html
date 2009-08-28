@@ -1,0 +1,77 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+	<script type="text/javascript" src="/public/js/dojotoolkit/dojo/dojo.js"
+	    djConfig="parseOnLoad:true, isDebug:true"></script>
+<script>
+dojo.addOnLoad(function() {
+	alert(321);
+    var myForm = dijit.byId("website_form");
+    dojo.connect(myForm, "onSubmit", function(e) {
+    	alert(123);
+        e.preventDefault();
+        e.stopPropagation();
+        
+        if (myForm.validate()) {
+        	//submitForm("website_form");
+            return true;
+        } else {
+            //alert('Form contains invalid data.  Please correct first');
+            return false;
+        }
+        
+       // if (myForm.isValid()) {
+       // 	submitForm("website_form");
+       //     //alert("Ready to submit data: " + dojo.toJson(myForm.attr("value")));
+       // }
+    });
+});
+
+
+</script>
+
+</head>
+<body class="nihilo">
+<div style="height:50px;">
+	<div style="margin:10px;">位置: 配置管理 > 网站信息</div>
+	<div style="margin:10px;">
+		<button dojoType="dijit.form.Button" onclick="addRow('website_table');">新增</button>
+	</div>
+</div>
+
+<div method="post" jsid="website_form" id="website_form" dojoType="dijit.form.Form" action="/index.php" >
+<input type="hidden" name="action" value="setting">
+<input type="hidden" name="op" value="save">
+<input type="hidden" name="set_type" value="<?=$set_type?>">
+<table style="width:600px;margin:10px">
+<thead>
+<tr >
+<td style="border-bottom:1px solid #ccc;width:150px;background-color:#eee">变量</td>
+<td style="border-bottom:1px solid #ccc;width:300px;background-color:#eee">值</td>
+<td style="border-bottom:1px solid #ccc;width:150px;background-color:#eee">操作</td>
+</tr>
+</thead>
+<tbody id="website_table">
+<?php foreach($items as $item){?>
+<tr id="row_<?=$item['name']?>">
+<td><?=$item['name']?><input type="hidden" name="name_<?=$item['name']?>" value="<?=$item['name']?>"></td>
+<td><input dojoType="dijit.form.TextBox" type="text" name="valu_<?=$item['name']?>" id="valu_<?=$item['name']?>" value="<?=$item['value']?>"></td>
+<td><button dojoType="dijit.form.Button" onclick="deleteRow('website_table','row_<?=$item['name']?>');">删除</button></td>
+</tr>
+<? }?>
+</tbody>
+<tfoot>
+<tr>
+     <td colspan="2" align="center">
+       <button dojoType="dijit.form.Button" type="submit">保存</button>
+       <button dojoType="dijit.form.Button" type="reset">重置</button>
+       </td>
+   </tr>
+ </tfoot>
+</table>
+</div>
+
+</body>
+</html>

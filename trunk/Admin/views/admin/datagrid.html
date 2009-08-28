@@ -1,0 +1,62 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript">
+    dojo.require("dojox.grid.DataGrid");
+    dojo.require("dojo.data.ItemFileReadStore");
+
+    var json = {identifier: 'item',
+    		label: 'item',
+    		items: <?=$items?>};
+    // our test data store for this example:
+    var store4 = new dojo.data.ItemFileReadStore({data:json});//
+
+    dojo.addOnLoad(function(){
+        // set the layout structure:
+        var layout4 = [
+            { field: 'item', name: 'item', width: '200px' },
+            { field: 'value', name: 'value', width: 'auto' }
+        ];
+
+        // create a new grid:
+        var grid4 = new dojox.grid.DataGrid({
+            query: { item: '*' },
+            store: store4,
+            jsid: "mygrid",
+            clientSort: true,
+            rowSelector: '20px',
+            structure: layout4
+        }, document.createElement('div'));
+
+        // append the new grid to the div "gridContainer4":
+        dojo.byId("gridContainer4").appendChild(grid4.domNode);
+
+        // Call startup, in order to render the grid:
+        grid4.startup();
+    });
+
+
+
+</script>
+<link rel="stylesheet"
+			href="/public/js/dojotoolkit/dijit/themes/nihilo/nihilo.css" />
+<style type="text/css">
+  @import "/public/js/dojotoolkit/dojox/grid/resources/nihiloGrid.css";
+
+  .dojoxGrid table {
+    margin: 0;
+  }
+</style>
+
+</head>
+
+<body class="nihilo">
+
+
+<div id="gridContainer4" style="width: 600px; height:600px;"></div>
+
+
+</body>
+</html>
