@@ -277,7 +277,7 @@ function editPageRule(id,host){
 </head>
 <body class="nihilo">
 
-	 <div id="cacheRightDiv" dojoType="dijit.layout.AccordionContainer" style="width:300px;height:300px;float:right">
+	 <div dojoType="dijit.layout.AccordionContainer" style="width:300px;height:300px;float:right">
 		<div dojoType="dijit.layout.AccordionPane" title="功能说明">
 			<p>
 			&nbsp;&nbsp;KFL是之前KFC框架的轻量级版本，框架KFL目录下所有文件大小35k，主要去除了KFC的组件概念，保留了MVC的开发模式，特别适合前台的网站开发。
@@ -338,17 +338,23 @@ function editPageRule(id,host){
 		</thead>
 		<tbody id="page_table">
 	
-		<tr id="row_host">
-		<td><input dojoType="dijit.form.TextBox" style="width:150px" type="text" name="name_host" value="host" readonly></td>
-		<td><input dojoType="dijit.form.ValidationTextBox" required="true" type="text" name="valu_host" id="valu_host" value=""></td>
-		<td><label>主机地址</label></td>
+		<tr id="row_rulename">
+		<td><input dojoType="dijit.form.TextBox" style="width:150px" type="text" name="name_rulename" value="rulename" readonly></td>
+		<td><input dojoType="dijit.form.ValidationTextBox" required="true" type="text" name="valu_rulename" id="valu_rulename" value=""></td>
+		<td><label>规则名称</label></td>
 		</tr>
-		<tr id="row_port">
-		<td><input dojoType="dijit.form.TextBox" style="width:150px" type="text" name="name_port" value="port" readonly></td>
-		<td><input dojoType="dijit.form.ValidationTextBox" required="true" type="text" name="valu_port" id="valu_port" value="" regExp="[0-9]+" invalidMessage="变量名不符合规则:[0-9]+"></td>
-		<td><label>端口</label></td>
+		<tr id="row_cachetime">
+		<td><input dojoType="dijit.form.TextBox" style="width:150px" type="text" name="name_cachetime" value="cachetime" readonly></td>
+		<td><input dojoType="dijit.form.ValidationTextBox" required="true" regExp="[0-9]+" invalidMessage="变量名不符合规则:[0-9]+" type="text" name="valu_cachetime" id="valu_cachetime" value=""></td>
+		<td><label>缓存时间</label></td>
 		</tr>
-	
+		
+		<tr id="row_compressed">
+		<td><input dojoType="dijit.form.TextBox" style="width:150px" type="text" name="name_compressed" value="compressed" readonly></td>
+		<td><input dojoType="dijit.form.ValidationTextBox" required="true" regExp="[0|1]" invalidMessage="变量名不符合规则:[0|1]" type="text" name="valu_compressed" id="valu_compressed" value="1"></td>
+		<td><label>缓存压缩</label></td>
+		</tr>
+		
 		</tbody>
 		<tfoot>
 		<tr>

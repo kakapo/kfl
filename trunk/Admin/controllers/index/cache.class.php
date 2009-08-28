@@ -134,7 +134,10 @@ class cache{
 	}
 	
 	function view_page(){
-		
+		global $tpl;	
+		$rules = $this->mCacheObj->getPageRule();
+		$tpl->assign('set_type','pagerule');
+		$tpl->assign('rules',$rules);
 	}
 	
 }

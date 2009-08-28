@@ -28,4 +28,8 @@ class CacheManage extends Model{
 	function getMemcachedByName($host){
 		return $this->db->getOne("select host from memcached where host='$host'");
 	}
+	
+	function getPageRule(){
+		return $this->db->getAll("select * from pagerule");
+	}
 }
