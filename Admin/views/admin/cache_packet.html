@@ -1,0 +1,116 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+
+<script>
+dojo.addOnLoad(function() {
+	
+    var myForm = dijit.byId("packet_form");
+    dojo.connect(myForm, "onSubmit", function(e) {
+        e.preventDefault();
+        if (myForm.validate()) {
+        	submitForm("packet_form");
+            return true;
+        } else {
+            return false;
+        }
+
+    });
+});
+
+
+</script>
+
+</head>
+<body class="nihilo">
+
+ <div id="packetRightDiv" dojoType="dijit.layout.AccordionContainer" style="width:300px;height:300px;float:right">
+	<div dojoType="dijit.layout.AccordionPane" title="功能说明">
+		<p>
+		数据库的缓存配置
+		<li>1、支持本地file，多级目录缓存支持</li>
+		<li>2、分布式内存缓存</li>
+		</p>
+	  
+	</div>
+	<div dojoType="dijit.layout.AccordionPane" title="如何使用">
+		<p>
+		影响到方法：getRow(),getOne(),getAll();
+		使用缓存举例：<br>
+		1、简单：<br>$db->getAll("select * from table ",'',3600);
+		<br><br>
+		2、指定cacheId：<br>$db->getRow("select * from table where id=?",array(5),3600,'table5');
+		<br><br>
+		
+		</p>
+	  <p>不使用缓存举例：<br>
+	  1、$db->getRow("select * from table where id=?",array(5));
+	  </p>
+	</div>
+</div>
+
+<div style="height:50px;">
+	<div style="margin:10px;">位置: 缓存管理  > 数据片缓存设置</div>
+
+</div>
+
+<div method="post" jsid="packet_form" id="packet_form" dojoType="dijit.form.Form" action="/index.php">
+<input type="hidden" name="action" value="setting">
+<input type="hidden" name="op" value="save">
+<input type="hidden" name="set_type" value="<?=$set_type?>">
+<table style="width:600px;margin:10px">
+<thead>
+<tr >
+<td style="border-bottom:1px solid #ccc;width:150px;background-color:#eee">变量</td>
+<td style="border-bottom:1px solid #ccc;width:250px;background-color:#eee">值</td>
+<td style="border-bottom:1px solid #ccc;width:250px;background-color:#eee">备注</td>
+</tr>
+</thead>
+<tbody id="packet_table">
+
+<tr id="row_cacheOpen">
+<td>cacheOpen<input type="hidden" name="name_cacheOpen" value="cacheOpen"></td>
+<td><input dojoType="dijit.form.ValidationTextBox" required="true" regExp="[0|1]" invalidMessage="变量名不符合规则:[0|1]" type="text" name="valu_cacheOpen" id="valu_cacheOpen" value="<?=$sets['cacheOpen']?>"></td>
+<td style="font-size:12px;color:#666">启动缓存开关,关闭=0，开启=1</td>
+</tr>
+
+<tr id="row_cacheStore">
+<td>cacheStore<input type="hidden" name="name_cacheStore" value="cacheStore"></td>
+<td><input dojoType="dijit.form.ValidationTextBox" required="true" regExp="(file|memcache)" invalidMessage="变量名不符合规则:(file|memcache)"  type="text" name="valu_cacheStore" id="valu_cacheStore" value="<?=$sets['cacheStore']?>"></td>
+<td style="font-size:12px;color:#666">缓存存储方式,支持(file|memcache)</td>
+</tr>
+
+<tr id="row_cacheTime">
+<td>cacheTime<input type="hidden" name="name_cacheTime" value="cacheTime"></td>
+<td><input dojoType="dijit.form.ValidationTextBox" required="true" regExp="[0-9]+" invalidMessage="变量名不符合规则:[0-9]+" type="text" name="valu_cacheTime" id="valu_cacheTime" value="<?=$sets['cacheTime']?>"></td>
+<td style="font-size:12px;color:#666">默认缓存时间，秒</td>
+</tr>
+
+<tr id="row_cacheDir">
+<td>cacheDir<input type="hidden" name="name_cacheDir" value="cacheDir"></td>
+<td><input dojoType="dijit.form.ValidationTextBox" required="true" type="text" name="valu_cacheDir" id="valu_cacheDir" value="<?=$sets['cacheDir']?>"></td>
+<td style="font-size:12px;color:#666">缓存本地路径，cacheStore=file时有效</td>
+</tr>
+
+<tr id="row_cacheServer">
+<td>cacheServer<input type="hidden" name="name_cacheServer" value="cacheServer"></td>
+<td><input dojoType="dijit.form.ValidationTextBox" required="true" type="text" name="valu_cacheServer" id="valu_cacheServer" value="<?=$sets['cacheServer']?>"></td>
+<td style="font-size:12px;color:#666">Memcached服务器，cacheStore=memcache时有效</td>
+</tr>
+
+</tbody>
+<tfoot>
+<tr>
+     <td colspan="2" align="center">
+       <button dojoType="dijit.form.Button" type="submit">保存</button>
+       <button dojoType="dijit.form.Button" type="reset">重置</button>
+       </td>
+   </tr>
+ </tfoot>
+</table>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+
+<script>
+dojo.addOnLoad(function() {
+	
+    var myForm = dijit.byId("email_form");
+    dojo.connect(myForm, "onSubmit", function(e) {
+        e.preventDefault();
+        if (myForm.validate()) {
+        	submitForm("email_form");
+            return true;
+        } else {
+            //alert('Form contains invalid data.  Please correct first');
+            return false;
+        }
+        
+       // if (myForm.isValid()) {
+       // 	submitForm("website_form");
+       //     //alert("Ready to submit data: " + dojo.toJson(myForm.attr("value")));
+       // }
+    });
+});
+
+
+</script>
+
+</head>
+<body class="nihilo">
+<div style="height:50px;">
+	<div style="margin:10px;">位置: 配置管理  > 时区设置</div>
+	
+</div>
+
+
+<div method="post" jsid="email_form" id="email_form" dojoType="dijit.form.Form" action="/index.php">
+<input type="hidden" name="action" value="setting">
+<input type="hidden" name="op" value="save">
+<input type="hidden" name="set_type" value="<?=$set_type?>">
+<table style="width:600px;margin:10px">
+<thead>
+<tr >
+<td style="border-bottom:1px solid #ccc;width:150px;background-color:#eee">变量</td>
+<td style="border-bottom:1px solid #ccc;width:300px;background-color:#eee">值</td>
+<td style="border-bottom:1px solid #ccc;width:150px;background-color:#eee">操作</td>
+</tr>
+</thead>
+<tbody id="email_table">
+
+<tr id="row">
+<td>默认时区<input type="hidden" name="name_timezone" value="default_timezone"></td>
+<td><select dojoType="dijit.form.ComboBox" id="valu_timezone" name="valu_timezone">
+  <?php foreach($timezone as $v){?>
+  <option value="<?=$v?>" <? if($v==$item) echo 'selected';?> ><?=$v?></option>
+<? }?>
+</select></td>
+<td></td>
+</tr>
+
+</tbody>
+<tfoot>
+<tr>
+     <td colspan="2" align="center">
+       <button dojoType="dijit.form.Button" type="submit">保存</button>
+       <button dojoType="dijit.form.Button" type="reset">重置</button>
+       </td>
+   </tr>
+ </tfoot>
+</table>
+</div>
+
+</body>
+</html>
