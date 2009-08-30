@@ -139,6 +139,41 @@ class cache{
 		$tpl->assign('set_type','pagerule');
 		$tpl->assign('rules',$rules);
 	}
+	function op_savepagerule(){
+		unset($_POST['action']);
+		unset($_POST['op']);
+		
+		$set_type = $_POST['valu_rulename'];
+		$exist = $this->mCacheObj->getPageRuleByName($set_type);
+		if(!$exist){
+			$pair = array();
+			foreach ($_POST as $key=>$value){
+				$n = substr($key,5);
+				$pre = substr($key,0,5);
+				$pair[$n][$pre]= $value;
+			}	
+			$res = $this->mCacheObj->savePageRule($set_type);
+			$res1 = 0;
+			if($res){
+				$res1 = $this->mSettingObj->saveSettings($pair,$set_type);
+				if($res1){
+					$msg['s'] = 200;
+					$msg['m'] = "创建成功!";
+					$msg['d'] = $set_type;	
+				}
+			}else{
+				$msg['s'] = 400;
+				$msg['m'] = "创建失败!";
+				$msg['d'] = 'null';	
+			}
+		}else{
+			$msg['s'] = 400;
+			$msg['m'] = "此规则已经存在!";
+			$msg['d'] = 'null';	
+		}
+
+		json_output($msg);
+	}
 	
 }
 ?>

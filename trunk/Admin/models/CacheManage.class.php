@@ -32,4 +32,11 @@ class CacheManage extends Model{
 	function getPageRule(){
 		return $this->db->getAll("select * from pagerule");
 	}
+	
+	function getPageRuleByName($rulename){
+		return $this->db->getOne("select rulename from pagerule where host='$rulename'");
+	}
+	function savePageRule($rulename){
+		return $this->db->execute("insert into pagerule (rulename) values ('$rulename')");
+	}
 }
