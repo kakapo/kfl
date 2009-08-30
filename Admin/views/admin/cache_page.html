@@ -13,9 +13,9 @@ dojo.addOnLoad(function() {
         if (myForm.validate()) {
             var xhrArgs = {
         	        form: dojo.byId('page_form'),
-        	        handleAs: "json",
+        	        handleAs: "text",
         	        load: function(data){
-    	       
+    	       alert(data);
 						if(data.s==200){
 	            			//新增行
 			            	var rowid= "page_"+data.d;
@@ -51,7 +51,7 @@ dojo.addOnLoad(function() {
     	        		}
         	        },
         	        error: function(error,ioargs){
-            	        
+            	        alert(error);
         	        	var message = "";
         	        	switch(ioargs.xhr.status){
     	   	             case 404:
