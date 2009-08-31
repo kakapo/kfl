@@ -22,7 +22,7 @@ class CacheManage extends Model{
 	
 	
 	function getMemcached(){
-		return $this->db->getAll("select * from memcached",'',60);
+		return $this->db->getAll("select * from memcached");
 	}
 	
 	function getMemcachedByName($host){
@@ -34,9 +34,19 @@ class CacheManage extends Model{
 	}
 	
 	function getPageRuleByName($rulename){
-		return $this->db->getOne("select rulename from pagerule where host='$rulename'");
+		return $this->db->getOne("select rule_name from pagerule where rule_name='$rulename'");
 	}
+	
 	function savePageRule($rulename){
-		return $this->db->execute("insert into pagerule (rulename) values ('$rulename')");
+		return $this->db->execute("insert into pagerule (rule_name) values ('$rulename')");
+	}
+	
+	function deletePageRule($pagerule){
+		$res = $this->db->execute("delete from items where type='".$pagerule."'");
+		if($res){
+			return $this->db->execute("delete from pagerule where rule_name='$pagerule'");
+		}else{
+			return false;
+		}
 	}
 }

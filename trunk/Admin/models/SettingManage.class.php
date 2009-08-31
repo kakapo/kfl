@@ -6,7 +6,14 @@ class SettingManage extends Model{
 	}
 	
 	function getSettings($type){
-		return $this->db->getAll("select * from items where type='$type'");
+		$sql = "select * from items where type='$type'";
+		$sth = $this->db->query($sql);
+		$return = array();
+		while($row = $sth->fetch(PDO::FETCH_ASSOC)){
+			$row['value'] = htmlspecialchars_decode($row['value']);
+			$return [] = $row;
+		}
+		return $return;
 	}
 	function saveSettings($data,$type){
 		$this->db->execute("delete from items where type='".$type."'");

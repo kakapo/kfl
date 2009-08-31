@@ -17,10 +17,6 @@ $kfl->setDefController ( 'index' );
 //set default view style
 $kfl->setDefView ( 'admin' );
 
-// use cache
-//$kfl->useCache(60);
-
-
 
 $kfl->run ();
 
