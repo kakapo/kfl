@@ -66,6 +66,7 @@ class KFL
 	 */
 	private $mCache;
 	
+	private $mCacheRule;
 	/**
      * initialize.
      * @param string $appPath Application directory;
@@ -78,6 +79,7 @@ class KFL
 		require_once("Common/common.php");
 		include_once("Common/file.php");
 		$this->mStartTime = getmicrotime ();
+		$this->useCache();
 	}
 
 	/**
@@ -103,26 +105,55 @@ class KFL
 	}
 
 	/**
+	 * _getPageCacheRule
+	 * @access private
+	 * @return mix
+	 */
+	private function _getPageCacheRule(){
+		$cur_action = !empty($GLOBALS['gDispatcher'])?$GLOBALS['gDispatcher']:$this->mDefaultController;
+		if(isset($GLOBALS['pagecache'])){
+			foreach($GLOBALS['pagecache'] as $rule){
+				if(isset($rule['action']) && $rule['action']==$cur_action)	{
+					if(isset($rule['view']) && ($rule['view']=='*')){ 
+						return $rule;
+					}else if(isset($rule['view']) && (false!==strpos($rule['view'],$_GET['view']))){
+						return $rule;
+					}
+				}
+			}
+		}
+		return false;
+	}
+	
+	/**
 	 * useCache
-	 * @param int $lifetime
 	 * @access public
 	 * @return void
 	 */
-	public function useCache($lifetime=300){
+	public function useCache(){
 		// only cache get request
 		if($_SERVER["REQUEST_METHOD"]!='GET'){
 			return ;
 		}
+		$this->mCacheRule = $this->_getPageCacheRule();
+		
+		if(!$this->mCacheRule) return ;
+		
 		include_once("Libs/Cache.class.php");
-    	$this->mCache = new Cache($lifetime);
-    	$cacheDir = APP_TEMP_DIR.'/_cache/';
-    	$cache_file = 'KFL_'.md5($_SERVER['REQUEST_URI']);
-	 
-		$this->mCache->setCacheDir($cacheDir);
+    	$this->mCache = new Cache($this->mCacheRule['cachetime'],$this->mCacheRule['compressed']);
+    	
+	 	$this->mCache->setCacheStore($this->mCacheRule['cachestore']);
+	 	
+		$this->mCache->setCacheServer($this->mCacheRule['cacheserver']);
+		
+		$this->mCache->setCacheDir($this->mCacheRule['cachedir']);
+		
+		$cache_file = 'KFL_'.md5($_SERVER['REQUEST_URI']);
 		$this->mCache->setCacheFile($cache_file);
 		if($this->mCache->isCached()){
 		 	$this->mCache->output();
-		 	$this->execTime();
+		 	die;
+		 	
 		}
 	}
 

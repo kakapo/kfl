@@ -15,7 +15,7 @@ dojo.addOnLoad(function() {
         	        form: dojo.byId('memcached_form'),
         	        handleAs: "json",
         	        load: function(data){
-    	       
+    	     //  alert(data);
 						if(data.s==200){
 	            			//新增行
 			            	var rowid= "memcached_"+data.d;
@@ -347,14 +347,14 @@ function view_memcached(host){
 		</thead>
 		<tbody id="memcached_table">
 	
-		<tr id="row_host">
-		<td><input dojoType="dijit.form.TextBox" style="width:150px" type="text" name="name_host" value="host" readonly></td>
-		<td><input dojoType="dijit.form.ValidationTextBox" required="true" type="text" name="valu_host" id="valu_host" value=""></td>
+		<tr id="row_mmhost">
+		<td><input dojoType="dijit.form.TextBox" style="width:150px" type="text" name="name_mmhost" value="mmhost" readonly></td>
+		<td><input dojoType="dijit.form.ValidationTextBox" required="true" type="text" name="valu_mmhost" id="valu_mmhost" value=""></td>
 		<td><label>主机地址</label></td>
 		</tr>
-		<tr id="row_port">
-		<td><input dojoType="dijit.form.TextBox" style="width:150px" type="text" name="name_port" value="port" readonly></td>
-		<td><input dojoType="dijit.form.ValidationTextBox" required="true" type="text" name="valu_port" id="valu_port" value="" regExp="[0-9]+" invalidMessage="变量名不符合规则:[0-9]+"></td>
+		<tr id="row_mmport">
+		<td><input dojoType="dijit.form.TextBox" style="width:150px" type="text" name="name_mmport" value="mmport" readonly></td>
+		<td><input dojoType="dijit.form.ValidationTextBox" required="true" type="text" name="valu_mmport" id="valu_mmport" value="" regExp="[0-9]+" invalidMessage="变量名不符合规则:[0-9]+"></td>
 		<td><label>端口</label></td>
 		</tr>
 	

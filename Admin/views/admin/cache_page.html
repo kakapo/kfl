@@ -13,9 +13,9 @@ dojo.addOnLoad(function() {
         if (myForm.validate()) {
             var xhrArgs = {
         	        form: dojo.byId('page_form'),
-        	        handleAs: "text",
+        	        handleAs: "json",
         	        load: function(data){
-    	       alert(data);
+    	      
 						if(data.s==200){
 	            			//新增行
 			            	var rowid= "page_"+data.d;
@@ -92,30 +92,32 @@ dojo.addOnLoad(function() {
         	        form: dojo.byId('page_edit_form'),
         	        handleAs: "json",
         	        load: function(data){
+            //	alert(data);
     	        		if(data.s==200){
-	    	        		//alert(data);
+	    	        		
 							//删除旧行
-							var old_pagerule = dojo.byId("edit_host").value;
+							var old_pagerule = dojo.byId("edit_pagerule").value;
 							//alert(old_pagerule);
 	            			dojo.byId("pagerulelist").removeChild(dojo.byId("page_"+old_pagerule));
 	    	        		
 			            	//新增行
 			            	var rowid= "page_"+data.d;
 			            	
-			            	var host = data.d;
+			            	var rulename = data.d;
 			            	
 			            	var row=document.createElement("tr");   
 			            	row.id= rowid; 
 			
 			            	var td = document.createElement("td");
-			            	var aNode = dojo.create("a", { href: "javascript:view_pagerule('"+host+"');", title: "view host!", innerHTML: host }); 
-			            	td.appendChild(aNode);
+			            	//var aNode = dojo.create("a", { href: "javascript:view_pagerule('"+host+"');", title: "view host!", innerHTML: host }); 
+							var textNode = document.createTextNode(rulename);
+			            	td.appendChild(textNode);
 			            	
 			            	row.appendChild(td);
 			            	
 			            	var td = document.createElement("td");
-			            	var editbtn =new dijit.form.Button({label:"修改",onClick:function(){editPageRule(rowid,host)}});
-			            	var deletebtn =new dijit.form.Button({label:"删除",onClick:function(){deletePageRule(rowid,host)}});
+			            	var editbtn =new dijit.form.Button({label:"修改",onClick:function(){editPageRule(rowid,rulename)}});
+			            	var deletebtn =new dijit.form.Button({label:"删除",onClick:function(){deletePageRule(rowid,rulename)}});
 			            	td.appendChild(editbtn.domNode);
 			            	td.appendChild(deletebtn.domNode);
 			            	row.appendChild(td);		            	
@@ -164,11 +166,11 @@ dojo.addOnLoad(function() {
         
     });
 });
-function deletePageRule(id,host){
+function deletePageRule(id,page_rule){
 	 dojo.byId('pagerulelist').removeChild(dojo.byId(id));
 	 var xhrArgs = {
 			 	url: "/index.php",
-		        postData: "action=cache&op=deletepagerule&host="+host,
+		        postData: "action=cache&op=deletepagerule&pagerule="+page_rule,
 	 	        handleAs: "json",
 	 	        load: function(data){
 	 	 		  
@@ -199,16 +201,16 @@ function deletePageRule(id,host){
 	   	var deferred = dojo.xhrPost(xhrArgs);
 }
 
-function editPageRule(id,host){
+function editPageRule(id,pagerule){
 	dijit.byId('editPageRule').show();
 	var xhrArgs = {
-		      url: "/index.php/cache/getpagerule/"+host,
+		      url: "/index.php/cache/getpagerule/"+pagerule,
 		      handleAs: "json",
 		      preventCache: true,
 		     
 		      load: function(data, ioargs){
 					dojo.byId("page_edit_table").innerHTML = '';
-	      			dojo.byId("edit_host").value = host;
+	      			dojo.byId("edit_pagerule").value = pagerule;
 	      			for(var i in data){
 	      				
 	      				var rowid= "row_"+data[i].name;
@@ -226,14 +228,14 @@ function editPageRule(id,host){
 	      				var textBox = new dijit.form.ValidationTextBox({name:"valu_"+name,value:data[i].value,required:true});
 	      				secondtd.appendChild(textBox.domNode);
 	      				row.appendChild(secondtd);
-	      				
+	      				/*
 	      				var thirdtd = document.createElement("td");
 	      				var delebutton = new dijit.form.Button({label:"删除",onClick:function(e){
 						   		dojo.byId("page_edit_table").removeChild(this.domNode.parentNode.parentNode);
 		      				}});
 	      				thirdtd.appendChild(delebutton.domNode);
 	      				row.appendChild(thirdtd);
-	      				
+	      				*/
 	      				dojo.byId("page_edit_table").appendChild(row);   
 	      				
 	      			}
@@ -307,9 +309,9 @@ function editPageRule(id,host){
 		</thead>
 		<tbody id="pagerulelist">
 		<?php foreach($rules as $item){?>
-		<tr id="page_<?=$item['host']?>">
-		<td><a href="javascript:view_pagerule('<?=$item['host']?>');" ><?=$item['host']?></a></td>
-		<td><button dojoType="dijit.form.Button" onclick="editPageRule('page_<?=$item['host']?>','<?=$item['host']?>');">修改</button><button dojoType="dijit.form.Button" onclick="deletePageRule('page_<?=$item['host']?>','<?=$item['host']?>');">删除</button></td>
+		<tr id="page_<?=$item['rule_name']?>">
+		<td><?=$item['rule_name']?></td>
+		<td><button dojoType="dijit.form.Button" onclick="editPageRule('page_<?=$item['rule_name']?>','<?=$item['rule_name']?>');">修改</button><button dojoType="dijit.form.Button" onclick="deletePageRule('page_<?=$item['rule_name']?>','<?=$item['rule_name']?>');">删除</button></td>
 		</tr>
 		<? }?>
 		</tbody>
@@ -322,9 +324,7 @@ function editPageRule(id,host){
 
 
 <div dojoType="dijit.Dialog" id="newPageRule" title="新建规则" >
-	<div style="margin:5px;">
-			<button dojoType="dijit.form.Button" onclick="addRow('page_table');">新增参数</button>
-	</div>
+	
 	<div method="post" jsid="page_form" id="page_form" dojoType="dijit.form.Form" action="/index.php">
 		<input type="hidden" name="action" value="cache">
 		<input type="hidden" name="op" value="savepagerule">
@@ -341,20 +341,46 @@ function editPageRule(id,host){
 		<tr id="row_rulename">
 		<td><input dojoType="dijit.form.TextBox" style="width:150px" type="text" name="name_rulename" value="rulename" readonly></td>
 		<td><input dojoType="dijit.form.ValidationTextBox" required="true" type="text" name="valu_rulename" id="valu_rulename" value=""></td>
-		<td><label>规则名称</label></td>
+		<td style="font-size:12px;color:#666"><label>规则名称</label></td>
 		</tr>
+		<tr id="row_cachestore">
+		<td><input dojoType="dijit.form.TextBox" style="width:150px" type="text" name="name_cachestore" value="cachestore" readonly></td>
+		<td><input dojoType="dijit.form.ValidationTextBox" required="true" regExp="(file|memcache)" invalidMessage="变量名不符合规则:(file|memcache)"  type="text" name="valu_cachestore" id="valu_cachestore" value="file"></td>
+		<td style="font-size:12px;color:#666"><label>存储方式</label></td>
+		</tr>
+		<tr id="row_cacheserver">
+		<td><input dojoType="dijit.form.TextBox" style="width:150px" type="text" name="name_cacheserver" value="cacheserver" readonly></td>
+		<td><input dojoType="dijit.form.ValidationTextBox" type="text" name="valu_cacheserver" id="valu_cacheserver" value=""></td>
+		<td style="font-size:12px;color:#666"><label>Memcached服务器</label></td>
+		</tr>
+		
+		<tr id="row_cachedir">
+		<td><input dojoType="dijit.form.TextBox" style="width:150px" type="text" name="name_cachedir" value="cachedir" readonly></td>
+		<td><input dojoType="dijit.form.ValidationTextBox" type="text" name="valu_cachedir" id="valu_cachedir" value=""></td>
+		<td style="font-size:12px;color:#666"><label>存储路径</label></td>
+		</tr>
+		
 		<tr id="row_cachetime">
 		<td><input dojoType="dijit.form.TextBox" style="width:150px" type="text" name="name_cachetime" value="cachetime" readonly></td>
 		<td><input dojoType="dijit.form.ValidationTextBox" required="true" regExp="[0-9]+" invalidMessage="变量名不符合规则:[0-9]+" type="text" name="valu_cachetime" id="valu_cachetime" value=""></td>
-		<td><label>缓存时间</label></td>
+		<td style="font-size:12px;color:#666"><label>缓存时间</label></td>
 		</tr>
 		
 		<tr id="row_compressed">
 		<td><input dojoType="dijit.form.TextBox" style="width:150px" type="text" name="name_compressed" value="compressed" readonly></td>
 		<td><input dojoType="dijit.form.ValidationTextBox" required="true" regExp="[0|1]" invalidMessage="变量名不符合规则:[0|1]" type="text" name="valu_compressed" id="valu_compressed" value="1"></td>
-		<td><label>缓存压缩</label></td>
+		<td style="font-size:12px;color:#666"><label>缓存压缩</label></td>
 		</tr>
-		
+		<tr id="row_action">
+		<td><input dojoType="dijit.form.TextBox" style="width:150px" type="text" name="name_action" value="action" readonly></td>
+		<td><input dojoType="dijit.form.ValidationTextBox" required="true" regExp="[\w]+" invalidMessage="变量名不符合规则:[\w]+" type="text" name="valu_action" id="valu_action" value=""></td>
+		<td style="font-size:12px;color:#666"><label>$_GET['action']</label></td>
+		</tr>	
+		<tr id="row_view">
+		<td><input dojoType="dijit.form.TextBox" style="width:150px" type="text" name="name_view" value="view" readonly></td>
+		<td><input dojoType="dijit.form.ValidationTextBox" required="true" regExp="[\w\,\*]+" invalidMessage="变量名不符合规则:[\w,]+" type="text" name="valu_view" id="valu_view" value="*"></td>
+		<td style="font-size:12px;color:#666"><label>$_GET['view']</label></td>
+		</tr>	
 		</tbody>
 		<tfoot>
 		<tr>
@@ -371,20 +397,18 @@ function editPageRule(id,host){
 
 
 <div dojoType="dijit.Dialog" id="editPageRule" title="修改规则" >
-	<div style="margin:5px;">
-			<button dojoType="dijit.form.Button" onclick="addRow('page_edit_table');">新增参数</button>
-	</div>
+
 	<div method="post" jsid="page_edit_form" id="page_edit_form" dojoType="dijit.form.Form" action="/index.php">
 		<input type="hidden" name="action" value="cache">
 		<input type="hidden" name="op" value="updatepagerule">
-		<input type="hidden" name="edit_host" id="edit_host" value="">
+		<input type="hidden" name="edit_pagerule" id="edit_pagerule" value="">
 		
 		<table style="width:500px;margin:10px">
 		<thead>
 		<tr >
 		<td style="border-bottom:1px solid #ccc;width:150px;background-color:#eee">变量</td>
 		<td style="border-bottom:1px solid #ccc;width:250px;background-color:#eee">值</td>
-		<td style="border-bottom:1px solid #ccc;width:100px;background-color:#eee">操作</td>
+		<td style="border-bottom:1px solid #ccc;width:100px;background-color:#eee">备注</td>
 		</tr>
 		</thead>
 		<tbody id="page_edit_table">

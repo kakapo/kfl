@@ -89,11 +89,21 @@ $GLOBALS ['gMemcacheServer'] ['SqlDataCache'] = array (array ('host' => "192.168
 $config['admin']='admin';
 $config['password']='123456';
 
-
+//设置数据片缓存
 $GLOBALS ['packet']['cacheOpen'] = 0;
 $GLOBALS ['packet']['cacheStore'] = 'memcache' ;
 $GLOBALS ['packet']['cacheTime'] = 60 ;
 $GLOBALS ['packet']['cacheDir'] = APP_DIR."/tmp" ;
 $GLOBALS ['packet']['cacheServer'] = $GLOBALS ['gMemcacheServer'] ['SqlDataCache'] ;
+
+//设置页面缓存
+$GLOBALS['pagecache']['helpcache']['rulename']='helpcache';
+$GLOBALS['pagecache']['helpcache']['cachestore']='memcache';
+$GLOBALS['pagecache']['helpcache']['cachedir']= APP_DIR."/tmp/_cache";
+$GLOBALS['pagecache']['helpcache']['cacheserver']= $GLOBALS ['gMemcacheServer'] ['SqlDataCache'];
+$GLOBALS['pagecache']['helpcache']['cachetime']=600;
+$GLOBALS['pagecache']['helpcache']['compressed']=1;
+$GLOBALS['pagecache']['helpcache']['action']='index';
+$GLOBALS['pagecache']['helpcache']['view']='login,dashboard';
 
 ?>
