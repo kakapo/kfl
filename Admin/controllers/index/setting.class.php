@@ -9,6 +9,11 @@ class setting{
 	function view_system(){
 		global $tpl;	
 		$items = $this->mSettingObj->getSettings('system');
+		foreach ($items as $k=>$v){
+			$v['value'] = htmlspecialchars($v['value'],ENT_QUOTES);
+			$items[$k] = $v;
+		}
+		
 		$tpl->assign('set_type','system');
 		$tpl->assign('items',$items);
 	}
