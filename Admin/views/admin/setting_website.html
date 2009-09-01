@@ -3,34 +3,6 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Insert title here</title>
-	<script type="text/javascript" src="/public/js/dojotoolkit/dojo/dojo.js"
-	    djConfig="parseOnLoad:true, isDebug:true"></script>
-<script>
-dojo.addOnLoad(function() {
-	alert(321);
-    var myForm = dijit.byId("website_form");
-    dojo.connect(myForm, "onSubmit", function(e) {
-    	alert(123);
-        e.preventDefault();
-        e.stopPropagation();
-        
-        if (myForm.validate()) {
-        	//submitForm("website_form");
-            return true;
-        } else {
-            //alert('Form contains invalid data.  Please correct first');
-            return false;
-        }
-        
-       // if (myForm.isValid()) {
-       // 	submitForm("website_form");
-       //     //alert("Ready to submit data: " + dojo.toJson(myForm.attr("value")));
-       // }
-    });
-});
-
-
-</script>
 
 </head>
 <body class="nihilo">
@@ -41,7 +13,18 @@ dojo.addOnLoad(function() {
 	</div>
 </div>
 
-<div method="post" jsid="website_form" id="website_form" dojoType="dijit.form.Form" action="/index.php" >
+<div method="" jsid="website_form" id="website_form" dojoType="dijit.form.Form" action="" >
+
+ <script type="dojo/method" event="onSubmit">
+		
+ 		if (this.validate()) {
+        	submitForm("website_form");
+            return false;
+        } else {
+            return false;
+        }
+       
+    </script>
 <input type="hidden" name="action" value="setting">
 <input type="hidden" name="op" value="save">
 <input type="hidden" name="set_type" value="<?=$set_type?>">

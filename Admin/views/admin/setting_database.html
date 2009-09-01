@@ -4,15 +4,53 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Insert title here</title>
 
+</head>
+<body class="nihilo">
+
+
+<div style="height:50px;">
+	<div style="margin:10px;">位置: 配置管理  > 数据库设置</div>
+	<div style="margin:10px;">
+		<button dojoType="dijit.form.Button" onclick="dijit.byId('newDatabase').show();">新建数据库</button>
+	</div>
+</div>
+
+<table style="width:600px;margin:10px">
+<thead>
+<tr >
+<td style="border-bottom:1px solid #ccc;width:450px;background-color:#eee">数据库</td>
+
+<td style="border-bottom:1px solid #ccc;width:150px;background-color:#eee">操作</td>
+</tr>
+</thead>
+<tbody id="dblist">
+<?php foreach($database as $item){?>
+<tr id="database_<?=$item['dbname']?>">
+<td><?=$item['dbname']?></td>
+<td><button dojoType="dijit.form.Button" onclick="editDatabase('database_<?=$item['dbname']?>','<?=$item['dbname']?>');">修改</button><button dojoType="dijit.form.Button" onclick="deleteDatabase('database_<?=$item['dbname']?>','<?=$item['dbname']?>');">删除</button></td>
+</tr>
+<? }?>
+</tbody>
+</table>
+
+
 <script>
-dojo.addOnLoad(function() {
+
+
+</script>
+
+<div dojoType="dijit.Dialog" id="newDatabase" title="新建数据库" >
+	<div style="margin:5px;">
+	<button dojoType="dijit.form.Button" onclick="addRow('database_table');">新增参数</button>
+	</div>
+	<div method="" jsid="database_form" id="database_form" dojoType="dijit.form.Form" action="">
 	
-    var myForm = dijit.byId("database_form");
-    dojo.connect(myForm, "onSubmit", function(e) {
-        e.preventDefault();
-        if (myForm.validate()) {
+	 <script type="dojo/method" event="onSubmit">
+		
+		if (this.validate()) {
             var xhrArgs = {
-        	        form: dojo.byId('database_form'),
+                    url:"/index.php",
+        	        form: "database_form",
         	        handleAs: "json",
         	        load: function(data){
 						if(data.s==200){
@@ -50,21 +88,7 @@ dojo.addOnLoad(function() {
     	        		}
         	        },
         	        error: function(error,ioargs){
-            	        
-        	        	var message = "";
-        	        	switch(ioargs.xhr.status){
-    	   	             case 404:
-    	   	               message = "访问的页面不存在！";
-    	   	               break;
-    	   	             case 500:
-    	   	               message = "服务器内部错误！";
-    	   	               break;
-    	   	             case 407:
-    	   	               message = "You need to authenticate with a proxy.";
-    	   	               break;
-    	   	             default:
-    	   	               message = "未知错误.";
-    	   	          }
+            	      var message = httpErrorReport(ioargs.xhr.status);
         	          dojo.byId("AlertCon2").innerHTML = message;
         	          dijit.byId("AlertShow2").show();
         	        }
@@ -72,233 +96,14 @@ dojo.addOnLoad(function() {
          
           	var deferred = dojo.xhrPost(xhrArgs);
         	
-            return true;
+            return false;
         } else {
-            //alert('Form contains invalid data.  Please correct first');
+           
             return false;
         }
-        
-    });
-});
-dojo.addOnLoad(function() {
+       
+    </script>
 	
-    var myForm = dijit.byId("database_edit_form");
-    dojo.connect(myForm, "onSubmit", function(e) {
-        e.preventDefault();
-        if (myForm.validate()) {
-            var xhrArgs = {
-        	        form: dojo.byId('database_edit_form'),
-        	        handleAs: "json",
-        	        load: function(data){
-    	        		if(data.s==200){
-	    	        		//alert(data);
-							//删除旧行
-							var old_database = dojo.byId("edit_dbname").value;
-							//alert(old_database);
-	            			dojo.byId("dblist").removeChild(dojo.byId("database_"+old_database));
-	    	        		
-			            	//新增行
-			            	var rowid= "database_"+data.d;
-			            	
-			            	var dbname = data.d;
-			            	
-			            	var row=document.createElement("tr");   
-			            	row.id= rowid; 
-			
-			            	var td = document.createElement("td");
-			            	var textNode=document.createTextNode(dbname); 
-			            	td.appendChild(textNode);
-			            	row.appendChild(td);
-			            	
-			            	var td = document.createElement("td");
-			            	var editbtn =new dijit.form.Button({label:"修改",onClick:function(){editDatabase(rowid,dbname)}});
-			            	var deletebtn =new dijit.form.Button({label:"删除",onClick:function(){deleteDatabase(rowid,dbname)}});
-			            	td.appendChild(editbtn.domNode);
-			            	td.appendChild(deletebtn.domNode);
-			            	row.appendChild(td);		            	
-			            	dojo.byId('dblist').appendChild(row);
-			            	
-			            	//表单重置
-		        	      	//dojo.byId('database_edit_form').reset();
-	 	      	  
-		            	    dijit.byId('editDatabase').hide();
-		        	        dojo.byId("AlertCon2").innerHTML = data.m;
-		        	        dijit.byId("AlertShow2").show();
-    	        		}
-    	        		if(data.s==400){
-    	        			dojo.byId("AlertCon2").innerHTML = data.m;
-		        	        dijit.byId("AlertShow2").show();
-    	        		}
-        	        },
-        	        error: function(error,ioargs){
-            	        alert(error);
-        	        	var message = "";
-        	        	switch(ioargs.xhr.status){
-    	   	             case 404:
-    	   	               message = "访问的页面不存在！";
-    	   	               break;
-    	   	             case 500:
-    	   	               message = "服务器内部错误！";
-    	   	               break;
-    	   	             case 407:
-    	   	               message = "You need to authenticate with a proxy.";
-    	   	               break;
-    	   	             default:
-    	   	               message = "未知错误.";
-    	   	          }
-        	          dojo.byId("AlertCon2").innerHTML = message;
-        	          dijit.byId("AlertShow2").show();
-        	        }
-        	      }
-         
-          	var deferred = dojo.xhrPost(xhrArgs);
-        	
-            return true;
-        } else {
-            //alert('Form contains invalid data.  Please correct first');
-            return false;
-        }
-        
-    });
-});
-function deleteDatabase(id,dbname){
-	 dojo.byId('dblist').removeChild(dojo.byId(id));
-	 var xhrArgs = {
-			 	url: "/index.php",
-		        postData: "action=setting&op=deletedb&dbname="+dbname,
-	 	        handleAs: "json",
-	 	        load: function(data){
-	 	 		  
-	 	          dojo.byId("AlertCon2").innerHTML = data.m;
-	 	 		  
-	 	          dijit.byId("AlertShow2").show();
-	 	        },
-	 	        error: function(error,ioargs){
-	 	        	var message = "";
-	 	        	switch(ioargs.xhr.status){
-		   	             case 404:
-		   	               message = "访问的页面不存在！";
-		   	               break;
-		   	             case 500:
-		   	               message = "服务器内部错误！";
-		   	               break;
-		   	             case 407:
-		   	               message = "You need to authenticate with a proxy.";
-		   	               break;
-		   	             default:
-		   	               message = "未知错误.";
-		   	          }
-	 	          dojo.byId("AlertCon2").innerHTML = message;
-	 	          dijit.byId("AlertShow2").show();
-	 	        }
-	 	      }
-	  
-	   	var deferred = dojo.xhrPost(xhrArgs);
-}
-
-function editDatabase(id,dbname){
-	dijit.byId('editDatabase').show();
-	var xhrArgs = {
-		      url: "/index.php/setting/getdb/"+dbname,
-		      handleAs: "json",
-		      preventCache: true,
-		     
-		      load: function(data, ioargs){
-					dojo.byId("database_edit_table").innerHTML = '';
-	      			dojo.byId("edit_dbname").value = dbname;
-	      			for(var i in data){
-	      				
-	      				var rowid= "row_"+data[i].name;
-	      				var name= data[i].name;
-	      				
-	      				var row=document.createElement("tr");   
-	      				row.id=rowid; 
-	      					
-	      				var firsttd = document.createElement("td");
-	      				var textBox = new dijit.form.ValidationTextBox({readOnly:true,name:"name_"+name,value:data[i].name,style:{width:"150px"},required:true,regExp:"^[A-Za-z_]{1}[A-Za-z0-9_]*",invalidMessage:"变量名不符合规则:^[A-Za-z_]{1}[A-Za-z0-9_]*"});	
-	      				firsttd.appendChild(textBox.domNode);
-	      				row.appendChild(firsttd);
-	      				
-	      				var secondtd = document.createElement("td");	
-	      				var textBox = new dijit.form.ValidationTextBox({name:"valu_"+name,value:data[i].value,required:true});
-	      				secondtd.appendChild(textBox.domNode);
-	      				row.appendChild(secondtd);
-	      				
-	      				var thirdtd = document.createElement("td");
-	      				var delebutton = new dijit.form.Button({label:"删除",onClick:function(e){
-						   		dojo.byId("database_edit_table").removeChild(this.domNode.parentNode.parentNode);
-		      				}});
-	      				thirdtd.appendChild(delebutton.domNode);
-	      				row.appendChild(thirdtd);
-	      				
-	      				dojo.byId("database_edit_table").appendChild(row);   
-	      				
-	      			}
-				
-					
-		        },
-		      error: function(error, ioargs){
-		          var message = "";
-		          
-		          switch(ioargs.xhr.status){
-		             case 404:
-		               message = "访问的页面不存在！";
-		               break;
-		             case 500:
-		               message = "服务器内部错误！";
-		               break;
-		             case 407:
-		               message = "You need to authenticate with a proxy.";
-		               break;
-		             default:
-		               message = "未知错误.";
-		          }
-		          dojo.byId('dashboard').innerHTML = message;
-		        }
-		
-		    }
-		
-		    //Call the asynchronous xhrGet
-		    var deferred = dojo.xhrGet(xhrArgs);
-}
-
-</script>
-
-</head>
-<body class="nihilo">
-
-
-<div style="height:50px;">
-	<div style="margin:10px;">位置: 配置管理  > 数据库设置</div>
-	<div style="margin:10px;">
-		<button dojoType="dijit.form.Button" onclick="dijit.byId('newDatabase').show();">新建数据库</button>
-	</div>
-</div>
-
-<table style="width:600px;margin:10px">
-<thead>
-<tr >
-<td style="border-bottom:1px solid #ccc;width:450px;background-color:#eee">数据库</td>
-
-<td style="border-bottom:1px solid #ccc;width:150px;background-color:#eee">操作</td>
-</tr>
-</thead>
-<tbody id="dblist">
-<?php foreach($database as $item){?>
-<tr id="database_<?=$item['dbname']?>">
-<td><?=$item['dbname']?></td>
-<td><button dojoType="dijit.form.Button" onclick="editDatabase('database_<?=$item['dbname']?>','<?=$item['dbname']?>');">修改</button><button dojoType="dijit.form.Button" onclick="deleteDatabase('database_<?=$item['dbname']?>','<?=$item['dbname']?>');">删除</button></td>
-</tr>
-<? }?>
-</tbody>
-</table>
-
-
-<div dojoType="dijit.Dialog" id="newDatabase" title="新建数据库" >
-	<div style="margin:5px;">
-			<button dojoType="dijit.form.Button" onclick="addRow('database_table');">新增参数</button>
-	</div>
-	<div method="post" jsid="database_form" id="database_form" dojoType="dijit.form.Form" action="/index.php">
 		<input type="hidden" name="action" value="setting">
 		<input type="hidden" name="op" value="savedb">
 		<table style="width:500px;margin:10px">
@@ -360,6 +165,67 @@ function editDatabase(id,dbname){
 			<button dojoType="dijit.form.Button" onclick="addRow('database_edit_table');">新增参数</button>
 	</div>
 	<div method="post" jsid="database_edit_form" id="database_edit_form" dojoType="dijit.form.Form" action="/index.php">
+	<script type="dojo/method" event="onSubmit">
+		 if (this.validate()) {
+            var xhrArgs = {
+        	        form: 'database_edit_form',
+        	        handleAs: "json",
+        	        load: function(data){
+    	        		if(data.s==200){
+	    	        		//alert(data);
+							//删除旧行
+							var old_database = dojo.byId("edit_dbname").value;
+							//alert(old_database);
+	            			dojo.byId("dblist").removeChild(dojo.byId("database_"+old_database));
+	    	        		
+			            	//新增行
+			            	var rowid= "database_"+data.d;
+			            	
+			            	var dbname = data.d;
+			            	
+			            	var row=document.createElement("tr");   
+			            	row.id= rowid; 
+			
+			            	var td = document.createElement("td");
+			            	var textNode=document.createTextNode(dbname); 
+			            	td.appendChild(textNode);
+			            	row.appendChild(td);
+			            	
+			            	var td = document.createElement("td");
+			            	var editbtn =new dijit.form.Button({label:"修改",onClick:function(){editDatabase(rowid,dbname)}});
+			            	var deletebtn =new dijit.form.Button({label:"删除",onClick:function(){deleteDatabase(rowid,dbname)}});
+			            	td.appendChild(editbtn.domNode);
+			            	td.appendChild(deletebtn.domNode);
+			            	row.appendChild(td);		            	
+			            	dojo.byId('dblist').appendChild(row);
+			            	
+			            	//表单重置
+		        	      	//dojo.byId('database_edit_form').reset();
+	 	      	  
+		            	    dijit.byId('editDatabase').hide();
+		        	        dojo.byId("AlertCon2").innerHTML = data.m;
+		        	        dijit.byId("AlertShow2").show();
+    	        		}
+    	        		if(data.s==400){
+    	        			dojo.byId("AlertCon2").innerHTML = data.m;
+		        	        dijit.byId("AlertShow2").show();
+    	        		}
+        	        },
+        	        error: function(error,ioargs){
+            	      var message = httpErrorReport(ioargs.xhr.status);
+        	          dojo.byId("AlertCon2").innerHTML = message;
+        	          dijit.byId("AlertShow2").show();
+        	        }
+        	      }
+         
+          	var deferred = dojo.xhrPost(xhrArgs);
+        	
+            return false;
+        } else {
+           
+            return false;
+        }
+		</script>
 		<input type="hidden" name="action" value="setting">
 		<input type="hidden" name="op" value="updatedb">
 		<input type="hidden" name="edit_dbname" id="edit_dbname" value="">

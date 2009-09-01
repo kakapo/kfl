@@ -4,29 +4,6 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Insert title here</title>
 
-<script>
-dojo.addOnLoad(function() {
-	
-    var myForm = dijit.byId("system_form");
-    dojo.connect(myForm, "onSubmit", function(e) {
-        e.preventDefault();
-        if (myForm.validate()) {
-        	submitForm("system_form");
-            return true;
-        } else {
-            //alert('Form contains invalid data.  Please correct first');
-            return false;
-        }
-        
-       // if (myForm.isValid()) {
-       // 	submitForm("myform");
-       //     //alert("Ready to submit data: " + dojo.toJson(myForm.attr("value")));
-       // }
-    });
-});
-
-
-</script>
 
 </head>
 <body class="nihilo">
@@ -38,7 +15,19 @@ dojo.addOnLoad(function() {
 </div>
 
 
-<div method="post" jsid="system_form" id="system_form" dojoType="dijit.form.Form" action="/index.php">
+<div dojoType="dijit.form.Form"  jsId="system_form" id="system_form" encType="multipart/form-data" action=""  method="">
+
+ <script type="dojo/method" event="onSubmit">
+		
+ 		if (this.validate()) {
+        	submitForm("system_form");
+            return false;
+        } else {
+            return false;
+        }
+       
+    </script>
+
 <input type="hidden" name="action" value="setting">
 <input type="hidden" name="op" value="save">
 <input type="hidden" name="set_type" value="<?=$set_type?>">

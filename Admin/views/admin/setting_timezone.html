@@ -4,29 +4,6 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Insert title here</title>
 
-<script>
-dojo.addOnLoad(function() {
-	
-    var myForm = dijit.byId("email_form");
-    dojo.connect(myForm, "onSubmit", function(e) {
-        e.preventDefault();
-        if (myForm.validate()) {
-        	submitForm("email_form");
-            return true;
-        } else {
-            //alert('Form contains invalid data.  Please correct first');
-            return false;
-        }
-        
-       // if (myForm.isValid()) {
-       // 	submitForm("website_form");
-       //     //alert("Ready to submit data: " + dojo.toJson(myForm.attr("value")));
-       // }
-    });
-});
-
-
-</script>
 
 </head>
 <body class="nihilo">
@@ -36,7 +13,19 @@ dojo.addOnLoad(function() {
 </div>
 
 
-<div method="post" jsid="email_form" id="email_form" dojoType="dijit.form.Form" action="/index.php">
+<div method="" jsid="timezone_form" id="timezone_form" dojoType="dijit.form.Form" action="">
+
+ <script type="dojo/method" event="onSubmit">
+		
+ 		if (this.validate()) {
+        	submitForm("timezone_form");
+            return false;
+        } else {
+            return false;
+        }
+       
+    </script>
+    
 <input type="hidden" name="action" value="setting">
 <input type="hidden" name="op" value="save">
 <input type="hidden" name="set_type" value="<?=$set_type?>">
@@ -48,7 +37,7 @@ dojo.addOnLoad(function() {
 <td style="border-bottom:1px solid #ccc;width:150px;background-color:#eee">操作</td>
 </tr>
 </thead>
-<tbody id="email_table">
+<tbody id="timezone_table">
 
 <tr id="row">
 <td>默认时区<input type="hidden" name="name_timezone" value="default_timezone"></td>

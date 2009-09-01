@@ -4,270 +4,6 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Insert title here</title>
 
-<script>
-dojo.addOnLoad(function() {
-	
-    var myForm = dijit.byId("page_form");
-    dojo.connect(myForm, "onSubmit", function(e) {
-        e.preventDefault();
-        if (myForm.validate()) {
-            var xhrArgs = {
-        	        form: dojo.byId('page_form'),
-        	        handleAs: "json",
-        	        load: function(data){
-    	      
-						if(data.s==200){
-	            			//新增行
-			            	var rowid= "page_"+data.d;
-			            	var host = data.d;
-			            	
-			            	var row=document.createElement("tr");   
-			            	row.id= rowid; 
-		
-			            	var td = document.createElement("td");
-			            	var aNode = dojo.create("a", { href: "javascript:view_pagerule('"+host+"');", title: "view host!", innerHTML: host }); 
-			            	td.appendChild(aNode);
-			            	row.appendChild(td);
-			            	
-			            	var td = document.createElement("td");
-			            	var editbtn =new dijit.form.Button({label:"修改",onClick:function(){editPageRule(rowid,host)}});
-			            	var deletebtn =new dijit.form.Button({label:"删除",onClick:function(){deletePageRule(rowid,host)}});
-			            	td.appendChild(editbtn.domNode);
-			            	td.appendChild(deletebtn.domNode);
-			            	row.appendChild(td);		            	
-			            	dojo.byId('pagerulelist').appendChild(row);
-	
-			            	//表单重置
-		        	      	dojo.byId('page_form').reset();
-	
-		        	      	  
-		            	    dijit.byId('newPageRule').hide();
-		        	        dojo.byId("AlertCon2").innerHTML = data.m;
-		        	        dijit.byId("AlertShow2").show();
-						}
-						if(data.s==400){
-    	        			dojo.byId("AlertCon2").innerHTML = data.m;
-		        	        dijit.byId("AlertShow2").show();
-    	        		}
-        	        },
-        	        error: function(error,ioargs){
-            	        alert(error);
-        	        	var message = "";
-        	        	switch(ioargs.xhr.status){
-    	   	             case 404:
-    	   	               message = "访问的页面不存在！";
-    	   	               break;
-    	   	             case 500:
-    	   	               message = "服务器内部错误！";
-    	   	               break;
-    	   	             case 407:
-    	   	               message = "You need to authenticate with a proxy.";
-    	   	               break;
-    	   	             default:
-    	   	               message = "未知错误.";
-    	   	          }
-        	          dojo.byId("AlertCon2").innerHTML = message;
-        	          dijit.byId("AlertShow2").show();
-        	        }
-        	      }
-         
-          	var deferred = dojo.xhrPost(xhrArgs);
-        	
-            return true;
-        } else {
-            //alert('Form contains invalid data.  Please correct first');
-            return false;
-        }
-        
-    });
-});
-dojo.addOnLoad(function() {
-	
-    var myForm = dijit.byId("page_edit_form");
-    dojo.connect(myForm, "onSubmit", function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        if (myForm.validate()) {
-            var xhrArgs = {
-        	        form: dojo.byId('page_edit_form'),
-        	        handleAs: "json",
-        	        load: function(data){
-            //	alert(data);
-    	        		if(data.s==200){
-	    	        		
-							//删除旧行
-							var old_pagerule = dojo.byId("edit_pagerule").value;
-							//alert(old_pagerule);
-	            			dojo.byId("pagerulelist").removeChild(dojo.byId("page_"+old_pagerule));
-	    	        		
-			            	//新增行
-			            	var rowid= "page_"+data.d;
-			            	
-			            	var rulename = data.d;
-			            	
-			            	var row=document.createElement("tr");   
-			            	row.id= rowid; 
-			
-			            	var td = document.createElement("td");
-			            	//var aNode = dojo.create("a", { href: "javascript:view_pagerule('"+host+"');", title: "view host!", innerHTML: host }); 
-							var textNode = document.createTextNode(rulename);
-			            	td.appendChild(textNode);
-			            	
-			            	row.appendChild(td);
-			            	
-			            	var td = document.createElement("td");
-			            	var editbtn =new dijit.form.Button({label:"修改",onClick:function(){editPageRule(rowid,rulename)}});
-			            	var deletebtn =new dijit.form.Button({label:"删除",onClick:function(){deletePageRule(rowid,rulename)}});
-			            	td.appendChild(editbtn.domNode);
-			            	td.appendChild(deletebtn.domNode);
-			            	row.appendChild(td);		            	
-			            	dojo.byId('pagerulelist').appendChild(row);
-			            	
-			            	//表单重置
-		        	      	//dojo.byId('page_edit_form').reset();
-	 	      	  
-		            	    dijit.byId('editPageRule').hide();
-		        	        dojo.byId("AlertCon2").innerHTML = data.m;
-		        	        dijit.byId("AlertShow2").show();
-    	        		}
-    	        		if(data.s==400){
-    	        			dojo.byId("AlertCon2").innerHTML = data.m;
-		        	        dijit.byId("AlertShow2").show();
-    	        		}
-        	        },
-        	        error: function(error,ioargs){
-            	        alert(error);
-        	        	var message = "";
-        	        	switch(ioargs.xhr.status){
-    	   	             case 404:
-    	   	               message = "访问的页面不存在！";
-    	   	               break;
-    	   	             case 500:
-    	   	               message = "服务器内部错误！";
-    	   	               break;
-    	   	             case 407:
-    	   	               message = "You need to authenticate with a proxy.";
-    	   	               break;
-    	   	             default:
-    	   	               message = "未知错误.";
-    	   	          }
-        	          dojo.byId("AlertCon2").innerHTML = message;
-        	          dijit.byId("AlertShow2").show();
-        	        }
-        	      }
-         
-          	var deferred = dojo.xhrPost(xhrArgs);
-        	
-            return true;
-        } else {
-            //alert('Form contains invalid data.  Please correct first');
-            return false;
-        }
-        
-    });
-});
-function deletePageRule(id,page_rule){
-	 dojo.byId('pagerulelist').removeChild(dojo.byId(id));
-	 var xhrArgs = {
-			 	url: "/index.php",
-		        postData: "action=cache&op=deletepagerule&pagerule="+page_rule,
-	 	        handleAs: "json",
-	 	        load: function(data){
-	 	 		  
-	 	          dojo.byId("AlertCon2").innerHTML = data.m;
-	 	 		  
-	 	          dijit.byId("AlertShow2").show();
-	 	        },
-	 	        error: function(error,ioargs){
-	 	        	var message = "";
-	 	        	switch(ioargs.xhr.status){
-		   	             case 404:
-		   	               message = "访问的页面不存在！";
-		   	               break;
-		   	             case 500:
-		   	               message = "服务器内部错误！";
-		   	               break;
-		   	             case 407:
-		   	               message = "You need to authenticate with a proxy.";
-		   	               break;
-		   	             default:
-		   	               message = "未知错误.";
-		   	          }
-	 	          dojo.byId("AlertCon2").innerHTML = message;
-	 	          dijit.byId("AlertShow2").show();
-	 	        }
-	 	      }
-	  
-	   	var deferred = dojo.xhrPost(xhrArgs);
-}
-
-function editPageRule(id,pagerule){
-	dijit.byId('editPageRule').show();
-	var xhrArgs = {
-		      url: "/index.php/cache/getpagerule/"+pagerule,
-		      handleAs: "json",
-		      preventCache: true,
-		     
-		      load: function(data, ioargs){
-					dojo.byId("page_edit_table").innerHTML = '';
-	      			dojo.byId("edit_pagerule").value = pagerule;
-	      			for(var i in data){
-	      				
-	      				var rowid= "row_"+data[i].name;
-	      				var name= data[i].name;
-	      				
-	      				var row=document.createElement("tr");   
-	      				row.id=rowid; 
-	      					
-	      				var firsttd = document.createElement("td");
-	      				var textBox = new dijit.form.ValidationTextBox({readOnly:true,name:"name_"+name,value:data[i].name,style:{width:"150px"},required:true,regExp:"^[A-Za-z_]{1}[A-Za-z0-9_]*",invalidMessage:"变量名不符合规则:^[A-Za-z_]{1}[A-Za-z0-9_]*"});	
-	      				firsttd.appendChild(textBox.domNode);
-	      				row.appendChild(firsttd);
-	      				
-	      				var secondtd = document.createElement("td");	
-	      				var textBox = new dijit.form.ValidationTextBox({name:"valu_"+name,value:data[i].value,required:true});
-	      				secondtd.appendChild(textBox.domNode);
-	      				row.appendChild(secondtd);
-	      				/*
-	      				var thirdtd = document.createElement("td");
-	      				var delebutton = new dijit.form.Button({label:"删除",onClick:function(e){
-						   		dojo.byId("page_edit_table").removeChild(this.domNode.parentNode.parentNode);
-		      				}});
-	      				thirdtd.appendChild(delebutton.domNode);
-	      				row.appendChild(thirdtd);
-	      				*/
-	      				dojo.byId("page_edit_table").appendChild(row);   
-	      				
-	      			}
-				
-					
-		        },
-		      error: function(error, ioargs){
-		          var message = "";
-		          
-		          switch(ioargs.xhr.status){
-		             case 404:
-		               message = "访问的页面不存在！";
-		               break;
-		             case 500:
-		               message = "服务器内部错误！";
-		               break;
-		             case 407:
-		               message = "You need to authenticate with a proxy.";
-		               break;
-		             default:
-		               message = "未知错误.";
-		          }
-		          dojo.byId('dashboard').innerHTML = message;
-		        }
-		
-		    }
-		
-		    //Call the asynchronous xhrGet
-		    var deferred = dojo.xhrGet(xhrArgs);
-}
-
-</script>
  <style>
 	#cacheDiv {
 	font-size:14px;
@@ -280,13 +16,13 @@ function editPageRule(id,pagerule){
 <body class="nihilo">
 
 	 <div dojoType="dijit.layout.AccordionContainer" style="width:300px;height:300px;float:right">
-		<div dojoType="dijit.layout.AccordionPane" title="功能说明">
+		<div dojoType="dijit.layout.ContentPane" title="功能说明">
 			<p>
 			&nbsp;&nbsp;KFL是之前KFC框架的轻量级版本，框架KFL目录下所有文件大小35k，主要去除了KFC的组件概念，保留了MVC的开发模式，特别适合前台的网站开发。
 			</p>
 		  
 		</div>
-		<div dojoType="dijit.layout.AccordionPane" title="如何使用">
+		<div dojoType="dijit.layout.ContentPane" title="如何使用">
 			<p>
 			
 			</p>
@@ -325,7 +61,66 @@ function editPageRule(id,pagerule){
 
 <div dojoType="dijit.Dialog" id="newPageRule" title="新建规则" >
 	
-	<div method="post" jsid="page_form" id="page_form" dojoType="dijit.form.Form" action="/index.php">
+	<div method="" jsid="page_form" id="page_form" dojoType="dijit.form.Form" action="">
+	
+	<script type="dojo/method" event="onSubmit">
+		if (this.validate()) {
+            var xhrArgs = {
+					url:"/index.php",
+        	        form: 'page_form',
+        	        handleAs: "json",
+        	        load: function(data){
+    	      			alert(data.m);
+						if(data.s==200){
+	            			//新增行
+			            	var rowid= "page_"+data.d;
+			            	var rulename = data.d;
+			            	
+			            	var row=document.createElement("tr");   
+			            	row.id= rowid; 
+		
+			            	var td = document.createElement("td");
+			            	var textNode = document.createTextNode(rulename);
+			            	td.appendChild(textNode);
+			            	row.appendChild(td);
+			            	
+			            	var td = document.createElement("td");
+			            	var editbtn =new dijit.form.Button({label:"修改",onClick:function(){editPageRule(rowid,rulename)}});
+			            	var deletebtn =new dijit.form.Button({label:"删除",onClick:function(){deletePageRule(rowid,rulename)}});
+			            	td.appendChild(editbtn.domNode);
+			            	td.appendChild(deletebtn.domNode);
+			            	row.appendChild(td);		            	
+			            	dojo.byId('pagerulelist').appendChild(row);
+	
+			            	//表单重置
+		        	      	dojo.byId('page_form').reset();
+	
+		        	      	  
+		            	    dijit.byId('newPageRule').hide();
+		        	        dojo.byId("AlertCon2").innerHTML = data.m;
+		        	        dijit.byId("AlertShow2").show();
+						}
+						if(data.s==400){
+    	        			dojo.byId("AlertCon2").innerHTML = data.m;
+		        	        dijit.byId("AlertShow2").show();
+    	        		}
+        	        },
+        	        error: function(error,ioargs){
+					  alert(error);
+       	        	  var message = httpErrorReport(ioargs.xhr.status);
+        	          dojo.byId("AlertCon2").innerHTML = message;
+        	          dijit.byId("AlertShow2").show();
+        	        }
+        	      }
+         
+          	var deferred = dojo.xhrPost(xhrArgs);
+        	
+            return false;
+        } else {
+          
+            return false;
+        }
+	</script>
 		<input type="hidden" name="action" value="cache">
 		<input type="hidden" name="op" value="savepagerule">
 		<table style="width:500px;margin:10px">
@@ -398,7 +193,73 @@ function editPageRule(id,pagerule){
 
 <div dojoType="dijit.Dialog" id="editPageRule" title="修改规则" >
 
-	<div method="post" jsid="page_edit_form" id="page_edit_form" dojoType="dijit.form.Form" action="/index.php">
+	<div method="" jsid="page_edit_form" id="page_edit_form" dojoType="dijit.form.Form" action="">
+	
+	<script type="dojo/method" event="onSubmit">
+		if (this.validate()) {
+            var xhrArgs = {
+					url:"/index.php",
+        	        form: 'page_edit_form',
+        	        handleAs: "json",
+        	        load: function(data){
+            		//	alert(data);
+    	        		if(data.s==200){
+	    	        		
+							//删除旧行
+							var old_pagerule = dojo.byId("edit_pagerule").value;
+							//alert(old_pagerule);
+	            			dojo.byId("pagerulelist").removeChild(dojo.byId("page_"+old_pagerule));
+	    	        		
+			            	//新增行
+			            	var rowid= "page_"+data.d;
+			            	
+			            	var rulename = data.d;
+			            	
+			            	var row=document.createElement("tr");   
+			            	row.id= rowid; 
+			
+			            	var td = document.createElement("td");
+			            	//var aNode = dojo.create("a", { href: "javascript:view_pagerule('"+host+"');", title: "view host!", innerHTML: host }); 
+							var textNode = document.createTextNode(rulename);
+			            	td.appendChild(textNode);
+			            	
+			            	row.appendChild(td);
+			            	
+			            	var td = document.createElement("td");
+			            	var editbtn =new dijit.form.Button({label:"修改",onClick:function(){editPageRule(rowid,rulename)}});
+			            	var deletebtn =new dijit.form.Button({label:"删除",onClick:function(){deletePageRule(rowid,rulename)}});
+			            	td.appendChild(editbtn.domNode);
+			            	td.appendChild(deletebtn.domNode);
+			            	row.appendChild(td);		            	
+			            	dojo.byId('pagerulelist').appendChild(row);
+			            	
+			            	//表单重置
+		        	      	//dojo.byId('page_edit_form').reset();
+	 	      	  
+		            	    dijit.byId('editPageRule').hide();
+		        	        dojo.byId("AlertCon2").innerHTML = data.m;
+		        	        dijit.byId("AlertShow2").show();
+    	        		}
+    	        		if(data.s==400){
+    	        			dojo.byId("AlertCon2").innerHTML = data.m;
+		        	        dijit.byId("AlertShow2").show();
+    	        		}
+        	        },
+        	        error: function(error,ioargs){
+       	        	 var message = httpErrorReport(ioargs.xhr.status);
+        	          dojo.byId("AlertCon2").innerHTML = message;
+        	          dijit.byId("AlertShow2").show();
+        	        }
+        	      }
+         
+          	var deferred = dojo.xhrPost(xhrArgs);
+        	
+            return false;
+        } else {
+            
+            return false;
+        }
+</script>
 		<input type="hidden" name="action" value="cache">
 		<input type="hidden" name="op" value="updatepagerule">
 		<input type="hidden" name="edit_pagerule" id="edit_pagerule" value="">
