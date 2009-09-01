@@ -1,13 +1,12 @@
 <?php
-define("SESSION_LIVE_TIME", 1440); // Timeout
 class SessionHandle
 {
 	function __construct(){
-		if(SESSION_HANDLE=='file'){
+		if($GLOBALS['session']['sessionHandle']=='file'){
 			session_start();
-		}elseif(SESSION_HANDLE=='mysql'){
+		}elseif($GLOBALS['session']['sessionHandle']=='database'){
 			SessionHandleMySQL::Init();
-		}elseif(SESSION_HANDLE=='memcache'){
+		}elseif($GLOBALS['session']['sessionHandle']=='memcache'){
 			SessionHandleMemcache::Init();
 		}
 		// user tracks IIS DO NOT PROVIDE REQUEST_URI
@@ -18,13 +17,13 @@ class SessionHandle
 			  $_SERVER['REQUEST_URI'] .= '?' . $_SERVER['QUERY_STRING'];
 			}
 		}
-		if(!isset($_SESSION['UserTrack'])) $_SESSION['UserTrack'] = array();
-		if($_SERVER['REQUEST_METHOD']=='GET'){
-			array_unshift($_SESSION['UserTrack'],$_SERVER['REQUEST_URI']);
-			if(count($_SESSION['UserTrack'])>5){
-				array_pop($_SESSION['UserTrack']);
-			}
-		}
+//		if(!isset($_SESSION['UserTrack'])) $_SESSION['UserTrack'] = array();
+//		if($_SERVER['REQUEST_METHOD']=='GET'){
+//			array_unshift($_SESSION['UserTrack'],$_SERVER['REQUEST_URI']);
+//			if(count($_SESSION['UserTrack'])>5){
+//				array_pop($_SESSION['UserTrack']);
+//			}
+//		}
 	}
 }
 
@@ -33,13 +32,13 @@ class SessionHandleMySQL extends Model
 	static $db_static;
     static function Init()
     {
-    	self::$db_static = parent::dbConnect ();
+    	self::$db_static = parent::dbConnect ($GLOBALS['session']['database']);
 
         $domain = strstr($_SERVER['HTTP_HOST'],".");
         //不使用 GET/POST 变量方式
         ini_set('session.use_trans_sid',    0);
         //设置垃圾回收最大生存时间
-        ini_set('session.gc_maxlifetime',   SESSION_LIVE_TIME);
+        ini_set('session.gc_maxlifetime',   $GLOBALS['session']['lifeTime']);
 
         //使用 COOKIE 保存 SESSION ID 的方式
         ini_set('session.use_cookies',      1);
@@ -80,7 +79,7 @@ class SessionHandleMySQL extends Model
     public static function write($sesskey, $data) {
 
         $qkey = $sesskey;//self::$db_static->qstr($sesskey);
-        $expiry = time() + SESSION_LIVE_TIME;    //设置过期时间
+        $expiry = time() + $GLOBALS['session']['lifeTime'];    //设置过期时间
 
         //写入 SESSION
         $arr = array(
@@ -128,7 +127,7 @@ class SessionHandleMemcache
         self::_AddMemcacheServers();
 
 		ini_set("session.use_trans_sid", 0);
-		ini_set("session.gc_maxlifetime", SESSION_LIVE_TIME);
+		ini_set("session.gc_maxlifetime", $GLOBALS['session']['lifeTime']);
 		ini_set("session.use_cookies", 1);
 		ini_set("session.cookie_path", "/");
 		ini_set("session.cookie_domain", $domain);
@@ -156,7 +155,7 @@ class SessionHandleMemcache
 	}
 	
 	public static function Write($sesskey, $data) {
-		self::$mMemcacheObj->set($sesskey, $data,0, SESSION_LIVE_TIME);
+		self::$mMemcacheObj->set($sesskey, $data,0, $GLOBALS['session']['lifeTime']);
 
 		return true;
 	}
@@ -174,11 +173,10 @@ class SessionHandleMemcache
 	}
 	
 	public static function _AddMemcacheServers(){
-		global $gMemcacheServer;
-		//print_r($gMemcacheServer);
+		
 		self::$mMemcacheObj = new Memcache;
-		if(is_array($gMemcacheServer['Session'])){
-			foreach ($gMemcacheServer['Session'] as $server){
+		if(is_array($GLOBALS['session']['memcached'])){
+			foreach ($GLOBALS['session']['memcached'] as $server){
 				self::$mMemcacheObj->addserver($server['host'],$server['port']);
 			}
 		}
