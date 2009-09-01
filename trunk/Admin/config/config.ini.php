@@ -17,7 +17,7 @@ define ( "APP_LANG", "ch" );
 
 
 // define session save handle (file, mysql, memcache)
-define ( "SESSION_HANDLE", 'file' );
+
 
 //if you set SESSION_HANDLE to 'memcache', you must set following difines like:
 //$GLOBALS['gMemcacheServer']['Session'] = array(
@@ -106,4 +106,12 @@ $GLOBALS['pagecache']['helpcache']['compressed']=1;
 $GLOBALS['pagecache']['helpcache']['action']='index';
 $GLOBALS['pagecache']['helpcache']['view']='login,dashboard';
 
+
+//会话设置
+$GLOBALS['session']['sessionHandle'] = 'memcache';
+$GLOBALS['session']['lifeTime'] = 1440;
+$GLOBALS['session']['database'] = $GLOBALS ['gDataBase'] ['setting'];
+$GLOBALS['session']['memcached'] = array(
+array('host'=>"192.168.1.5",'port'=>11211)
+);
 ?>

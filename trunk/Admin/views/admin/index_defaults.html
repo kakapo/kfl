@@ -25,6 +25,7 @@
 		  dojo.require("dijit.Dialog");
 		  dojo.require("dijit.form.Form");
 		  dojo.require("dijit.form.TextBox");
+		  dojo.require("dijit.form.Textarea");		  
 		  dojo.require("dijit.form.ValidationTextBox");
 		  dojo.require("dijit.form.Button");
 		  dojo.require("dijit.form.ComboBox");
@@ -48,7 +49,7 @@
     
 <div id="mainDiv" dojoType="dijit.layout.BorderContainer">
 	 
-     <div dojoType="dijit.layout.ContentPane" region="top" style="border: 0px solid #ccc;">
+     <div dojoType="dijit.layout.ContentPane" region="top" style="border: 0px solid #ccc;margin-bottom:10px;">
 			
 			<div dojoType="dijit.MenuBar" id="navMenu" style="border: 0px solid #ccc;">
 					<span><img src="/public/image/logo.gif"></span>
@@ -85,8 +86,8 @@
 			        <div dojoType="dijit.PopupMenuBarItem">
 			                <span>会话管理</span>
 			                <div dojoType="dijit.Menu" id="sessionMenu">
-			                        <div dojoType="dijit.MenuItem" onClick="alert('edit 1')">配置</div>
-			                        <div dojoType="dijit.MenuItem" onClick="alert('edit 2')">统计</div>
+			                        <div dojoType="dijit.MenuItem" onClick="getText('/session/basicset','基本配置')">基本配置</div>
+			                        <div dojoType="dijit.MenuItem" onClick="getText('/session/stats','在线统计')">在线统计</div>
 			                </div>
 			        </div>		
 			  
@@ -108,7 +109,7 @@
 			</div>
 	 </div>
 	 <div id="leftDiv" dojoType="dijit.layout.AccordionContainer" region="leading" splitter="true" style="width:200px">
-			<div dojoType="dijit.layout.AccordionPane" title="KFL 简介">
+			<div dojoType="dijit.layout.ContentPane" title="KFL 简介">
 			<p>
 			&nbsp;&nbsp;KFL是之前KFC框架的轻量级版本，框架KFL目录下所有文件大小35k，主要去除了KFC的组件概念，保留了MVC的开发模式，特别适合前台的网站开发。
 </p>

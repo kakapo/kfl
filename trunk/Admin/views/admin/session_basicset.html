@@ -33,16 +33,16 @@
 </div>
 
 <div style="height:50px;">
-	<div style="margin:10px;">位置: 缓存管理  > 数据片缓存设置</div>
+	<div style="margin:10px;">位置: 会话管理  > 基本设置</div>
 
 </div>
 
-<div method="post" jsid="packet_form" id="packet_form" dojoType="dijit.form.Form" action="/index.php">
+<div method="post" jsid="basicset_form" id="basicset_form" dojoType="dijit.form.Form" action="/index.php">
 
  <script type="dojo/method" event="onSubmit">
 		
  		if (this.validate()) {
-        	submitForm("packet_form");
+        	submitForm("basicset_form");
             return false;
         } else {
             return false;
@@ -60,36 +60,34 @@
 <td style="border-bottom:1px solid #ccc;width:250px;background-color:#eee">备注</td>
 </tr>
 </thead>
-<tbody id="packet_table">
+<tbody id="basicset_table">
 
-<tr id="row_cacheOpen">
-<td>cacheOpen<input type="hidden" name="name_cacheOpen" value="cacheOpen"></td>
-<td><input dojoType="dijit.form.ValidationTextBox" required="true" regExp="[0|1]" invalidMessage="变量名不符合规则:[0|1]" type="text" name="valu_cacheOpen" id="valu_cacheOpen" value="<?=$sets['cacheOpen']?>"></td>
-<td style="font-size:12px;color:#666">启动缓存开关,关闭=0，开启=1</td>
+<tr id="row_sessionHandle">
+<td>sessionHandle<input type="hidden" name="name_sessionHandle" value="sessionHandle"></td>
+<td><input dojoType="dijit.form.ValidationTextBox" required="true" regExp="(file|memcache|database)" invalidMessage="变量名不符合规则:(file|memcache|database)" type="text" name="valu_sessionHandle" id="valu_sessionHandle" value="<?=$sets['sessionHandle']?>"></td>
+<td style="font-size:12px;color:#666">Session 存储方式</td>
 </tr>
 
-<tr id="row_cacheStore">
-<td>cacheStore<input type="hidden" name="name_cacheStore" value="cacheStore"></td>
-<td><input dojoType="dijit.form.ValidationTextBox" required="true" regExp="(file|memcache)" invalidMessage="变量名不符合规则:(file|memcache)"  type="text" name="valu_cacheStore" id="valu_cacheStore" value="<?=$sets['cacheStore']?>"></td>
-<td style="font-size:12px;color:#666">缓存存储方式,支持(file|memcache)</td>
-</tr>
 
-<tr id="row_cacheTime">
-<td>cacheTime<input type="hidden" name="name_cacheTime" value="cacheTime"></td>
-<td><input dojoType="dijit.form.ValidationTextBox" required="true" regExp="[0-9]+" invalidMessage="变量名不符合规则:[0-9]+" type="text" name="valu_cacheTime" id="valu_cacheTime" value="<?=$sets['cacheTime']?>"></td>
+<tr id="row_lifeTime">
+<td>lifeTime<input type="hidden" name="name_lifeTime" value="lifeTime"></td>
+<td><input dojoType="dijit.form.ValidationTextBox" required="true" regExp="[0-9]+" invalidMessage="变量名不符合规则:[0-9]+" type="text" name="valu_lifeTime" id="valu_lifeTime" value="<?=$sets['lifeTime']?>"></td>
 <td style="font-size:12px;color:#666">默认缓存时间，秒</td>
 </tr>
 
-<tr id="row_cacheDir">
-<td>cacheDir<input type="hidden" name="name_cacheDir" value="cacheDir"></td>
-<td><input dojoType="dijit.form.ValidationTextBox" required="true" type="text" name="valu_cacheDir" id="valu_cacheDir" value="<?=$sets['cacheDir']?>"></td>
-<td style="font-size:12px;color:#666">缓存本地路径，cacheStore=file时有效</td>
+<tr id="row_dataBase">
+<td>dataBase<input type="hidden" name="name_database" value="database"></td>
+<td><input dojoType="dijit.form.ValidationTextBox" required="true" type="text" name="valu_database" id="valu_database" value="<?=$sets['database']?>"></td>
+<td style="font-size:12px;color:#666">数据库名称，sessionHandle=database时有效</td>
 </tr>
 
-<tr id="row_cacheServer">
-<td>cacheServer<input type="hidden" name="name_cacheServer" value="cacheServer"></td>
-<td><input dojoType="dijit.form.ValidationTextBox" required="true" type="text" name="valu_cacheServer" id="valu_cacheServer" value="<?=$sets['cacheServer']?>"></td>
-<td style="font-size:12px;color:#666">Memcached服务器，cacheStore=memcache时有效</td>
+<tr id="row_memcached">
+<td>memcached<input type="hidden" name="name_memcached" value="memcached"></td>
+<td>
+<textarea name="valu_memcached" id="valu_memcached"  dojoType="dijit.form.Textarea"
+style="width:210px;height:200px;" required="true"><?=$sets['memcached']?></textarea>
+</td>
+<td style="font-size:12px;color:#666">Memcached服务器，sessionHandle=memcache时有效</td>
 </tr>
 
 </tbody>
