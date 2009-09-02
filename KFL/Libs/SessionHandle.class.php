@@ -71,7 +71,6 @@ class SessionHandleMySQL extends Model
         return true;
     }   //end function
     public static function read($sesskey) {
-
         $sql = "SELECT data FROM session WHERE sesskey='" . $sesskey . "' AND expiry>=" . time();
         $row = self::$db_static->getRow($sql);
         return $row['data'];
@@ -97,12 +96,14 @@ class SessionHandleMySQL extends Model
     }   //end function
     public static function gc($maxlifetime = null) {
 
-        $sql = 'DELETE FROM session WHERE expiry<' . time();
-        self::$db_static->query($sql);
+        $sql = "DELETE FROM session WHERE expiry < ".time();
+        self::$db_static->execute($sql);
         //由于经常性的对表 sess 做删除操作，容易产生碎片，
         //所以在垃圾回收中对该表进行优化操作。
-        $sql = 'OPTIMIZE TABLE session';
-        self::$db_static->execute($sql);
+        if($GLOBALS['session']['database']['type']=='mysql') {
+       		$sql = 'OPTIMIZE TABLE session';
+       		self::$db_static->execute($sql);
+        }
         return true;
     }   //end function
 }

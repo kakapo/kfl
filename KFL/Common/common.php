@@ -269,9 +269,7 @@ function error_live_handler($errno, $errmsg, $filename, $linenum, $vars)
 	// 哪一类型的错误会被写入日志
 	$log_errors = array(E_ERROR,E_WARNING,E_PARSE,E_NOTICE,E_USER_ERROR, E_USER_WARNING, E_USER_NOTICE,E_RECOVERABLE_ERROR,E_STRICT);
 	// 哪一类型的错误会被发送邮件到开发人员
-	$devloper_errors =array(E_ERROR,E_WARNING,E_PARSE,E_NOTICE,E_USER_ERROR, E_USER_WARNING, E_USER_NOTICE,E_RECOVERABLE_ERROR,E_STRICT);
-	// 哪一类型的错误会被发送邮件到系统维护人员
-	$systemer_errors = array(E_CORE_ERROR, E_CORE_WARNING, E_COMPILE_ERROR,E_COMPILE_WARNING);
+	$devloper_errors =array(E_CORE_ERROR, E_CORE_WARNING, E_COMPILE_ERROR,E_COMPILE_WARNING,E_ERROR,E_WARNING,E_PARSE,E_NOTICE,E_USER_ERROR, E_USER_WARNING, E_USER_NOTICE,E_RECOVERABLE_ERROR,E_STRICT);
 	// 哪一类型的错误会被呈现到用户面前
 	$display_user_errors=array(E_ERROR,E_PARSE,E_USER_ERROR);
 
@@ -304,34 +302,30 @@ function error_live_handler($errno, $errmsg, $filename, $linenum, $vars)
 		//如果没有发送过邮件，则发送并写入日志
 
 	 if($error_exit<1){
-
-	 	$dvp	 =$GLOBALS['log']['devlopers'];
-	 	$subject =$GLOBALS['log']['subject'];
-	 	//send_multymail($dvp,$subject,$message,"no-reply@guodong.com");
-	 	send_email("no-reply@guodong.com",$dvp,$subject,$message);
+	 	//
+	 	send_email($GLOBALS['log']['from'],$GLOBALS['log']['receiver'],$GLOBALS['log']['subject'],$message);
 	 	if($error_exit<2){
 	 		log_index_word($filename, $linenum);
 	 	}
-	 	if (in_array($errno, $systemer_errors)) {
-	 		//send_multymail($GLOBALS['log']['systemers'],$subject ,$message,"no-reply@guodong.com");
-	 		send_email("no-reply@guodong.com",$GLOBALS['log']['systemers'],$subject,$message);
-	 	}
+	
 	 }
 	}
 	if($error_exit==1 ){
 		log_error($message,$filename,$linenum);
 	}
 	if (in_array($errno, $display_user_errors)) {
+		//echo 12321312;
 		//header("location: http://image.guodong.dev2/500.html");
-		echo "<script>window.location.replace('http://image.guodong.dev2/500.html');</script>";
+		//echo "<script>window.location.replace('http://image.guodong.dev2/500.html');</script>";
 		$message = "
 		<meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />
 		<meta http-equiv='pragma' content='no-cache' />
 		<meta HTTP-EQUIV='cache-control' content='no-cache'>
 		<p style='font-size: 12px;'>
-		<strong>): 对不起！此页面发生了错误。 错误代码： #$errNum. <a href='http://www.guodong.com/index.php?action=help&view=kfzx'>联系客服MM。</strong>
+		<strong>此页面发生了错误。 错误代码： #$errNum. <a href='mailto:".$GLOBALS['log']['from']."'>联系管理员。</strong>
 		</p>
 		";
+		echo $message;
 		die;
 		//echo $message;
 	}
@@ -652,19 +646,20 @@ function send_email($from="no-reply@guodong.com",  $to, $subject, $message)
 	$logArray['authpassword'] = "$smtpResponse";
 
 	//email from
-	@fputs($smtpConnect, "MAIL FROM: $from" . $newLine);
+	
+	@fputs($smtpConnect, "MAIL FROM: <$from>" . $newLine);
 	$smtpResponse = @fgets($smtpConnect, 4096);
 	$logArray['mailfromresponse'] = "$smtpResponse";
 
 	//email to
 	if(is_array($to)){
 		foreach ($to as $key => $v) {
-			@fputs($smtpConnect, "RCPT TO: $v" . $newLine);
+			@fputs($smtpConnect, "RCPT TO: <$v>" . $newLine);
 			$smtpResponse = @fgets($smtpConnect, 4096);
 			$logArray['mailtoresponse'][] = "$smtpResponse";
 		}
 	}else{
-	 @fputs($smtpConnect, "RCPT TO: $to" . $newLine);
+	 @fputs($smtpConnect, "RCPT TO: <$to>" . $newLine);
 	 $smtpResponse = @fgets($smtpConnect, 4096);
 	 $logArray['mailtoresponse'] = "$smtpResponse";
 	}
@@ -686,7 +681,7 @@ function send_email($from="no-reply@guodong.com",  $to, $subject, $message)
 	}
 	// $headers .= "From:  <$from>" . $newLine;
 	if(is_array($to)){
-		//observe the . after the newline, it signals the end of message
+	 	//observe the . after the newline, it signals the end of message
 		@fputs($smtpConnect, "To: ".$to[0]."\r\nFrom: $from\r\nSubject: $subject\r\n$headers\r\n\r\n$message\r\n.\r\n");
 		$smtpResponse = @fgets($smtpConnect, 4096);
 		$logArray['data2response'][] = "$smtpResponse";
@@ -702,6 +697,7 @@ function send_email($from="no-reply@guodong.com",  $to, $subject, $message)
 	$logArray['quitresponse'] = "$smtpResponse";
 	$logArray['quitcode'] = substr($smtpResponse,0,3);
 	@fclose($smtpConnect);
+	//print_r($logArray);
 	//a return value of 221 in $retVal["quitcode"] is a success
 	return 1;
 }
