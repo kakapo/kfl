@@ -288,3 +288,30 @@ function getText(pathinfo,title,params) {
  		    //Call the asynchronous xhrGet
  		    var deferred = dojo.xhrGet(xhrArgs);
  }
+ function viewSessionValue(key,server){
+	 var xhrArgs = {
+			 	url: "/index.php/session/viewsession",
+			 	handleAs: "text",
+			 	content: {
+	                key: key,
+	                server: server
+	            },
+
+			 	preventCache: true,
+	 	     
+	 	        load: function(data){
+	 	 		  
+	 	          dojo.byId("sessionValue").innerHTML = data;
+	 	 		  
+	 	          dijit.byId("sessionDialog").show();
+	 	        },
+	 	        error: function(error,ioargs){
+	 	          var message = httpErrorReport(ioargs.xhr.status);
+	 	          dojo.byId("AlertCon2").innerHTML = message;
+	 	          dijit.byId("AlertShow2").show();
+	 	        }
+	 	      }
+	  
+	   	var deferred = dojo.xhrGet(xhrArgs);
+	 
+ }
