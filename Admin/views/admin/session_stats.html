@@ -10,31 +10,90 @@
 
 <div style="height:50px;">
 	<div style="margin:10px;">位置: 会话管理  > 在线统计</div>
-
+<button dojoType="dijit.form.Button" onclick="dijit.byId('_session_stats').refresh();">刷新</button>
 </div>
 
-<table style="width:600px;margin:10px">
+<? if($sessionHadle=='memcache'){?>
+<table style="width:600px;margin:10px" cellspace=5>
 <thead>
 <tr >
-<td style="border-bottom:1px solid #ccc;width:150px;background-color:#eee">Server</td>
-<td style="border-bottom:1px solid #ccc;width:300px;background-color:#eee">信息</td>
-<td style="border-bottom:1px solid #ccc;width:150px;background-color:#eee">操作</td>
+<td style="border-bottom:1px solid #ccc;width:150px;background-color:#eee">服务器</td>
+<td style="border-bottom:1px solid #ccc;width:450px;background-color:#eee">总体信息</td>
+
+</tr>
+</thead>
+<tbody id="email_table">
+<?php foreach($all_stats as $server=>$stats){?>
+<tr>
+<td><?=$server?></td>
+<td>
+<table border=0>
+	<?php foreach($stats as $k=>$v){?>
+	<tr><td style="background:#eee"><?=$k?></td> <td> <?=$v?></td></tr>
+	<? }?>
+</table>
+</td>
+
+</tr>
+<? }?>
+</tbody>
+
+</table>
+<table style="width:600px;margin:10px" cellspace=5>
+<thead>
+<tr >
+<td style="border-bottom:1px solid #ccc;width:150px;background-color:#eee">服务器</td>
+<td style="border-bottom:1px solid #ccc;width:450px;background-color:#eee">在线用户</td>
+
 </tr>
 </thead>
 <tbody id="email_table">
 <?php foreach($total_stats as $server=>$stats){?>
 <tr>
 <td><?=$server?></td>
-<td><?php foreach($stats as $k=>$v){?>
-<li><?=$k?> : <?=$v?></li>
+<td>
+<ul style="list-style-type:decimal">
+<?php foreach($stats as $k=>$v){?>
+<li><a href="#" onclick="viewSessionValue('<?=$k?>','<?=$server?>')"><?=$k?></a> : <?=$v[0]?>s |<?=$v[1]?>byte</li>
 <? }?>
+</ul>
 </td>
+
 </tr>
 <? }?>
 </tbody>
 
 </table>
+<?}?>
 
+<? if($sessionHadle=="database"){?>
 
+<table style="width:600px;margin:10px" cellspace=5>
+<thead>
+<tr >
+<td style="border-bottom:1px solid #ccc;width:150px;background-color:#eee">在线用户</td>
+<td style="border-bottom:1px solid #ccc;width:450px;background-color:#eee">存活时间(秒)</td>
+
+</tr>
+</thead>
+<tbody id="email_table">
+<?php foreach($all_stats as $key=>$v){?>
+<tr>
+<td><a href="#" onclick="viewSessionValue('<?=$v['sesskey']?>','')"><?=$v['sesskey']?></a></td>
+<td>
+<?=$v['expiry']-$v['nowtime']?>
+</td>
+
+</tr>
+<? }?>
+</tbody>
+
+</table>
+<?}?>
+   <!-- Alert div -->
+ <div dojoType="dijit.Dialog" id="sessionDialog" title="查看Session值"
+    execute="alert('submitted w/args:\n' + dojo.toJson(arguments[0], true));">
+   <div id="sessionValue"></div>
+ </div>
 </body>
 </html>

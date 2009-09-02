@@ -4,7 +4,7 @@
 //					Application	Settings			//
 //////////////////////////////////////////////////////
 // define error_handler. options(dev, online)
-define ( "APP_STATUS", "dev" );
+define ( "APP_STATUS", "online" );
 
 // define application directory
 define ( "APP_DIR", dirname ( __file__ ) . '/..' );
@@ -108,10 +108,23 @@ $GLOBALS['pagecache']['helpcache']['view']='login,dashboard';
 
 
 //会话设置
-$GLOBALS['session']['sessionHandle'] = 'memcache';
+$GLOBALS['session']['sessionHandle'] = 'database';
 $GLOBALS['session']['lifeTime'] = 1440;
 $GLOBALS['session']['database'] = $GLOBALS ['gDataBase'] ['setting'];
 $GLOBALS['session']['memcached'] = array(
 array('host'=>"192.168.1.5",'port'=>11211)
 );
+
+//监控设置
+
+$GLOBALS['log']['subject']   	= "From KFL 开发";   					     		 //邮件主题
+$GLOBALS['log']['pop3_host'] 	= "pop3.163.com";//"pop3.tsong.cn";				 			     //外部邮件pop3地址
+$GLOBALS['log']['smtp_host'] 	= "smtp.163.com";//"smtp.tsong.cn"; 	                   	     //外部邮件smtp地址
+$GLOBALS['log']['smtp_account'] = "cuckoolaugh@163.com";//"cdwei@tsong.cn";           	  			 //发送邮件的帐号
+$GLOBALS['log']['smtp_pass'] 	= "810600";//tsong-0810";                         	    	 //发送帐号的密码
+$GLOBALS['log']['from'] 	 	= "cuckoolaugh@163.com";              	     			 //显示的发件人名称
+$GLOBALS['log']['receiver'] 	= array("zswu@tsong.cn");
+
+
+
 ?>
