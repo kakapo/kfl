@@ -30,7 +30,7 @@ class Database extends PDO
 		try{
 			parent::__construct($dsn,$username,$password,$driver_options);
 		}catch (PDOException $e) {
-			trigger_error("Error:".$e->getMessage(), E_USER_ERROR);
+			trigger_error($e->getMessage(), E_USER_ERROR);
 			
 		}
 		//$this->setAttribute(PDO::ATTR_STATEMENT_CLASS, array('mypdostatement', array($this)));
@@ -160,7 +160,7 @@ class Database extends PDO
 		{
 			$err_arr = $this->errorInfo();
 		}
-		if(isset($err_arr[2])) trigger_error("Error:".$err_arr[2], E_USER_ERROR);
+		if(isset($err_arr[2])) trigger_error($err_arr[2], E_USER_ERROR);
 		//写入查询日志
 		$GLOBALS['gSqlArr'][] = $this->lastSql.' Second:'.($this->_microTime()-$this->startTime);
 		
@@ -175,7 +175,7 @@ class Database extends PDO
 	private function _setupMemcached($server){
 		if (!class_exists('Memcache'))
         {
-        	trigger_error("Fatal Error: Memcache extension not exists!", E_USER_ERROR);
+        	trigger_error("Memcache extension not exists!", E_USER_ERROR);
             die();
         }
         if(!(isset($GLOBALS['dbMemcacheObj']) && is_object($GLOBALS['dbMemcacheObj']))){

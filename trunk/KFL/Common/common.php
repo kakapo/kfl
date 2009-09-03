@@ -115,36 +115,6 @@ function error_debug_handler($errno, $errstr, $errfile, $errline, $context, $bac
 	}
 }
 
-function log_error($msg,$filename,$linenum)
-{
-	if(!is_dir(LOG_FILE)){
-		@create_dir(LOG_FILE);
-	}
-	$date=date('y-m-d');
-	$logFile 	  = LOG_FILE."/".$date."_errors.log.html";
-
-	$fp = @fopen($logFile, "a+");
-	@fwrite($fp, $msg);
-	@fclose($fp);
-	return $linenum;
-}
-
-function log_index_word($filename,$linenum)
-{
-	if(!is_dir(LOG_FILE)){
-		@create_dir(LOG_FILE);
-	}
-	$today = date("Y-m-d");
-	$index=$filename."@@@".$linenum."\r\n";
-
-	$logFileIndex = LOG_FILE."/".$today."_errors.log.txt";
-
-	$fp2 = @fopen($logFileIndex, "a+");
-	@fwrite($fp2, $index);
-	@fclose($fp2);
-
-}
-
 function get_error_type($errno)
 {
 	switch($errno)
@@ -271,50 +241,58 @@ function error_live_handler($errno, $errmsg, $filename, $linenum, $vars)
 	// 哪一类型的错误会被发送邮件到开发人员
 	$devloper_errors =array(E_CORE_ERROR, E_CORE_WARNING, E_COMPILE_ERROR,E_COMPILE_WARNING,E_ERROR,E_WARNING,E_PARSE,E_NOTICE,E_USER_ERROR, E_USER_WARNING, E_USER_NOTICE,E_RECOVERABLE_ERROR,E_STRICT);
 	// 哪一类型的错误会被呈现到用户面前
-	$display_user_errors=array(E_ERROR,E_PARSE,E_USER_ERROR);
+	$display_user_errors=array(E_NOTICE,E_ERROR,E_PARSE,E_USER_ERROR);
 
-	$num2="";
+	if(php_sapi_name() != "cli") {
+		$host = $_SERVER["SERVER_ADDR"];
+	} else {
+		$host = '127.0.0.1';
+		define('VIRTUAL_URL', $_SERVER["SCRIPT_NAME"]);
+	}
+	$num="";
 	$tmp="";
-	$error_exit = check_word($filename, $linenum);
-	if (in_array($errno, $log_errors)) {
-
-		if(php_sapi_name() != "cli") {
-			$host = $_SERVER["SERVER_ADDR"];
-		} else {
-			$host = '127.0.0.1';
-			define('VIRTUAL_URL', $_SERVER["SCRIPT_NAME"]);
-		}
-		list($tmp, $tmp, $tmp, $num2) = explode(".", $host);
-		$errNum = uniqid($num2 . ".");	// Get a unique error ID for this
-		$message = "<strong>Error #$errNum:</strong>
-					<p style='font-size: 15px;'>
-				   <span style='color: #FF1111;'> 发生时间: </span> $dt<br />
-					<span style='color: #FF1111;'> $errortype[$errno] </span>
-					&nbsp;
-					\"" . htmlspecialchars($errmsg) . "\" in file $filename (on line $linenum)<br />
-					<span style='color: #FF1111;'> URL: </span> &nbsp; \"" . VIRTUAL_URL . "\"
-					</p>
-
-					<span id=\"$errNum\"> " ."<br>". fetch_backtrace() . "<br />" . get_misc_error_info() . "
-					</span>
-					<hr width='75%' />";
-
-		//如果没有发送过邮件，则发送并写入日志
-
-	 if($error_exit<1){
-	 	//
-	 	send_email($GLOBALS['log']['from'],$GLOBALS['log']['receiver'],$GLOBALS['log']['subject'],$message);
-	 	if($error_exit<2){
-	 		log_index_word($filename, $linenum);
-	 	}
+	list($tmp, $tmp, $tmp, $num) = explode(".", $host);
+	$crcno = sprintf("%u", crc32($linenum.$filename.$errmsg));
+	$errNum = $num .'.'.$crcno;	// Get a unique error ID for this
 	
-	 }
+	if(in_array($errno, $log_errors)) {
+		$error_exit = is_error_in_log($crcno);
+		
+		if($error_exit<1){
+				
+			$brief_message = "<strong>ErrorNo: #$errNum:</strong>
+						<p style='font-size: 15px;'>
+					   <span style='color: #FF1111;'> 发生时间: </span> $dt<br />
+						<span style='color: #FF1111;'> $errortype[$errno] </span>
+						&nbsp;
+						\"" . htmlspecialchars($errmsg) . "\" in file $filename (on line $linenum)<br />
+						<span style='color: #FF1111;'> URL: </span> \"" . VIRTUAL_URL . "\"
+						</p>";
+			$backtrace_msg = "
+						<span id=\"$errNum\"> " ."<br>". fetch_backtrace() . "<br />" . get_misc_error_info() . "
+						</span>
+						<hr width='75%' />";
+				
+			//Do not log repeated messages
+		 	error_log($crcno."\n", 3, LOG_FILE."/ignore_repeated_errors.txt");
+		 	
+		 	// log error backtrace in database
+		 	if(isset($GLOBALS ['gDataBase'] ['setting'])){
+		 		if(!class_exists("Database")) require_once("Libs/Database.class.php");
+			 	$db = Model::dbConnect($GLOBALS ['gDataBase'] ['setting']);
+			 	if(!$db->getOne("select error_no from errorlog where error_no='$errNum'")){
+			 		$db->execute("insert into errorlog (error_no,linenum,filename,errmsg,backtrace_msg) values ('$errNum','$linenum','$filename','$errmsg','".htmlspecialchars($backtrace_msg,ENT_QUOTES)."')");
+			 	}
+		 	}
+		 	//send email to notice
+		 	if(isset($GLOBALS['log']['receiver'])){
+		 		send_email($GLOBALS['email']['from'],$GLOBALS['log']['receiver'],$GLOBALS['log']['subject'],$brief_message.$backtrace_msg);
+		 	}
+	 	}
 	}
-	if($error_exit==1 ){
-		log_error($message,$filename,$linenum);
-	}
+
 	if (in_array($errno, $display_user_errors)) {
-		//echo 12321312;
+		
 		//header("location: http://image.guodong.dev2/500.html");
 		//echo "<script>window.location.replace('http://image.guodong.dev2/500.html');</script>";
 		$message = "
@@ -322,7 +300,7 @@ function error_live_handler($errno, $errmsg, $filename, $linenum, $vars)
 		<meta http-equiv='pragma' content='no-cache' />
 		<meta HTTP-EQUIV='cache-control' content='no-cache'>
 		<p style='font-size: 12px;'>
-		<strong>此页面发生了错误。 错误代码： #$errNum. <a href='mailto:".$GLOBALS['log']['from']."'>联系管理员。</strong>
+		<strong>该应用发生错误。 错误代号： #$errNum. <a href='mailto:".$GLOBALS['email']['from']."?subject=errorNum:".$errNum."&body=Thank You!'>通知管理员。</strong>
 		</p>
 		";
 		echo $message;
@@ -447,20 +425,16 @@ td, th { border: 1px solid #000000; font-size: 75%; vertical-align: baseline;}
 	return $backtrace;
 }
 
-function check_word($filename,$linenum)
+function is_error_in_log($crcno)
 {
-	$today = date("Y-m-d");
-	$logFileIndex = LOG_FILE."/".$today."_errors.log.txt";
-	$fp = @fopen($logFileIndex,"r");
-	$contents = @fread($fp, filesize ($logFileIndex));
-	@fclose($fp);
-	$indexWord = explode("\r\n", $contents);
+	$rows = file(LOG_FILE."/ignore_repeated_errors.txt");
+	
 	$flag=0;
-	foreach ($indexWord as $key =>$v) {
-		if($v==$filename."@@@".$linenum){
+	foreach ($rows as $key =>$v) {
+		if(trim($v)==$crcno){
 			$flag++;
 		}
-		if($flag==3){
+		if($flag>0){
 			break;
 		}
 	}
@@ -591,11 +565,11 @@ function send_email($from="no-reply@guodong.com",  $to, $subject, $message)
 	$subject= mb_convert_encoding($subject,"gb2312","utf-8");
 	$message= mb_convert_encoding($message,"gb2312","utf-8");
 
-	$smtpServer = $GLOBALS['log']['smtp_host']; //ip accepted as well
+	$smtpServer = $GLOBALS['email']['smtp_host']; //ip accepted as well
 	$port = "25"; // should be 25 by default
 	$timeout = "30"; //typical timeout. try 45 for slow servers
-	$username = $GLOBALS['log']['smtp_account'];//"no-reply@guodong.com"; //the login for your smtp
-	$password = $GLOBALS['log']['smtp_pass'];//"tsong-0810"; //the pass for your smtp
+	$username = $GLOBALS['email']['smtp_account'];//"no-reply@guodong.com"; //the login for your smtp
+	$password = $GLOBALS['email']['smtp_pass'];//"tsong-0810"; //the pass for your smtp
 	$localhost = "127.0.0.1"; //this seems to work always
 	$newLine = "\r\n"; //var just for nelines in MS
 	$secure = 0; //change to 1 if you need a secure connect
