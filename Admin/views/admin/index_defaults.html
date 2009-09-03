@@ -96,15 +96,15 @@
 			                <div dojoType="dijit.Menu" id="logMenu">
 			                		<div dojoType="dijit.MenuItem" onClick="getText('/monitor/noticeset','监控设置')">监控设置</div>
 			                        <div dojoType="dijit.MenuItem" onClick="getText('/monitor/eventlog','事件日志')">事件日志</div>
-			                        <div dojoType="dijit.MenuItem" onClick="getText('/monitor/errorlog','错误日志')">错误日志</div>
+			                        <div dojoType="dijit.MenuItem" onClick="getText('/monitor/errorlog','应用错误')">应用错误</div>
 			                        
 			                </div>
 			        </div>
 			        <div dojoType="dijit.PopupMenuBarItem">
-			                <span>数据管理</span>
+			                <span>文件管理</span>
 			                <div dojoType="dijit.Menu" id="dataMenu">
-			                        <div dojoType="dijit.MenuItem" onClick="alert('edit 1')">用户数据</div>
-			                        <div dojoType="dijit.MenuItem" onClick="alert('edit 2')">临时上传数据</div>
+			                        <div dojoType="dijit.MenuItem" onClick="getText('/storage/userfile','用户文件')">用户文件</div>
+			                        <div dojoType="dijit.MenuItem" onClick="getText('/storage/upload','上传数据')">上传数据</div>
 			                </div>
 			        </div>			        	     
 			</div>
