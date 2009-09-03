@@ -4,7 +4,7 @@
 //					Application	Settings			//
 //////////////////////////////////////////////////////
 // define error_handler. options(dev, online)
-define ( "APP_STATUS", "online" );
+define ( "APP_STATUS", "dev" );
 
 // define application directory
 define ( "APP_DIR", dirname ( __file__ ) . '/..' );
@@ -64,7 +64,7 @@ $GLOBALS ['packet']['cacheServer'] = $GLOBALS ['gMemcacheServer'] ['SqlDataCache
 
 //设置页面缓存
 $GLOBALS['pagecache']['helpcache']['rulename']='helpcache';
-$GLOBALS['pagecache']['helpcache']['cachestore']='memcache';
+$GLOBALS['pagecache']['helpcache']['cachestore']='file';
 $GLOBALS['pagecache']['helpcache']['cachedir']= APP_DIR."/tmp/_cache";
 $GLOBALS['pagecache']['helpcache']['cacheserver']= array(array('host'=>"192.168.1.5",'port'=>11213));
 $GLOBALS['pagecache']['helpcache']['cachetime']=600;
@@ -74,7 +74,7 @@ $GLOBALS['pagecache']['helpcache']['view']='login,dashboard';
 
 
 //会话设置
-$GLOBALS['session']['sessionHandle'] = 'memcache';
+$GLOBALS['session']['sessionHandle'] = 'database';
 $GLOBALS['session']['lifeTime'] = 1440;
 $GLOBALS['session']['database'] = $GLOBALS ['gDataBase'] ['setting'];
 $GLOBALS['session']['memcached'] = array(

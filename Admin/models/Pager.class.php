@@ -209,7 +209,7 @@ class Pager {
 	|  +-----------------------------------------------
 	 */
 	function firstPage($char = '', $color = '') {
-		if (strpos ( $color, '#' ) === true) {
+		if (strpos ( $color, '#' ) !== false) {
 			$this->linkStyle ['firstPage'] = $color;
 		}
 		$linkchar = (empty ( $char )) ? "<font color='$color'>[1]</font>" : $char;
@@ -222,7 +222,7 @@ class Pager {
 	|  +-----------------------------------------------
 	 */
 	function lastPage($char = '', $color = '') {
-		if (strpos ( $color, '#' ) === true) {
+		if (strpos ( $color, '#' ) !== false) {
 			$this->linkStyle ['totalPage'] = $color;
 		}
 		$linkchar = (empty ( $char )) ? "<font color='$color'>[" . $this->totalPage . "]</font>" : $char;
@@ -235,7 +235,7 @@ class Pager {
 	|  +-----------------------------------------------
 	 */
 	function prePage($char = '', $color = '', $show = false) {
-		if (strpos ( $color, '#' ) === true) {
+		if (strpos ( $color, '#' ) !== false) {
 			$this->linkStyle ['prePage'] = $color;
 		}
 		if (empty ( $char )) {
@@ -256,7 +256,8 @@ class Pager {
 	|  +-----------------------------------------------
 	 */
 	function nextPage($char = '', $color = '', $show = false) {
-		if (strpos ( $color, '#' ) === true) {
+		
+		if (strpos ( $color, '#' ) !== false) {
 			$this->linkStyle ['nextPage'] = $color;
 		}
 		if (empty ( $char )) {
@@ -281,10 +282,10 @@ class Pager {
 	 */
 	function numBar($num = '', $color = '', $maincolor = '', $left = ' [', $right = '] ') {
 
-		if (strpos ( $color, '#' ) === true) {
+		if (strpos ( $color, '#' ) !== false) {
 			$this->linkStyle ['numBar'] = $color;
 		}
-		if (strpos ( $maincolor, '#' ) === true) {
+		if (strpos ( $maincolor, '#' ) !== false) {
 			$this->linkStyle ['numBarMain'] = $maincolor;
 		}
 		$num = (empty ( $num )) ? 10 : $num;
@@ -321,7 +322,7 @@ class Pager {
 	|  +-----------------------------------------------
 	 */
 	function preGroup($char = '', $color = '') {
-		if (strpos ( $color, '#' ) === false) {
+		if (strpos ( $color, '#' ) !== false) {
 			$this->linkStyle ['preGroup'] = $color;
 		}
 		$char = (empty ( $char )) ? "[<<]" : $char;
@@ -339,7 +340,7 @@ class Pager {
 	|  +-----------------------------------------------
 	 */
 	function nextGroup($char = '', $color = '') {
-		if (strpos ( $color, '#' ) === false) {
+		if (strpos ( $color, '#' ) !== false) {
 			$this->linkStyle ['nextGroup'] = $color;
 		}
 		$char = (empty ( $char )) ? "[>>]" : $char;
@@ -362,7 +363,7 @@ class Pager {
 	 */
 	function wholeNumBar($num = '', $color = '', $maincolor = '') {
 		$numBar = $this->numBar ( $num, $color, $maincolor );
-		return $this->firstPage ( '', $maincolor ) . $this->preGroup ( "<font color='$maincolor'>[<<]</font>" ) . $this->prePage ( "<font color='$maincolor'>[<]</font>" ) . $numBar . $this->nextPage ( "<font color='$maincolor'>[>]</font>" ) . $this->nextGroup ( "<font color='$maincolor'>[>>]</font>" ) . $this->lastPage ( '', $maincolor );
+		return $this->firstPage ( '', $maincolor ) . $this->preGroup ( "<font color='$maincolor'>[<<]</font>",$color ) . $this->prePage ( "<font color='$maincolor'>[<]</font>",$color ) . $numBar . $this->nextPage ( "<font color='$maincolor'>[>]</font>" ,$color) . $this->nextGroup ( "<font color='$maincolor'>[>>]</font>",$color ) . $this->lastPage ( '', $maincolor );
 	}
 	#End of function wholeBar();
 	/**+-----------------------------------------------
@@ -449,7 +450,7 @@ EOT;
 			return "<a href='javascript:{$this->_getLinkScriptUrl($this->linkhead."pagecount=".$pagecount)}' title='{$title}' class='{$class}'>{$char}</a>";
 		} else {
 			if ($this->linkScript) {
-				return "<a href='javascript:{$this->_getLinkScript($pagecount)}' title='{$title}' class='{$class}'>{$linkchar}</a>\n";
+				return "<a href='#' onclick='{$this->_getLinkScript($pagecount)}' title='{$title}' class='{$class}'>{$char}</a>\n";
 			} elseif ($this->aj) {
 				return "<a href='javascript:link(\"{$this->linkhead}pagecount={$pagecount}\");' title='{$title}' class='{$class}'>{$char}</a>\n";
 			} else {

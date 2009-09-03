@@ -27,17 +27,38 @@ class monitor{
 	}
 	function view_errorlog(){
 		global $tpl;
-		if(!empty($_GET['error_no'])) $con['error_no'] = $_GET['error_no'];
+		$error_no = '';
+		if(!empty($_GET['error_no'])) {
+			$con['error_no'] = $_GET['error_no'];
+			$error_no = $_GET['error_no'];
+		}
 		$con['order'] = "error_no";
 
 		$items = $this->mMonitorObj->getErrorLog($con,4);
 		
 		$tpl->assign('items',$items);
+		$tpl->assign('error_no',$error_no);
 	}
-	function view_eventlog(){
-		global $tpl;
+	function op_delerrorlog(){
+		$error_no = $_POST['error_no'];
+		
+		$res =$this->mMonitorObj->deleteErrorLog($error_no);
+		if($res){
+			$msg['s'] = 200;
+			$msg['m'] = "删除成功!";
+			$msg['d'] = 'null';	
+		}else{
+			$msg['s'] = 400;
+			$msg['m'] = "删除失败!";
+			$msg['d'] = 'null';	
+		}
+		json_output($msg);
 	}
-	
-	
+	function view_viewerrorlog(){
+		$msg = $this->mMonitorObj->getErrorLogById($_GET['error_no']);
+		echo htmlspecialchars_decode($msg,ENT_QUOTES);
+		//echo 123;
+		die;
+	}
 }
 ?>
