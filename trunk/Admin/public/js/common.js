@@ -267,22 +267,17 @@ function getText(pathinfo,title,params) {
  	var xhrArgs = {
  		      url: "/index.php/cache/getpagerule/"+pagerule,
  		      handleAs: "json",
- 		      preventCache: true,
- 		     
+ 		      preventCache: true,	     
  		      load: function(data, ioargs){
  					var _tbody = dojo.byId("page_edit_table");
- 					clearTbody(_tbody);
-			 		
- 	      			dojo.byId("edit_pagerule").value = pagerule;
- 	      			
- 	      			fillTbody(_tbody,data);
- 					
+ 					clearTbody(_tbody);		 		
+ 	      			dojo.byId("edit_pagerule").value = pagerule;     			
+ 	      			fillTbody(_tbody,data);				
  		        },
  		      error: function(error, ioargs){
  		          var message = httpErrorReport(ioargs.xhr.status);
  		          dojo.byId('dashboard').innerHTML = message;
- 		        }
- 		
+ 	        	}	
  		    }
  		
  		    //Call the asynchronous xhrGet
@@ -296,13 +291,9 @@ function getText(pathinfo,title,params) {
 	                key: key,
 	                server: server
 	            },
-
-			 	preventCache: true,
-	 	     
-	 	        load: function(data){
-	 	 		  
-	 	          dojo.byId("sessionValue").innerHTML = data;
-	 	 		  
+			 	preventCache: true, 	     
+	 	        load: function(data){ 	 		  
+	 	          dojo.byId("sessionValue").innerHTML = data; 	 		  
 	 	          dijit.byId("sessionDialog").show();
 	 	        },
 	 	        error: function(error,ioargs){
@@ -314,4 +305,45 @@ function getText(pathinfo,title,params) {
 	  
 	   	var deferred = dojo.xhrGet(xhrArgs);
 	 
+ }
+ function deleteErrorLog(error_no){
+ 	 var xhrArgs = {
+		 	url: "/index.php",
+	        postData: "action=monitor&op=delerrorlog&error_no="+error_no,
+ 	        handleAs: "json",
+ 	        load: function(data){ 
+ 	          dojo.byId("AlertCon2").innerHTML = data.m; 		  
+ 	          dijit.byId("AlertShow2").show();
+ 	          dijit.byId("_monitor_errorlog").refresh();
+ 	        },
+ 	        error: function(error,ioargs){
+ 	          var message = httpErrorReport(ioargs.xhr.status);
+ 	          dojo.byId("AlertCon2").innerHTML = message;
+ 	          dijit.byId("AlertShow2").show();
+ 	        }
+ 	      }
+  
+   	var deferred = dojo.xhrPost(xhrArgs);
+ }
+ function viewErrorLog(error_no){
+ 	 var xhrArgs = {
+			 	url: "/index.php/monitor/viewerrorlog",
+			 	handleAs: "text",
+			 	content: {
+	                error_no: error_no
+	            },
+			 	preventCache: true, 	     
+	 	        load: function(data){ 	 		  
+	 	          dojo.byId("errorLogValue").innerHTML = data; 	 		  
+	 	          dijit.byId("errorLogDialog").show();
+	 	        },
+	 	        error: function(error,ioargs){
+	 	        	
+	 	          var message = httpErrorReport(ioargs.xhr.status);
+	 	          dojo.byId("AlertCon2").innerHTML = message;
+	 	          dijit.byId("AlertShow2").show();
+	 	        }
+	 	      }
+	  
+	   	var deferred = dojo.xhrGet(xhrArgs);
  }

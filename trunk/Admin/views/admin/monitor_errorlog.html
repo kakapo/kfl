@@ -32,10 +32,10 @@
 	
 	<div style="margin:10px;">位置: 监控管理  > 应用错误</div>
 	<div style="margin:10px;">
-		代号:<input dojoType="dijit.form.TextBox" type="text" name="error_no" value=""><button dojoType="dijit.form.Button" onclick="dijit.byId('newPageRule').show();">查询</button>
+		代号:<input dojoType="dijit.form.TextBox" type="text" id="error_no" name="error_no" value="<?=$error_no?>"><button dojoType="dijit.form.Button" onclick='dijit.byId("_monitor_errorlog").attr("href","/index.php/monitor/errorlog/error_no/"+dojo.byId("error_no").value)'>查询</button>
 	</div>
 	
-	<table style="width:800px;margin:10px">
+	<table style="width:700px;margin:10px">
 		<thead>
 		<tr >
 		<td style="border-bottom:1px solid #ccc;width:50px;background-color:#eee">代号</td>
@@ -47,24 +47,28 @@
 		</tr>
 		</thead>
 		<tbody >
-		<?php foreach($items['records'] as $k=>$item){?>
+		<?php if(isset($items['records'])){ foreach($items['records'] as $k=>$item){?>
 		<tr id="row_<?=$item['error_no']?>" <?if($k%2) echo 'style="background-color:#efefef"'?>
 		<td><?=$item['error_no']?></td>
 		<td><?=$item['errmsg']?></td>
 		<td><?=$item['filename']?></td>
 		<td><?=$item['linenum']?></td>
-		<td><button dojoType="dijit.form.Button" onclick="editPageRule('<?=$item['error_no']?>');">详细</button><button dojoType="dijit.form.Button" onclick="deletePageRule('<?=$item['error_no']?>');">删除</button></td>
+		<td><button dojoType="dijit.form.Button" onclick="viewErrorLog('<?=$item['error_no']?>');">详细</button><button dojoType="dijit.form.Button" onclick="deleteErrorLog('<?=$item['error_no']?>');">删除</button></td>
 		</tr>
-		<? }?>
+		<? }}?>
 		</tbody>
 		<tfoot>
-		<tr><td><?=$items['page_array']['numBar'];?></td></tr>
+		<tr><td colspan="5"><?=$items['page_array']['pagebar'];?></td></tr>
 		</tfoot>
 	</table>
 	
 		
 
-
+   <!-- Alert div -->
+ <div dojoType="dijit.Dialog" id="errorLogDialog" title="查看BackTrace信息"
+    execute="alert('submitted w/args:\n' + dojo.toJson(arguments[0], true));">
+   <div id="errorLogValue"></div>
+ </div>
 
  
 
