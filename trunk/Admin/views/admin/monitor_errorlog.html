@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+
+ <style>
+	#cacheDiv {
+	font-size:14px;
+  width: 100%; height: 100%;
+  border: 0; padding: 5; margin: 0;
+}
+	
+	</style>
+</head>
+<body class="nihilo">
+
+	 <div dojoType="dijit.layout.AccordionContainer" style="width:300px;height:300px;float:right">
+		<div dojoType="dijit.layout.ContentPane" title="功能说明">
+			<p>
+			&nbsp;&nbsp;KFL是之前KFC框架的轻量级版本，框架KFL目录下所有文件大小35k，主要去除了KFC的组件概念，保留了MVC的开发模式，特别适合前台的网站开发。
+			</p>
+		  
+		</div>
+		<div dojoType="dijit.layout.ContentPane" title="如何使用">
+			<p>
+			
+			</p>
+		  
+		</div>
+	</div>
+	
+	<div style="margin:10px;">位置: 监控管理  > 应用错误</div>
+	<div style="margin:10px;">
+		代号:<input dojoType="dijit.form.TextBox" type="text" name="error_no" value=""><button dojoType="dijit.form.Button" onclick="dijit.byId('newPageRule').show();">查询</button>
+	</div>
+	
+	<table style="width:800px;margin:10px">
+		<thead>
+		<tr >
+		<td style="border-bottom:1px solid #ccc;width:50px;background-color:#eee">代号</td>
+		
+		<td style="border-bottom:1px solid #ccc;width:300px;background-color:#eee">错误</td>
+		<td style="border-bottom:1px solid #ccc;width:300px;background-color:#eee">文件</td>
+		<td style="border-bottom:1px solid #ccc;width:50px;background-color:#eee">行</td>
+		<td style="border-bottom:1px solid #ccc;width:150px;background-color:#eee">操作</td>
+		</tr>
+		</thead>
+		<tbody >
+		<?php foreach($items['records'] as $k=>$item){?>
+		<tr id="row_<?=$item['error_no']?>" <?if($k%2) echo 'style="background-color:#efefef"'?>
+		<td><?=$item['error_no']?></td>
+		<td><?=$item['errmsg']?></td>
+		<td><?=$item['filename']?></td>
+		<td><?=$item['linenum']?></td>
+		<td><button dojoType="dijit.form.Button" onclick="editPageRule('<?=$item['error_no']?>');">详细</button><button dojoType="dijit.form.Button" onclick="deletePageRule('<?=$item['error_no']?>');">删除</button></td>
+		</tr>
+		<? }?>
+		</tbody>
+		<tfoot>
+		<tr><td><?=$items['page_array']['numBar'];?></td></tr>
+		</tfoot>
+	</table>
+	
+		
+
+
+
+ 
+
+</body>
+</html>

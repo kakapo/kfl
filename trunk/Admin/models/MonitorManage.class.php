@@ -2,38 +2,53 @@
 class MonitorManage extends Model{
 	private $db;
 	function __construct(){
-		
+		$this->db = parent::dbConnect($GLOBALS ['gDataBase'] ['setting']);
 	}
 	
+	function getErrorLog($con,$pageCount){
+		$select =$this->db->select();
+		$select->from ( " errorlog ");
+		
+		if(isset($con['error_no'])) $select->where ( "error_no = '".$con['error_no']."'" );
+
+		
+		if(isset($con['order'])) $select->order ( $con['order']." desc" );
+
+		//return $this->getList ( $select, $pageCount, true );
+		
+		$list = array();
+		//是否获得分页对象
+		$offset = '';
+		
+		$total = $select->count (); //获得查询到的记录数
+		$list  = $this->setListStyle($total,$pageCount);
+		
+		$select->limit ( $list['page']->offset(), $pageCount );
+		$rs = $select->query();
 	
-	function getOnlineStats($type='',$slabid=0,$limit=100){
-		$this->mMemcacheObj = new Memcache;
-		if(is_array($GLOBALS['session']['memcached'])){
-			foreach ($GLOBALS['session']['memcached'] as $server){
-				$this->mMemcacheObj->addserver($server['host'],$server['port']);
+		if ($rs) {
+			
+			foreach ( $rs as $key => $record ) {
+				$list ['records'] [$key] = $record;
 			}
 		}
-		return $this->mMemcacheObj->getExtendedStats($type,$slabid,$limit);
+		return (array) $list;
+		//return $this->db->getAll("select * from errorlog");
 	}
-	
-	function getOnlineStatsDb(){
-		$db = parent::dbConnect($GLOBALS['session']['database']);
-		if($GLOBALS['session']['database']['type']=='sqlite') 
-		$sql = "select sesskey,expiry,strftime('%s','now') as nowtime from session";
-		if($GLOBALS['session']['database']['type']=='mysql') 
-		$sql = "select sesskey,expiry,UNIX_TIMESTAMP() as nowtime from session";
-		return $db->getAll($sql);
-	}
-	
-	
-	function getSessionByKey($server,$key){
-		$this->mMemcacheObj = new Memcache;
-		list($host,$port) = explode(":",$server);
-		$this->mMemcacheObj->addserver($host,$port);
-		return $this->mMemcacheObj->get($key);
-	}
-	function getSessionBySesskey($sesskey){
-		$db = parent::dbConnect($GLOBALS['session']['database']);
-		return $db->getOne("select data from session where sesskey='$sesskey'");
+	function setListStyle($total,$pageCount)
+	{
+		include_once("Pager.class.php");
+	    $list ['page'] = new Pager ( $total, $pageCount ); //创建分页对象
+		$offset = $list ['page']->offset ();                    //获得记录偏移量
+		$pagerStyle = array ('firstPage' => '', 'prePage' => 'gray4_12b none', 'nextPage' => 'gray4_12b none', 'totalPage' => '', 'numBar' => 'yellowf3_12b none', 'numBarMain' => 'gray4_12 none' );                      //翻页条的样式
+		$list ['page']->setLinkStyle ( $pagerStyle );
+		$list ['page_array'] ['firstPage'] = $list ['page']->firstPage ( '' );
+		$list ['page_array'] ['prePage'] = $list ['page']->prePage ( '上一页' );
+		$list ['page_array'] ['numBar'] = $list ['page']->numBar ( '7',  '','', '', '' );
+		$list ['page_array'] ['nextPage'] = $list ['page']->nextPage ( '下一页' );
+		$list ['page_array'] ['lastPage'] = $list ['page']->lastPage ( '' );
+		$list ['page_array'] ['preGroup'] = $list ['page']->preGroup ( '...' );
+		$list ['page_array'] ['nextGroup'] = $list ['page']->nextGroup ( '...' );
+		return (array)$list;
 	}
 }
