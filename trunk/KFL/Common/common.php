@@ -91,7 +91,7 @@ function error_debug_handler($errno, $errstr, $errfile, $errline, $context, $bac
 
 	if(php_sapi_name() != "cli")
 	{
-		echo "<table style='font-size: 15px;' cellpadding=\"0\" cellspacing='0' border='0'>";
+		echo "<table style='font-size: 12px;color:#333399' cellpadding=\"0\" cellspacing='0' border='0'>";
 		echo "<caption><span style='color: #FF1111;'>$type:</span>&nbsp; \"" . nl2br(htmlspecialchars($errstr)) . "\" in file $errfile (on line $errline)</caption>";
 		echo "<tr><td>";
 	}
@@ -108,7 +108,8 @@ function error_debug_handler($errno, $errstr, $errfile, $errline, $context, $bac
 	{
 		echo $backtrace;
 	}
-
+	echo "<br />";
+	echo get_misc_error_info();
 	if(php_sapi_name() != "cli")
 	{
 		echo "</td></tr></table>";
@@ -165,8 +166,8 @@ function get_misc_error_info()
 {
 	$info = add_misc_error_info();
 
-	$ret = "<table cellpadding='2' cellspacing='0' border='0' style='background-color: #DDDDDD;'>";
-	$ret .= "<tr><th>Variable</th><th>Value</th></tr>\n";
+	$ret = "<table cellpadding='2' cellspacing='1' border='0' style='background-color: #ccc;'>";
+	$ret .= "<tr style='background-color:#fff'><th>Variable</th><th>Value</th></tr>\n";
 
 	foreach ($info as $var => $vals)
 	{
@@ -187,14 +188,14 @@ function get_misc_error_info()
 				foreach ($vals as $keyname)
 				{
 
-					$ret .= "<tr><td>\n	" . $var . "[{$keyname}]</td><td>\n	" . (isset($src[$keyname]) ? $src[$keyname] : "unset") . "</td></tr>\n";
+					$ret .= "<tr style='background-color:#fff'><td>\n	" . $var . "[{$keyname}]</td><td>\n	" . (isset($src[$keyname]) ? $src[$keyname] : "unset") . "</td></tr>\n";
 				}
 			}
 			else
 			{
 				foreach($src as $keyname => $val)
 				{
-					$ret .= "<tr><td>\n	" . $var . "[{$keyname}]</td><td>\n	" . $src[$keyname] . "</td></tr>\n";
+					$ret .= "<tr style='background-color:#fff'><td>\n	" . $var . "[{$keyname}]</td><td>\n	" . $src[$keyname] . "</td></tr>\n";
 				}
 			}
 		}
@@ -204,18 +205,25 @@ function get_misc_error_info()
 			$values = get_object_vars($$var);
 			foreach ($values as $name => $value)
 			{
-				$ret .= "<tr><td>\n\t{$var}->{$name}</td><td>\n\t{$value}</td></tr>\n";
+				$ret .= "<tr style='background-color:#fff'><td>\n\t{$var}->{$name}</td><td>\n\t{$value}</td></tr>\n";
 			}
 		}
 	}
-	$ret .= "<tr><td>\n\tTime</td><td>\n\t" . date("r") . "</td></tr>\n";
-	$ret .= "<tr><td>\n\tIP</td><td>\n\t" . GetIP() . "</td></tr>\n";
+	list ( $usec, $sec ) = explode ( " ", microtime () );
+	$exec_time =  (( float ) $usec + ( float ) $sec);
+	$time_usage = $exec_time - $GLOBALS['_App_Start_Time'] ;
+	$ret .= "<tr style='background-color:#fff'><td>\n\tMemory Usage</td><td>\n\t" . round(memory_get_usage()/1024,2). " k bytes</td></tr>\n";
+	$ret .= "<tr style='background-color:#fff'><td>\n\tTime Usage</td><td>\n\t" . $time_usage. " second</td></tr>\n";
+	$ret .= "<tr style='background-color:#fff'><td>\n\tNow</td><td>\n\t" . date("r") . "</td></tr>\n";
+	$ret .= "<tr style='background-color:#fff'><td>\n\tIP</td><td>\n\t" . getip() . "</td></tr>\n";
+	$ret .= "<tr style='background-color:#fff'><td>\n\tURL</td><td>\n\t" . VIRTUAL_URL. "</td></tr>\n";
 	$ret .= "</table>";
 	return $ret;
 }
 
 function error_live_handler($errno, $errmsg, $filename, $linenum, $vars)
 {
+	echo $errno;
 	// 错误发生时间
 	$dt = date("Y-m-d H:i:s (T)");
 
@@ -241,7 +249,7 @@ function error_live_handler($errno, $errmsg, $filename, $linenum, $vars)
 	// 哪一类型的错误会被发送邮件到开发人员
 	$devloper_errors =array(E_CORE_ERROR, E_CORE_WARNING, E_COMPILE_ERROR,E_COMPILE_WARNING,E_ERROR,E_WARNING,E_PARSE,E_NOTICE,E_USER_ERROR, E_USER_WARNING, E_USER_NOTICE,E_RECOVERABLE_ERROR,E_STRICT);
 	// 哪一类型的错误会被呈现到用户面前
-	$display_user_errors=array(E_NOTICE,E_ERROR,E_PARSE,E_USER_ERROR);
+	$display_user_errors=array(E_NOTICE,E_ERROR,E_WARNING,E_PARSE,E_USER_ERROR);
 
 	if(php_sapi_name() != "cli") {
 		$host = $_SERVER["SERVER_ADDR"];
@@ -271,7 +279,7 @@ function error_live_handler($errno, $errmsg, $filename, $linenum, $vars)
 			$backtrace_msg = "
 						<span id=\"$errNum\"> " ."<br>". fetch_backtrace() . "<br />" . get_misc_error_info() . "
 						</span>
-						<hr width='75%' />";
+						";
 				
 			//Do not log repeated messages
 		 	error_log($crcno."\n", 3, LOG_FILE."/ignore_repeated_errors.txt");
@@ -281,11 +289,11 @@ function error_live_handler($errno, $errmsg, $filename, $linenum, $vars)
 		 		if(!class_exists("Database")) require_once("Libs/Database.class.php");
 			 	$db = Model::dbConnect($GLOBALS ['gDataBase'] ['setting']);
 			 	if(!$db->getOne("select error_no from errorlog where error_no='$errNum'")){
-			 		$db->execute("insert into errorlog (error_no,linenum,filename,errmsg,backtrace_msg) values ('$errNum','$linenum','$filename','$errmsg','".htmlspecialchars($backtrace_msg,ENT_QUOTES)."')");
+			 		$db->execute("insert into errorlog (error_no,linenum,filename,errmsg,backtrace_msg) values ('$errNum','$linenum','$filename','".htmlspecialchars($errmsg,ENT_QUOTES)."','".htmlspecialchars($backtrace_msg,ENT_QUOTES)."')");
 			 	}
 		 	}
 		 	//send email to notice
-		 	if(isset($GLOBALS['log']['receiver'])){
+		 	if(isset($GLOBALS['log']['sendemail']) && $GLOBALS['log']['sendemail']==1){
 		 		send_email($GLOBALS['email']['from'],$GLOBALS['log']['receiver'],$GLOBALS['log']['subject'],$brief_message.$backtrace_msg);
 		 	}
 	 	}
@@ -320,17 +328,12 @@ function fetch_backtrace($full = false)
 		$backtrace = sprintf("%30s%7s\t%-50s\r\n", "FILE:", "LINE:", "FUNCTION:");
 		if(php_sapi_name() != "cli")
 		{
-			$backtrace = "
-			<style type='text/css'>
-body, td, th {font-family: sans-serif;}
-table {border-collapse: collapse;}
-td, th { border: 1px solid #000000; font-size: 75%; vertical-align: baseline;}
-</style>
-			<table cellpadding='2' cellspacing='0' border='0' style='background-color: #DDDDDD;'>
+			$backtrace = "	
+			<table cellpadding='2' cellspacing='1' border='0' style='background-color:#ccc'>
 			  <tr>
 				<th colspan='3' style='text-align: center; color: #333399; padding-right: 5px;'>PHP Backtrace</th>
 			  </tr>
-			  <tr>
+			  <tr style='background-color:#fff'>
 				<th style='text-align: left; padding-right: 5px;'>File:</th>
 				<th style='text-align: left; padding-right: 5px;'>Line:</th>
 				<th style='text-align: left; padding-right: 5px;'>Function:</th>
@@ -401,7 +404,7 @@ td, th { border: 1px solid #000000; font-size: 75%; vertical-align: baseline;}
 			if(php_sapi_name() != "cli")
 			{
 				$backtrace .= "
-				  <tr>
+				  <tr style='background-color:#fff'>
 					<td>$file</td>
 					<td>$line[line]</td>
 					<td>$func $funcargs</td>
