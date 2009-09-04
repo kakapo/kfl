@@ -1,5 +1,7 @@
 <?php
 // KFL config File
+list ( $usec, $sec ) = explode ( " ", microtime () );
+$GLOBALS['_App_Start_Time'] =  (( float ) $usec + ( float ) $sec);
 
 if(!defined("KFL_DIR")) define("KFL_DIR", dirname(__FILE__));
 
@@ -13,9 +15,9 @@ define("APP_DIR_V",APP_DIR. "/views");
 define("APP_DIR_C",APP_DIR. "/controllers");
 
 // define applications temporary dicrectory
-define("APP_TEMP_DIR", APP_DIR. '/tmp');
+define("APP_TEMP_DIR", APP_DIR."/tmp");
 
-define("APP_LANG_DIR", APP_DIR. '/languages');
+define("APP_LANG_DIR", APP_DIR. "/languages");
 
 // define error log file
 define("LOG_FILE", APP_DIR . "/tmp/logs");
@@ -29,7 +31,8 @@ if(PHP_OS=='Linux'){
 }elseif(PHP_OS=='WINNT'){
 	ini_set('include_path', KFL_DIR. "/;". APP_DIR_M."/;". ini_get('include_path')); // FOR WINDOWS
 }
-
+require_once("Common/common.php");
+include_once("Common/file.php");
 /**
 * @abstract KFL: Kindly Fast Light, a light fast MVC framework, kindly to be used.
 * @author kakapo <kakapowu@gmail.com>
@@ -76,8 +79,6 @@ class KFL
      */
 	public function KFL()
 	{
-		require_once("Common/common.php");
-		include_once("Common/file.php");
 		$this->mStartTime = getmicrotime ();
 		$this->useCache();
 	}

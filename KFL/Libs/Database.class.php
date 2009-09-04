@@ -160,6 +160,7 @@ class Database extends PDO
 		{
 			$err_arr = $this->errorInfo();
 		}
+		//debug_print_backtrace();
 		if(isset($err_arr[2])) trigger_error($err_arr[2], E_USER_ERROR);
 		//写入查询日志
 		$GLOBALS['gSqlArr'][] = $this->lastSql.' Second:'.($this->_microTime()-$this->startTime);
