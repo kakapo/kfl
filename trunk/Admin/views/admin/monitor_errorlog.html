@@ -30,7 +30,7 @@
 		</div>
 	</div>
 	
-	<div style="margin:10px;">位置: 监控管理  > 应用错误</div>
+	<div style="margin:10px;">位置: 监控管理  > 应用日志</div>
 	<div style="margin:10px;">
 		代号:<input dojoType="dijit.form.TextBox" type="text" id="error_no" name="error_no" value="<?=$error_no?>"><button dojoType="dijit.form.Button" onclick='dijit.byId("_monitor_errorlog").attr("href","/index.php/monitor/errorlog/error_no/"+dojo.byId("error_no").value)'>查询</button>
 	</div>
@@ -58,7 +58,7 @@
 		<? }}?>
 		</tbody>
 		<tfoot>
-		<tr><td colspan="5"><?=$items['page_array']['pagebar'];?></td></tr>
+		<tr><td colspan="5" align="right"><?=$items['page_array']['pagebar'];?></td></tr>
 		</tfoot>
 	</table>
 	

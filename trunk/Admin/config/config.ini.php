@@ -4,7 +4,7 @@
 //					Application	Settings			//
 //////////////////////////////////////////////////////
 // define error_handler. options(dev, online)
-define ( "APP_STATUS", "dev" );
+define ( "APP_STATUS", "online" );
 
 // define application directory
 define ( "APP_DIR", dirname ( __file__ ) . '/..' );
@@ -82,8 +82,8 @@ array('host'=>"192.168.1.5",'port'=>11211)
 );
 
 //监控设置
-
-$GLOBALS['log']['subject']   	= "From KFL 开发";   					     		 //邮件主题
+$GLOBALS['log']['sendemail'] 	= 0;
+$GLOBALS['log']['subject']   	= "KFL Framework Alert";   					     		 //邮件主题
 $GLOBALS['log']['receiver'] 	= array("zswu@tsong.cn");
 
 $GLOBALS['email']['pop3_host'] 	= "pop3.163.com";//"pop3.tsong.cn";				 			     //外部邮件pop3地址

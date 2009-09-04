@@ -16,6 +16,10 @@
 		dojo.require("dijit.layout.AccordionContainer");
 		dojo.require("dijit.layout.ContentPane");
 
+		dojo.require("dijit.TitlePane");
+		
+		dojo.require("dojo.dnd.move");
+
 		  dojo.require("dijit.MenuBar");
 		  dojo.require("dijit.PopupMenuBarItem");
 		  dojo.require("dijit.Menu");
@@ -57,7 +61,7 @@
 			                <span>首页</span>
 			                <div dojoType="dijit.Menu" id="fileMenu">
 			                        <div dojoType="dijit.MenuItem" onClick="aboutus();">关于作者</div>
-			                        <div dojoType="dijit.MenuItem" onClick="getText('/index/phpinfo');">PHP INFO</div>
+			                        <div dojoType="dijit.MenuItem" onClick="view_phpinfo('phpinfo');">PHP INFO</div>
 			                        <div dojoType="dijit.MenuItem" onClick="window.location.href='/index.php/index/logout';">退出</div>
 			                </div>
 			        </div>
@@ -96,7 +100,7 @@
 			                <div dojoType="dijit.Menu" id="logMenu">
 			                		<div dojoType="dijit.MenuItem" onClick="getText('/monitor/noticeset','监控设置')">监控设置</div>
 			                        <div dojoType="dijit.MenuItem" onClick="getText('/monitor/eventlog','事件日志')">事件日志</div>
-			                        <div dojoType="dijit.MenuItem" onClick="getText('/monitor/errorlog','应用错误')">应用错误</div>
+			                        <div dojoType="dijit.MenuItem" onClick="getText('/monitor/errorlog','应用日志')">应用日志</div>
 			                        
 			                </div>
 			        </div>
@@ -112,7 +116,7 @@
 	 <div id="leftDiv" dojoType="dijit.layout.AccordionContainer" region="leading" splitter="true" style="width:200px">
 			<div dojoType="dijit.layout.ContentPane" title="KFL 简介">
 			<p>
-			&nbsp;&nbsp;KFL是一个轻快的、友好的、MVC模式的PHP开发框架，旨在应用层解决Webserver集群带来的系列问题。
+			&nbsp;&nbsp;KFL是一个轻快的、友好的、MVC模式的PHP开发框架，在基于应用层解决Webserver集群带来的系列问题。
 </p>
 	<label>主要特点:</label>
 	
@@ -128,7 +132,16 @@
 		</div>
 	 </div>
      <div dojoType="dijit.layout.TabContainer" region="center" splitter="true" id="maindiv">
-          <div dojoType="dijit.layout.ContentPane" title="控制面板" id="dashboard">tab pane #1</div>
+          <div dojoType="dijit.layout.ContentPane" title="控制面板" id="dashboard" >
+         	<div style="width:400px;" dojoType="dojo.dnd.Moveable">
+         	<script type="dojo/method">this.mover = dojo.dnd.boxConstrainedMover({l: 0, t: 0, w: 800, h: 700}, true);</script>
+	          <div dojoType="dijit.TitlePane" title="配置文件" >
+	          
+	          
+			     <buttion dojoType="dijit.form.Button" onclick="renewConfigFile();">重新生成</buttion>
+			  </div>
+        	 </div>
+          </div>
           
      </div>
     

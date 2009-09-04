@@ -1,4 +1,5 @@
 <?php
+
 /*************/
 /* KFL entrance
 /* portal of the application
