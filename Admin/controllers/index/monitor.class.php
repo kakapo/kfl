@@ -32,7 +32,7 @@ class monitor{
 			$con['error_no'] = $_GET['error_no'];
 			$error_no = $_GET['error_no'];
 		}
-		$con['order'] = "error_no";
+		$con['order'] = "id";
 
 		$items = $this->mMonitorObj->getErrorLog($con,4);
 		
@@ -58,6 +58,15 @@ class monitor{
 		$msg = $this->mMonitorObj->getErrorLogById($_GET['error_no']);
 		echo htmlspecialchars_decode($msg,ENT_QUOTES);
 		//echo 123;
+		die;
+	}
+	function view_eventlog(){
+		try{
+		$handle = fopen("c:\\data\\info.txt",'r');
+		}catch(Exception  $e){
+			var_dump($e);
+		}
+		var_dump($handle);
 		die;
 	}
 }
