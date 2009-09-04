@@ -238,7 +238,14 @@ function getText(pathinfo,title,params) {
  	tabs.addChild(pane);
  	tabs.selectChild(pane);
  }
- 
+ function view_phpinfo(id){
+	 var tabs = dijit.byId("maindiv");
+
+ 	data = '<iframe src="/index.php/index/phpinfo" width="100%" frameborder="0" height="700px"></iframe>';
+ 	var pane = new dijit.layout.ContentPane({id:id, title:id,closable:true, content:data });
+ 	tabs.addChild(pane);
+ 	tabs.selectChild(pane);
+ }
 
  function deletePageRule(id,page_rule){
  	 dojo.byId('pagerulelist').removeChild(dojo.byId(id));
@@ -346,4 +353,27 @@ function getText(pathinfo,title,params) {
 	 	      }
 	  
 	   	var deferred = dojo.xhrGet(xhrArgs);
+ }
+ function gotopage(page){ 
+	 dijit.byId("_monitor_errorlog").attr("href","/index.php/monitor/errorlog/page/"+page);
+ }
+ function renewConfigFile(){
+ 	 var xhrArgs = {
+ 		 	url: "/index.php",
+ 	        postData: "action=index&op=renewconfig",
+  	        handleAs: "text",
+  	        load: function(data){ 
+ 		 alert(data);
+  	          dojo.byId("AlertCon2").innerHTML = data.m; 		  
+  	          dijit.byId("AlertShow2").show();
+  	          
+  	        },
+  	        error: function(error,ioargs){
+  	          var message = httpErrorReport(ioargs.xhr.status);
+  	          dojo.byId("AlertCon2").innerHTML = message;
+  	          dijit.byId("AlertShow2").show();
+  	        }
+  	      }
+ 
+    var deferred = dojo.xhrPost(xhrArgs);
  }
