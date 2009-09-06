@@ -127,7 +127,7 @@ class cache{
 		$sets= array();
 		if(is_array($items)){
 			foreach($items as $item){
-				$sets[$item['name']] = $item['value'];
+				$sets[$item['name']] = htmlspecialchars($item['value'],ENT_QUOTES);
 			}
 		}
 		
@@ -145,7 +145,7 @@ class cache{
 		unset($_POST['action']);
 		unset($_POST['op']);
 		
-		$set_type = $_POST['valu_rulename'];
+		$set_type = str_replace('"',"",stripslashes($_POST['valu_rulename']));
 		$exist = $this->mCacheObj->getPageRuleByName($set_type);
 		if(!$exist){
 			$pair = array();
@@ -204,7 +204,7 @@ class cache{
 		
 		$pagerule= $_POST['edit_pagerule'];
 		unset($_POST['edit_pagerule']);
-		$set_type = $_POST['valu_rulename'];
+		$set_type = str_replace('"',"",stripslashes($_POST['valu_rulename']));
 		
 		$exist = $this->mCacheObj->getPageRuleByName($set_type);
 		

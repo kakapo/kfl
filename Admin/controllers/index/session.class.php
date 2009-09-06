@@ -16,7 +16,7 @@ class session{
 		$sets= array();
 		if(is_array($items)){
 			foreach($items as $item){
-				$sets[$item['name']] = $item['value'];
+				$sets[$item['name']] = htmlspecialchars($item['value'],ENT_QUOTES);
 			}
 		}
 		
