@@ -178,7 +178,7 @@ class SessionHandleMemcache
 		self::$mMemcacheObj = new Memcache;
 		if(is_array($GLOBALS['session']['memcached'])){
 			foreach ($GLOBALS['session']['memcached'] as $server){
-				self::$mMemcacheObj->addserver($server['host'],$server['port']);
+				self::$mMemcacheObj->addserver($server['mmhost'],$server['mmport']);
 			}
 		}
 	}
