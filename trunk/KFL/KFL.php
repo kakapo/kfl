@@ -340,10 +340,18 @@ class Model
 	    if(isset($GLOBALS[$db_resource]) && is_object($GLOBALS[$db_resource])){
 			//echo 2;
 	    }else{
-			if('mysql'== $options['type']) $dsn = $options['type'].":host=".$options['host'].";port=".$options['port'].";dbname=".$options['dbname'];
-			if('sqlite'== $options['type']||'sqlite2'== $options['type']) $dsn = $options['type'].":".$options['path']."/".$options['dbname'];
+			if('mysql'== $options['type']) {
+				$dsn = $options['type'].":host=".$options['host'].";port=".$options['port'].";dbname=".$options['dbname'];
+				$user = $options['user'];
+				$passwd = $options['passwd'];
+			}
+			if('sqlite'== $options['type']||'sqlite2'== $options['type']) {
+				$dsn = $options['type'].":".$options['path']."/".$options['dbname'];
+				$user = '';
+				$passwd = '';
+			}
 			try{
-				$GLOBALS[$db_resource] = new Database($dsn,$options['user'],$options['passwd'],array(PDO::ATTR_PERSISTENT => false));
+				$GLOBALS[$db_resource] = new Database($dsn,$user,$passwd,array(PDO::ATTR_PERSISTENT => false));
 				$cache_setting = isset($GLOBALS ['packet'])?$GLOBALS ['packet']:'';
 				if($cache_setting) {
 					$GLOBALS[$db_resource]->setCache($cache_setting);
