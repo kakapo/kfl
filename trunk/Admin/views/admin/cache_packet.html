@@ -70,7 +70,7 @@
 
 <tr id="row_cacheStore">
 <td>cacheStore<input type="hidden" name="name_cacheStore" value="cacheStore"></td>
-<td><input dojoType="dijit.form.ValidationTextBox" required="true" regExp="(file|memcache)" invalidMessage="变量名不符合规则:(file|memcache)"  type="text" name="valu_cacheStore" id="valu_cacheStore" value="<?=$sets['cacheStore']?>"></td>
+<td><input dojoType="dijit.form.ValidationTextBox" required="true" regExp='("file"|"memcache")' invalidMessage='变量名不符合规则:("file"|"memcache")'  type="text" name="valu_cacheStore" id="valu_cacheStore" value="<?=$sets['cacheStore']?>"></td>
 <td style="font-size:12px;color:#666">缓存存储方式,支持(file|memcache)</td>
 </tr>
 

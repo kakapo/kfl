@@ -64,7 +64,7 @@
 
 <tr id="row_sessionHandle">
 <td>sessionHandle<input type="hidden" name="name_sessionHandle" value="sessionHandle"></td>
-<td><input dojoType="dijit.form.ValidationTextBox" required="true" regExp="(file|memcache|database)" invalidMessage="变量名不符合规则:(file|memcache|database)" type="text" name="valu_sessionHandle" id="valu_sessionHandle" value="<?=$sets['sessionHandle']?>"></td>
+<td><input dojoType="dijit.form.ValidationTextBox" required="true" regExp='("file"|"memcache"|"database")' invalidMessage='变量名不符合规则:("file"|"memcache"|"database")' type="text" name="valu_sessionHandle" id="valu_sessionHandle" value="<?=$sets['sessionHandle']?>"></td>
 <td style="font-size:12px;color:#666">Session 存储方式</td>
 </tr>
 

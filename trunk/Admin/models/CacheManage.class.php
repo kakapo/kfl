@@ -2,7 +2,7 @@
 class CacheManage extends Model{
 	private $db;
 	function __construct(){
-		$this->db = parent::dbConnect($GLOBALS ['gDataBase'] ['setting']);
+		$this->db = parent::dbConnect($GLOBALS ['gDataBase'] ['db_setting.db3']);
 	}
 	
 

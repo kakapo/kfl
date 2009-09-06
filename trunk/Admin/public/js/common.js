@@ -357,13 +357,13 @@ function getText(pathinfo,title,params) {
  function gotopage(page){ 
 	 dijit.byId("_monitor_errorlog").attr("href","/index.php/monitor/errorlog/page/"+page);
  }
- function renewConfigFile(){
+ function renewConfigFile(op){
  	 var xhrArgs = {
  		 	url: "/index.php",
- 	        postData: "action=index&op=renewconfig",
-  	        handleAs: "text",
+ 	        postData: "action=index&op="+op,
+  	        handleAs: "json",
   	        load: function(data){ 
- 		 alert(data);
+ 		// alert(data);
   	          dojo.byId("AlertCon2").innerHTML = data.m; 		  
   	          dijit.byId("AlertShow2").show();
   	          
@@ -376,4 +376,24 @@ function getText(pathinfo,title,params) {
   	      }
  
     var deferred = dojo.xhrPost(xhrArgs);
+ }
+ function restoreConfigFile(){
+ 	var xhrArgs = {
+ 		 	url: "/plugins/restoreConfigFile.php",
+  	        handleAs: "json",
+  	        load: function(data){ 
+ 		
+  	          dojo.byId("AlertCon2").innerHTML = data.m; 		  
+  	          dijit.byId("AlertShow2").show();
+  	          
+  	        },
+  	        error: function(error,ioargs){
+  	          var message = httpErrorReport(ioargs.xhr.status);
+  	          dojo.byId("AlertCon2").innerHTML = message;
+  	          dijit.byId("AlertShow2").show();
+  	        }
+  	      }
+ 
+    var deferred = dojo.xhrPost(xhrArgs);
+ 
  }

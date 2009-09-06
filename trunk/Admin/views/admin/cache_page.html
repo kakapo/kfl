@@ -135,12 +135,12 @@
 	
 		<tr id="row_rulename">
 		<td><input dojoType="dijit.form.TextBox" style="width:150px" type="text" name="name_rulename" value="rulename" readonly></td>
-		<td><input dojoType="dijit.form.ValidationTextBox" required="true" type="text" name="valu_rulename" id="valu_rulename" value=""></td>
+		<td><input dojoType="dijit.form.ValidationTextBox" required="true" regExp='("[a-zA-Z0-9_]+")' invalidMessage='变量名不符合规则:("[a-zA-Z0-9_]+")' type="text" name="valu_rulename" id="valu_rulename" value=""></td>
 		<td style="font-size:12px;color:#666"><label>规则名称</label></td>
 		</tr>
 		<tr id="row_cachestore">
 		<td><input dojoType="dijit.form.TextBox" style="width:150px" type="text" name="name_cachestore" value="cachestore" readonly></td>
-		<td><input dojoType="dijit.form.ValidationTextBox" required="true" regExp="(file|memcache)" invalidMessage="变量名不符合规则:(file|memcache)"  type="text" name="valu_cachestore" id="valu_cachestore" value="file"></td>
+		<td><input dojoType="dijit.form.ValidationTextBox" required="true" regExp='("file"|"memcache")' invalidMessage='变量名不符合规则:("file"|"memcache")'  type="text" name="valu_cachestore" id="valu_cachestore" value='"file"'></td>
 		<td style="font-size:12px;color:#666"><label>存储方式</label></td>
 		</tr>
 		<tr id="row_cacheserver">
@@ -168,12 +168,12 @@
 		</tr>
 		<tr id="row_action">
 		<td><input dojoType="dijit.form.TextBox" style="width:150px" type="text" name="name_action" value="action" readonly></td>
-		<td><input dojoType="dijit.form.ValidationTextBox" required="true" regExp="[\w]+" invalidMessage="变量名不符合规则:[\w]+" type="text" name="valu_action" id="valu_action" value=""></td>
+		<td><input dojoType="dijit.form.ValidationTextBox" required="true" regExp='("[a-zA-Z0-9_]+")' invalidMessage='变量名不符合规则:("[a-zA-Z0-9_]+")' type="text" name="valu_action" id="valu_action" value=""></td>
 		<td style="font-size:12px;color:#666"><label>$_GET['action']</label></td>
 		</tr>	
 		<tr id="row_view">
 		<td><input dojoType="dijit.form.TextBox" style="width:150px" type="text" name="name_view" value="view" readonly></td>
-		<td><input dojoType="dijit.form.ValidationTextBox" required="true" regExp="[\w\,\*]+" invalidMessage="变量名不符合规则:[\w,]+" type="text" name="valu_view" id="valu_view" value="*"></td>
+		<td><input dojoType="dijit.form.ValidationTextBox" required="true" regExp='"[\w\,\*]+"' invalidMessage='变量名不符合规则:"[\w\,\*]+"' type="text" name="valu_view" id="valu_view" value='"*"'></td>
 		<td style="font-size:12px;color:#666"><label>$_GET['view']</label></td>
 		</tr>	
 		</tbody>

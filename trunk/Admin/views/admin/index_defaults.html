@@ -56,7 +56,7 @@
      <div dojoType="dijit.layout.ContentPane" region="top" style="border: 0px solid #ccc;margin-bottom:10px;">
 			
 			<div dojoType="dijit.MenuBar" id="navMenu" style="border: 0px solid #ccc;">
-					<span><img src="/public/image/logo.gif"></span>
+					<span><img src="/public/image/kfllogo.gif"><img src="/public/image/logo.gif"></span>
 			        <div dojoType="dijit.PopupMenuBarItem">
 			                <span>首页</span>
 			                <div dojoType="dijit.Menu" id="fileMenu">
@@ -138,7 +138,9 @@
 	          <div dojoType="dijit.TitlePane" title="配置文件" >
 	          
 	          
-			     <buttion dojoType="dijit.form.Button" onclick="renewConfigFile();">重新生成</buttion>
+			     <buttion dojoType="dijit.form.Button" onclick="renewConfigFile('renewconfig');">重新生成</buttion>
+			     <buttion dojoType="dijit.form.Button" onclick="renewConfigFile('copyconfig');">同步文件</buttion>
+			     <buttion dojoType="dijit.form.Button" onclick="restoreConfigFile();">恢复文件</buttion>
 			  </div>
         	 </div>
           </div>
