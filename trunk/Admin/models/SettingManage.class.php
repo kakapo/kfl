@@ -47,4 +47,12 @@ class SettingManage extends Model{
 	function getDatabaseByName($dbname){
 		return $this->db->getOne("select dbname from database where dbname='$dbname'");
 	}
+	
+	function createApp($app_name,$app_root){
+		$this->db->execute("delete from project");
+		return $this->db->execute("insert into project (app_name,app_dir) values ('$app_name','$app_root')");
+	}
+	function getApp(){
+		return $this->db->getRow("select * from project limit 1");
+	}
 }

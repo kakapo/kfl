@@ -140,7 +140,6 @@ class index {
 		
 		$pagerules = $this->mCacheObj->getPageRule();
 		foreach($pagerules as $rule){	
-			$content .= '$GLOBALS ["pagecache"] ["'.$rule['rule_name'].'"] = ';
 			$sets = $this->mSettingObj->getSettings($rule['rule_name']);
 			$info = array();
 			foreach($sets as $v){
@@ -180,9 +179,10 @@ class index {
 			$content .= '$GLOBALS ["log"] ["'.$v['name'].'"] =  "'.$v['value'].'";'.$nt; 
 		}	
 		
+		$app_info = $this->mSettingObj->getApp();
 		
 		$content .="\n?>";
-		$config_file = APP_DIR ."/config/newconfig.ini.php";
+		$config_file = $app_info['app_dir'] ."/config/newconfig.ini.php";
 		$res = file_put_contents($config_file,$content,LOCK_EX);
 		
 		if($res){
@@ -198,18 +198,25 @@ class index {
 	}
 	
 	function op_copyconfig(){
+		include_once 'SettingManage.class.php';
+		$this->mSettingObj =  new SettingManage();
+		$app_info = $this->mSettingObj->getApp();
 		$res = 0;
 		$rs1 =0;
-		if(file_exists(APP_DIR."/config/config.ini.php.bak")){
-			$rs= unlink(APP_DIR."/config/config.ini.php.bak");
-		}else{
-			$rs= 1;
-		}
+		$rs = file_exists($app_info['app_dir']."/config/newconfig.ini.php");
+			
 		if($rs) {
-			$rs1= rename(APP_DIR."/config/config.ini.php",APP_DIR."/config/config.ini.php.bak");
+			if(file_exists($app_info['app_dir']."/config/config.ini.php.bak")){
+				unlink($app_info['app_dir']."/config/config.ini.php.bak");
+			}
+			if(file_exists($app_info['app_dir']."/config/config.ini.php")){
+				$rs1= rename($app_info['app_dir']."/config/config.ini.php",$app_info['app_dir']."/config/config.ini.php.bak");
+			}else{
+				$rs1= 1;
+			}
 		}
 		if($rs1) {
-			$res =rename(APP_DIR."/config/newconfig.ini.php",APP_DIR."/config/config.ini.php");
+			$res =rename($app_info['app_dir']."/config/newconfig.ini.php",$app_info['app_dir']."/config/config.ini.php");
 		}
 		
 		if($res){
@@ -223,6 +230,41 @@ class index {
 		}
 		json_output($msg);
 	}
+	
+	function op_createapp(){
+		$app_name = $_POST['app_name'];
+		
+		$app_root = $_SERVER["DOCUMENT_ROOT"]."/../".$app_name;
+		$res = create_dir($app_root);
+		create_dir($app_root."/config");
+		create_dir($app_root."/controllers/index");
+		create_dir($app_root."/models");
+		create_dir($app_root."/plugins");
+		create_dir($app_root."/tmp");
+		create_dir($app_root."/views/index");
+		$index_content = file_get_contents(APP_DIR.'/public/install/index.txt');
+		$index_class = file_get_contents(APP_DIR.'/public/install/index.class.txt');
+		$index_defaults = file_get_contents(APP_DIR.'/public/install/index_defaults.txt');
+		file_put_contents($app_root."/index.php",$index_content);
+		file_put_contents($app_root."/controllers/index/index.class.php",$index_class);
+		file_put_contents($app_root."/views/index/index_defaults.html",$index_defaults);
+		
+		include_once 'SettingManage.class.php';
+		$settingObj = new SettingManage();
+		$settingObj->createApp($app_name,$app_root);
+		
+		if($res){
+			$msg['s'] = 200;
+			$msg['m'] = "生成成功!";
+			$msg['d'] = 'null';	
+		}else{
+			$msg['s'] = 400;
+			$msg['m'] = "生成失败!";
+			$msg['d'] = 'null';	
+		}
+		json_output($msg);
+	}
+	
 	function view_dashboard(){
 		print_r($_GET);
 	}
