@@ -97,7 +97,7 @@ class Pager {
 	public function prePage() {
 		if ($this->page > 1) {
 			$prePage = $this->page - 1;
-			return $this->_returnLinkCode('<',$prePage,$this->linkStyle['prePage'],'上一页');
+			return $this->_returnLinkCode('[<]',$prePage,$this->linkStyle['prePage'],'上一页');
 		} else {
 			return '';
 		}

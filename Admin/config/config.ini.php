@@ -98,11 +98,11 @@
 //				PageCache  Settings	                //
 //////////////////////////////////////////////////////		
 		
-	$GLOBALS ["pagecache"] ["index"] = $GLOBALS ["pagecache"] ["index"] ["rulename"]=  "index";
+	$GLOBALS ["pagecache"] ["index"] ["rulename"]=  "index";
 	$GLOBALS ["pagecache"] ["index"] ["cachestore"]=  "file";
 	$GLOBALS ["pagecache"] ["index"] ["cacheserver"]=  array($GLOBALS ["gMemcacheServer"]["192.168.1.5:11212"]);;
 	$GLOBALS ["pagecache"] ["index"] ["cachedir"]=  APP_TEMP_DIR ."/_cache";
-	$GLOBALS ["pagecache"] ["index"] ["cachetime"]=  70;
+	$GLOBALS ["pagecache"] ["index"] ["cachetime"]=  10;
 	$GLOBALS ["pagecache"] ["index"] ["compressed"]=  1;
 	$GLOBALS ["pagecache"] ["index"] ["action"]=  "index";
 	$GLOBALS ["pagecache"] ["index"] ["view"]=  "*";

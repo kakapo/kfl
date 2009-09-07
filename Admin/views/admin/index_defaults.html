@@ -2,10 +2,12 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
 <title>KFL 平台</title>
 <link rel="stylesheet"
 			href="/public/js/dojotoolkit/dijit/themes/nihilo/nihilo.css" />
-
+<link rel="shortcut icon" href="/public/image/favicon.ico" />
+<link rel="icon" type="image/gif" href="/public/image/animated_favicon1.gif">
 <!-- load the dojo toolkit base -->
 	<script type="text/javascript" src="/public/js/dojotoolkit/dojo/dojo.js"
 	    djConfig="parseOnLoad:true, isDebug:false"></script>
@@ -53,7 +55,7 @@
     
 <div id="mainDiv" dojoType="dijit.layout.BorderContainer">
 	 
-     <div dojoType="dijit.layout.ContentPane" region="top" style="border: 0px solid #ccc;margin-bottom:10px;">
+     <div dojoType="dijit.layout.ContentPane" region="top" style="border: 0px solid #ccc;margin-bottom:0px;">
 			
 			<div dojoType="dijit.MenuBar" id="navMenu" style="border: 0px solid #ccc;">
 					<span><img src="/public/image/kfllogo.gif"><img src="/public/image/logo.gif"></span>
@@ -116,7 +118,7 @@
 	 <div id="leftDiv" dojoType="dijit.layout.AccordionContainer" region="leading" splitter="true" style="width:200px">
 			<div dojoType="dijit.layout.ContentPane" title="KFL 简介">
 			<p>
-			&nbsp;&nbsp;KFL是一个轻快的、友好的、MVC模式的PHP开发框架，在基于应用层解决Webserver集群带来的系列问题。
+			&nbsp;&nbsp;KFL是一个轻快的、友好的、MVC模式的PHP开发框架，基于应用层解决Webserver集群带来的系列问题。
 </p>
 	<label>主要特点:</label>
 	
@@ -124,7 +126,7 @@
 	<li>统一配置，一键同步。</li>
 	<li>支持数据片和网页的分布式缓存。</li>
 	<li>支持Session会话数据同步和在线用户统计。</li>
-	<li>支持错误日志和服务监控。</li>
+	<li>支持错误日志和应用服务监控。</li>
 	<li>集成用户数据文件的分布式存储服务。</li>
 	
 	</ul>
@@ -133,16 +135,59 @@
 	 </div>
      <div dojoType="dijit.layout.TabContainer" region="center" splitter="true" id="maindiv">
           <div dojoType="dijit.layout.ContentPane" title="控制面板" id="dashboard" >
-         	<div style="width:400px;" dojoType="dojo.dnd.Moveable">
-         	<script type="dojo/method">this.mover = dojo.dnd.boxConstrainedMover({l: 0, t: 0, w: 800, h: 700}, true);</script>
-	          <div dojoType="dijit.TitlePane" title="配置文件" >
-	          
-	          
-			     <buttion dojoType="dijit.form.Button" onclick="renewConfigFile('renewconfig');">重新生成</buttion>
-			     <buttion dojoType="dijit.form.Button" onclick="renewConfigFile('copyconfig');">同步文件</buttion>
-			     <buttion dojoType="dijit.form.Button" onclick="restoreConfigFile();">恢复文件</buttion>
-			  </div>
-        	 </div>
+	         	<div style="width:400px;" dojoType="dojo.dnd.Moveable">
+	         		  <script type="dojo/method">this.mover = dojo.dnd.boxConstrainedMover({l: 0, t: 0, w: 800, h: 700}, true);</script>
+			          <div dojoType="dijit.TitlePane" title="快速创建项目">     
+				          <div method="" jsid="appcreate_form" id="appcreate_form" dojoType="dijit.form.Form" action="">
+				         <input type="hidden" name="action" value="index">
+						<input type="hidden" name="op" value="createapp">
+		<script type="dojo/method" event="onSubmit">
+			if (this.validate()) {
+            var xhrArgs = {
+					url:"/index.php",
+        	        form: 'appcreate_form',
+        	        handleAs: "json",
+        	        load: function(data){
+    	      			//alert(data);
+						if(data.s==200){
+		        	        dojo.byId("AlertCon2").innerHTML = data.m;
+		        	        dijit.byId("AlertShow2").show();
+						}
+						if(data.s==400){
+    	        			dojo.byId("AlertCon2").innerHTML = data.m;
+		        	        dijit.byId("AlertShow2").show();
+    	        		}
+        	        },
+        	        error: function(error,ioargs){
+					  alert(error);
+       	        	  var message = httpErrorReport(ioargs.xhr.status);
+        	          dojo.byId("AlertCon2").innerHTML = message;
+        	          dijit.byId("AlertShow2").show();
+        	        }
+        	      }
+         
+          	var deferred = dojo.xhrPost(xhrArgs);
+        	
+            return false;
+        } else {
+          
+            return false;
+        }
+	</script>
+						   项目名称 <input dojoType="dijit.form.ValidationTextBox" required="true" regExp='([a-zA-Z0-9_]+)' invalidMessage='变量名不符合规则:([a-zA-Z0-9_]+)' type="text" name="app_name" id="app_name"> 
+						   <button type="submit" dojoType="dijit.form.Button" >生成目录</button>
+							</div>
+					  </div>
+	        	 </div>
+	        	 
+	        	 <div style="width:400px;" dojoType="dojo.dnd.Moveable">
+	         		  <script type="dojo/method">this.mover = dojo.dnd.boxConstrainedMover({l: 0, t: 0, w: 800, h: 700}, true);</script>
+			          <div dojoType="dijit.TitlePane" title="配置文件" style="margin-top:15px">     
+					     <button dojoType="dijit.form.Button" onclick="renewConfigFile('renewconfig');">重新生成</button>
+					     <button dojoType="dijit.form.Button" onclick="renewConfigFile('copyconfig');">同步文件</button>
+					     <button dojoType="dijit.form.Button" onclick="restoreConfigFile();">恢复文件</button>
+					  </div>
+	        	 </div>
           </div>
           
      </div>
@@ -154,7 +199,7 @@
  <div dojoType="dijit.Dialog" id="dialog1" title="关于作者"
     execute="alert('submitted w/args:\n' + dojo.toJson(arguments[0], true));">
     <ul>
-    	<li>Name：kakapo</li>
+    	<li>ID：kakapo</li>
     	<li>QQ：84979065</li>
     	<li>Email：kakapowu@gmail.com</li>
     </ul>

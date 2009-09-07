@@ -172,7 +172,8 @@ function getText(pathinfo,title,params) {
  		        },
  		      error: function(error, ioargs){
  		          var message = httpErrorReport(ioargs.xhr.status);
- 		          dojo.byId('dashboard').innerHTML = message;
+ 		          dojo.byId("AlertCon2").innerHTML = message;
+	 	          dijit.byId("AlertShow2").show();
  		        }
  		
  		    }
@@ -220,7 +221,8 @@ function getText(pathinfo,title,params) {
  		        },
  		      error: function(error, ioargs){
  		          var message = httpErrorReport(ioargs.xhr.status);
- 		          dojo.byId('dashboard').innerHTML = message;
+ 		          dojo.byId("AlertCon2").innerHTML = message;
+	 	          dijit.byId("AlertShow2").show();
  		        }
  		
  		    }
@@ -283,7 +285,8 @@ function getText(pathinfo,title,params) {
  		        },
  		      error: function(error, ioargs){
  		          var message = httpErrorReport(ioargs.xhr.status);
- 		          dojo.byId('dashboard').innerHTML = message;
+ 		         dojo.byId("AlertCon2").innerHTML = message;
+	 	          dijit.byId("AlertShow2").show();
  	        	}	
  		    }
  		
@@ -379,7 +382,7 @@ function getText(pathinfo,title,params) {
  }
  function restoreConfigFile(){
  	var xhrArgs = {
- 		 	url: "/plugins/restoreConfigFile.php",
+ 		 	url: "/plugins/restore.php",
   	        handleAs: "json",
   	        load: function(data){ 
  		

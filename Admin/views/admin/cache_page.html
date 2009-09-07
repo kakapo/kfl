@@ -70,7 +70,7 @@
         	        form: 'page_form',
         	        handleAs: "json",
         	        load: function(data){
-    	      			alert(data.m);
+    	      			
 						if(data.s==200){
 	            			//新增行
 			            	var rowid= "page_"+data.d;
@@ -106,7 +106,7 @@
     	        		}
         	        },
         	        error: function(error,ioargs){
-					  alert(error);
+					 
        	        	  var message = httpErrorReport(ioargs.xhr.status);
         	          dojo.byId("AlertCon2").innerHTML = message;
         	          dijit.byId("AlertShow2").show();
