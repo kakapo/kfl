@@ -36,7 +36,35 @@
 		  dojo.require("dijit.form.Button");
 		  dojo.require("dijit.form.ComboBox");
 		  
-				
+		  dojo.require("dojo.data.ItemFileReadStore");
+		  dojo.require("dijit.Tree");
+
+	dojo.addOnLoad(function() {
+		
+		   var store = new dojo.data.ItemFileReadStore({
+            url: "/index.php/index/appdir?dir=<?=$app_dir?>", urlPreventCache:"true",jsId:"dirStore"
+        });
+			//alert(store.data.label);
+		    // our test data store for this example:
+		   // var store = new dojo.data.ItemFileReadStore({data:json});//
+		   //  query: {
+	       //         "type": "dir,file"
+	      //      },
+	        var treeModel = new dijit.tree.ForestStoreModel({
+	            store: store,
+	          
+	            rootId: "root",
+	            rootLabel: "<?=$app_name?>",
+	            childrenAttrs: ["children"]
+	        });
+	
+	        new dijit.Tree({
+	            model: treeModel,
+	            openOnClick:"false"
+	        },
+	        "menutree");
+	    });
+			
 	</script>
 	<script type="text/javascript" src="/public/js/common.js"></script>
     <style>
@@ -116,22 +144,31 @@
 			</div>
 	 </div>
 	 <div id="leftDiv" dojoType="dijit.layout.AccordionContainer" region="leading" splitter="true" style="width:200px">
-			<div dojoType="dijit.layout.ContentPane" title="KFL 简介">
+		<div dojoType="dijit.layout.ContentPane" title="文件浏览" >
+		<div id="menutree">
+		<script type="dojo/method" event="onClick" args="item">
+		alert(123);
+        alert("Execute of node " + dirStore.getLabel(item) + ", population=" + dirStore.getValue(item, "dir"));
+   		 </script>
+		</div>
+		</div>	
+	 <div dojoType="dijit.layout.ContentPane" title="KFL 简介">
 			<p>
 			&nbsp;&nbsp;KFL是一个轻快的、友好的、MVC模式的PHP开发框架，基于应用层解决Webserver集群带来的系列问题。
-</p>
-	<label>主要特点:</label>
-	
-	<ul style="list-style-type: decimal;padding-left:20px;">
-	<li>统一配置，一键同步。</li>
-	<li>支持数据片和网页的分布式缓存。</li>
-	<li>支持Session会话数据同步和在线用户统计。</li>
-	<li>支持错误日志和应用服务监控。</li>
-	<li>集成用户数据文件的分布式存储服务。</li>
-	
-	</ul>
+			</p>
+				<label>主要特点:</label>
+				
+				<ul style="list-style-type: decimal;padding-left:20px;">
+				<li>统一配置，一键同步。</li>
+				<li>支持数据片和网页的分布式缓存。</li>
+				<li>支持Session会话数据同步和在线用户统计。</li>
+				<li>支持错误日志和应用服务监控。</li>
+				<li>集成用户数据文件的分布式存储服务。</li>
+				
+				</ul>
 		  
 		</div>
+	
 	 </div>
      <div dojoType="dijit.layout.TabContainer" region="center" splitter="true" id="maindiv">
           <div dojoType="dijit.layout.ContentPane" title="控制面板" id="dashboard" >
@@ -174,7 +211,7 @@
             return false;
         }
 	</script>
-						   项目名称 <input dojoType="dijit.form.ValidationTextBox" required="true" regExp='([a-zA-Z0-9_]+)' invalidMessage='变量名不符合规则:([a-zA-Z0-9_]+)' type="text" name="app_name" id="app_name"> 
+						   项目名称 <input dojoType="dijit.form.ValidationTextBox" required="true" regExp='([a-zA-Z0-9_]+)' invalidMessage='变量名不符合规则:([a-zA-Z0-9_]+)' type="text" name="app_name" id="app_name" value="<?=$app_name?>"> 
 						   <button type="submit" dojoType="dijit.form.Button" >生成目录</button>
 							</div>
 					  </div>
