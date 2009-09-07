@@ -183,65 +183,33 @@ function list_dir($path,$type = 'all')
 	$i = 0;
 	while (false !== ($filename = $dir->read()))
 	{
-		if (eregi("^\.{1,2}$",$filename)) {	continue; }
+		if (preg_match("/^(\.{1,2}|\.svn)$/ism",$filename)) {	continue; }
 
 		$fileinfo = stat($dir->path.'/'.$filename);
 		$pathinfo = pathinfo($filename);
 		$filetype = filetype($dir->path.'/'.$filename);
-
+		//if($filetype == 'dir') list_dir($dir->path,$list[$i]);
 		if(($type == 'file' && $filetype == 'dir') && $type != 'all'){	continue;	}
 		if(($type == 'dir' && $filetype == 'file') && $type != 'all'){	continue;	}
-
+		$list[$i]['id'] = $filename;
 		$list[$i]['type'] = $filetype;
-		$list[$i]['filename'] = $filename;
-		$list[$i]['basename'] = basename($pathinfo['basename'],'.'.$pathinfo['extension']);
-		$list[$i]['extension'] = $pathinfo['extension'];
+		$list[$i]['name'] = $filename;
+		$list[$i]['basename'] = $pathinfo['basename'];
+		$list[$i]['extension'] = isset($pathinfo['extension'])?$pathinfo['extension']:'';
 		$list[$i]['time'] = $fileinfo['mtime'];
 		$list[$i]['size'] = $fileinfo['size'];
-		$list[$i]['dir'] = path_clean($dir->path);
-		$list[$i]['path'] = path_clean($dir->path.'/'.$filename);
+		if($filetype=='dir') $list[$i]['children'] = array(array("_reference"=>''));
+		$list[$i]['dir'] = $dir->path;
+		$list[$i]['path'] = $dir->path.'/'.$filename;
 
 		$i++;
 	}
 	$dir->close();
-	@array_multisort($list,SORT_ASC,$list);//排序 如果搜索全部类型则先列数组
+	@array_multisort($list,SORT_DESC,$list);//排序 如果搜索全部类型则先列数组
 	return $list;
 }
-
-
-//作用:列出指定文件夹下所有文件
-//参数:$path 要遍历的文件夹
-//返回:返回文件夹内容数组 | false 文件夹不存在
-function list_dir_file($path,$i = 0)
-{
-	if(!$dir = @dir($path))
-	{
-		return false;
-	}
-
-	$list_array = list_dir($path);
-
-	$list_array = is_array($list_array) ? $list_array : array() ;
-
-	foreach ($list_array as $value)
-	{
-		if($value['type'] == 'dir')
-		{
-			list_dir_file($value['path'],$i+1);
-		}
-		else
-		{
-			$GLOBALS['LIST_ALL_FILE_INSIDE_ARRAY'][] = $value;
-		}
-	}
-
-	if($i == 0)
-	{
-		$return_array = $GLOBALS['LIST_ALL_FILE_INSIDE_ARRAY'];
-		unset($GLOBALS['LIST_ALL_FILE_INSIDE_ARRAY']);
-	}
-
-	return $return_array;
+function dirtree($path,$tree=array()){
+	
 }
 
 //作用:检测指定目录大小

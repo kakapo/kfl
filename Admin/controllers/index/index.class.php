@@ -18,7 +18,23 @@ class index {
 		
 	}
 	function view_defaults(){
+		global $tpl;
 		$this->is_login();
+		include_once 'SettingManage.class.php';
+		$settingObj = new SettingManage();
+		$app_info = $settingObj->getApp();
+		$app_name = isset($app_info['app_name'])?$app_info['app_name']:'';
+		$app_dir = isset($app_info['app_dir'])?$app_info['app_dir']:'/';
+		$tpl->assign("app_name",$app_name);
+		$tpl->assign("app_dir",urlencode($app_dir));
+	
+	}
+	function view_appdir(){
+		$dir = $_GET['dir'];
+		$arr['identifier'] = 'id';
+		$arr['label'] = 'name';
+		$arr['items'] = list_dir($dir);
+		json_output($arr);
 	}
 	function is_login(){
 		if(!(isset($_SESSION['login'])&&$_SESSION['login']==1)){
