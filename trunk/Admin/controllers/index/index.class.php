@@ -22,19 +22,51 @@ class index {
 		$this->is_login();
 		include_once 'SettingManage.class.php';
 		$settingObj = new SettingManage();
-		$app_info = $settingObj->getApp();
-		$app_name = isset($app_info['app_name'])?$app_info['app_name']:'';
-		$app_dir = isset($app_info['app_dir'])?$app_info['app_dir']:'/';
+		$app_arr = $settingObj->getAppList();
+		foreach($app_arr as $k=>$v){
+			$app_arr[$k]['app_dir'] = urlencode($v['app_dir']);
+		}
+		$app = $settingObj->getAppById(1);
+	
+		$app_name = isset($app['app_name'])?$app['app_name']:'';
+		$app_dir = isset($app['app_dir'])?urlencode($app['app_dir']):'';
 		$tpl->assign("app_name",$app_name);
-		$tpl->assign("app_dir",urlencode($app_dir));
+		$tpl->assign("app_dir",$app_dir);
+		$tpl->assign("project_json",json_encode($app_arr));
+
 	
 	}
 	function view_appdir(){
-		$dir = $_GET['dir'];
+		$app_name = $_GET['app_name'];
+		include_once 'SettingManage.class.php';
+		$this->mSettingObj =  new SettingManage();
+		$app_info = $this->mSettingObj->getAppByName($app_name);
+		
 		$arr['identifier'] = 'id';
 		$arr['label'] = 'name';
-		$arr['items'] = list_dir($dir);
+		
+		list_all_dir($app_info['app_dir'],$tree);
+		$this->readfolder($tree,$return);
+		$arr['items'] = $return;
+		//print_r($return);
+		//echo "<pre>";
 		json_output($arr);
+	}
+	function readfolder($folders,&$return){
+		$tmp = array();
+		foreach($folders as $f){
+			if(isset($f['folders'])&&count($f['folders'])>0) {
+				$r = $this->readfolder($f['folders'],$return);
+				if(count($r)>0) $f['folders'] = $r ;
+				else unset($f['folders']);;
+			}else{
+				unset($f['folders']);
+			}
+			$tmp[]['_reference'] = $f['id'];
+	
+			$return[] = $f;
+		}
+		return $tmp;
 	}
 	function is_login(){
 		if(!(isset($_SESSION['login'])&&$_SESSION['login']==1)){
@@ -195,7 +227,7 @@ class index {
 			$content .= '$GLOBALS ["log"] ["'.$v['name'].'"] =  "'.$v['value'].'";'.$nt; 
 		}	
 		
-		$app_info = $this->mSettingObj->getApp();
+		$app_info = $this->mSettingObj->getAppByName($_POST['app_name']);
 		
 		$content .="\n?>";
 		$config_file = $app_info['app_dir'] ."/config/newconfig.ini.php";
@@ -216,7 +248,7 @@ class index {
 	function op_copyconfig(){
 		include_once 'SettingManage.class.php';
 		$this->mSettingObj =  new SettingManage();
-		$app_info = $this->mSettingObj->getApp();
+		$app_info = $this->mSettingObj->getAppByName($_POST['app_name']);
 		$res = 0;
 		$rs1 =0;
 		$rs = file_exists($app_info['app_dir']."/config/newconfig.ini.php");

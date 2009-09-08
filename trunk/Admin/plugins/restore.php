@@ -18,7 +18,7 @@ include("../config/config.ini.php");
 include("../../KFL/KFL.php");
 include(KFL_DIR."/Libs/Database.class.php");
 $db = Model::dbConnect($GLOBALS ['gDataBase'] ['db_setting.db3']);
-$app_info = $db->getRow("select * from project limit 1");
+$app_info = $db->getRow("select * from project where app_name='".$_POST['app_name']."'");
 $res = 0;
 $rs2 = 0;
 $rs	= file_exists($app_info['app_dir']."/config/config.ini.php.bak");

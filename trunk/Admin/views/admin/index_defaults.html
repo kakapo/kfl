@@ -39,32 +39,19 @@
 		  dojo.require("dojo.data.ItemFileReadStore");
 		  dojo.require("dijit.Tree");
 
-	dojo.addOnLoad(function() {
-		
-		   var store = new dojo.data.ItemFileReadStore({
-            url: "/index.php/index/appdir?dir=<?=$app_dir?>", urlPreventCache:"true",jsId:"dirStore"
-        });
-			//alert(store.data.label);
-		    // our test data store for this example:
-		   // var store = new dojo.data.ItemFileReadStore({data:json});//
-		   //  query: {
-	       //         "type": "dir,file"
-	      //      },
-	        var treeModel = new dijit.tree.ForestStoreModel({
-	            store: store,
-	          
-	            rootId: "root",
-	            rootLabel: "<?=$app_name?>",
-	            childrenAttrs: ["children"]
-	        });
-	
-	        new dijit.Tree({
-	            model: treeModel,
-	            openOnClick:"false"
-	        },
-	        "menutree");
-	    });
-			
+		  
+		  var projectStore = {
+			        identifier: 'app_id',
+			        label: 'app_name',
+			        items: <?=$project_json?>
+			    }
+
+		  var gCurAppName = '<?=$app_name?>';	
+		  var gCurAppDir = '<?=$app_dir?>';	
+		  dojo.addOnLoad(function() {
+			  refreshTree();
+			  }
+		  )
 	</script>
 	<script type="text/javascript" src="/public/js/common.js"></script>
     <style>
@@ -79,6 +66,14 @@
 </head>
 <body class="nihilo">
 
+<ul dojoType="dijit.Menu" id="tree_menu" style="display: none;">
+    <li dojoType="dijit.MenuItem" onClick="alert('Hello world');">
+        Item #1
+    </li>
+    <li dojoType="dijit.MenuItem">
+        Item #2
+    </li>
+</ul>
 
     
 <div id="mainDiv" dojoType="dijit.layout.BorderContainer">
@@ -144,13 +139,9 @@
 			</div>
 	 </div>
 	 <div id="leftDiv" dojoType="dijit.layout.AccordionContainer" region="leading" splitter="true" style="width:200px">
-		<div dojoType="dijit.layout.ContentPane" title="文件浏览" >
-		<div id="menutree">
-		<script type="dojo/method" event="onClick" args="item">
-		alert(123);
-        alert("Execute of node " + dirStore.getLabel(item) + ", population=" + dirStore.getValue(item, "dir"));
-   		 </script>
-		</div>
+		<div dojoType="dijit.layout.ContentPane" title="项目文件" >	
+		  	<button dojoType="dijit.form.Button" onClick="refreshTree()">刷新目录</button>	
+		  <div id="target"></div> <div id="file_tree"></div>
 		</div>	
 	 <div dojoType="dijit.layout.ContentPane" title="KFL 简介">
 			<p>
@@ -172,13 +163,26 @@
 	 </div>
      <div dojoType="dijit.layout.TabContainer" region="center" splitter="true" id="maindiv">
           <div dojoType="dijit.layout.ContentPane" title="控制面板" id="dashboard" >
+          
+          		 <div style="width:400px;" dojoType="dojo.dnd.Moveable">
+	         		  <script type="dojo/method">this.mover = dojo.dnd.boxConstrainedMover({l: 0, t: 0, w: 800, h: 700}, true);</script>
+			          <div dojoType="dijit.TitlePane" title="项目列表" >     
+					    <div dojoType="dojo.data.ItemFileReadStore" data="projectStore" jsId="projectStore">
+						</div>
+						<div dojoType="dijit.form.ComboBox" id="projectSelect" store="projectStore" searchAttr="app_name"
+						 value="<?=$app_name?>">
+						</div>   <button dojoType="dijit.form.Button"  onClick="changeProject()"> 浏览项目 </button>
+					  </div>
+	        	 </div>
+          
+          
 	         	<div style="width:400px;" dojoType="dojo.dnd.Moveable">
 	         		  <script type="dojo/method">this.mover = dojo.dnd.boxConstrainedMover({l: 0, t: 0, w: 800, h: 700}, true);</script>
-			          <div dojoType="dijit.TitlePane" title="快速创建项目">     
+			          <div dojoType="dijit.TitlePane" title="快速创建项目" style="margin-top:15px">     
 				          <div method="" jsid="appcreate_form" id="appcreate_form" dojoType="dijit.form.Form" action="">
 				         <input type="hidden" name="action" value="index">
 						<input type="hidden" name="op" value="createapp">
-		<script type="dojo/method" event="onSubmit">
+				<script type="dojo/method" event="onSubmit">
 			if (this.validate()) {
             var xhrArgs = {
 					url:"/index.php",
@@ -211,7 +215,7 @@
             return false;
         }
 	</script>
-						   项目名称 <input dojoType="dijit.form.ValidationTextBox" required="true" regExp='([a-zA-Z0-9_]+)' invalidMessage='变量名不符合规则:([a-zA-Z0-9_]+)' type="text" name="app_name" id="app_name" value="<?=$app_name?>"> 
+						   项目名称 <input dojoType="dijit.form.ValidationTextBox" required="true" regExp='([a-zA-Z0-9_]+)' invalidMessage='变量名不符合规则:([a-zA-Z0-9_]+)' type="text" name="app_name" id="app_name" value=""> 
 						   <button type="submit" dojoType="dijit.form.Button" >生成目录</button>
 							</div>
 					  </div>
