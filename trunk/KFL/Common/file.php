@@ -126,6 +126,7 @@ function create_dir($path,$mode = 0777)
 //返回:true|false
 function del($path, $self = false, $private_level = 0,$types='')
 {
+	
 	$list_dir = list_dir($path);//注此处使用了自定义扩展函数
 
 	if(is_array($list_dir))
@@ -134,7 +135,7 @@ function del($path, $self = false, $private_level = 0,$types='')
 		{
 			if($row['type'] == 'dir')
 			{
-				if(!del($row['path'],'1',$root+1))
+				if(!del($row['path'],'1',$private_level+1))
 				{
 					return false;
 				}
@@ -176,6 +177,7 @@ function del($path, $self = false, $private_level = 0,$types='')
 //返回:返回文件夹内容数组 | false 文件夹不存在
 function list_dir($path,$type = 'all')
 {
+	$list = array();
 	if(!$dir = @dir($path))
 	{
 		return false;
@@ -205,7 +207,7 @@ function list_dir($path,$type = 'all')
 		$i++;
 	}
 	$dir->close();
-	@array_multisort($list,SORT_DESC,$list);//排序 如果搜索全部类型则先列数组
+	//@array_multisort($list,SORT_DESC,$list);//排序 如果搜索全部类型则先列数组
 	return $list;
 }
 function list_all_dir($path,&$tree){

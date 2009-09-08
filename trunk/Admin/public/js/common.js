@@ -1,4 +1,38 @@
-
+ function doPost(url,postdata,form){
+ 	 var xhrArgs = {
+ 		 	url: url,
+  	        handleAs: "text",
+  	        load: function(data){ 
+  	        	alert(data);
+  	          dojo.byId("AlertCon2").innerHTML = data.m; 		  
+  	          dijit.byId("AlertShow2").show();      
+  	        },
+  	        error: function(error,ioargs){
+  	        	alert(error);
+  	          var message = httpErrorReport(ioargs.xhr.status);
+  	          dojo.byId("AlertCon2").innerHTML = message;
+  	          dijit.byId("AlertShow2").show();
+  	        }
+  	      }
+ 	if(postdata) xhrArgs.postData = postdata;
+ 	if(form) xhrArgs.form = form;
+    var deferred = dojo.xhrPost(xhrArgs);
+ }
+ function doGet(url,content,loadCallBack){
+	var xhrArgs = {
+		      url: url,
+		      handleAs: "json",
+		      preventCache: true,     
+		      load: loadCallBack,
+		      error: function(error, ioargs){
+		          var message = httpErrorReport(ioargs.xhr.status);
+		          dojo.byId("AlertCon2").innerHTML = message;
+ 	          dijit.byId("AlertShow2").show();
+		        }	
+		    }		
+    if(content) xhrArgs.content=content;
+    var deferred = dojo.xhrGet(xhrArgs);
+}
 function httpErrorReport(status){
 	var message = "";
  	switch(status){
@@ -99,11 +133,9 @@ function getText(pathinfo,title,params) {
 	 dijit.byId("dialog1").show();
  }
  function deleteRow(table,id){
-	 
 	 if(dojo.byId(id)){
 		 dojo.byId(table).removeChild(dojo.byId(id));
 	 }
-	 //dojo.byId(id).style.hidden = true;
  }
  function addRow(table){
 	var d= new Date();
@@ -129,113 +161,41 @@ function getText(pathinfo,title,params) {
 	row.appendChild(thirdtd);
 	
 	dojo.byId(table).appendChild(row);   
-	
-	
+
  }
 
  function deleteDatabase(id,dbname){
- 	
  	 dojo.byId('dblist').removeChild(dojo.byId(id));
- 	 var xhrArgs = {
- 			 	url: "/index.php",
- 		        postData: "action=setting&op=deletedb&dbname="+dbname,
- 	 	        handleAs: "json",
- 	 	        load: function(data){ 		  
- 	 	          dojo.byId("AlertCon2").innerHTML = data.m; 		  
- 	 	          dijit.byId("AlertShow2").show();
- 	 	        },
- 	 	        error: function(error,ioargs){
- 	 	          var message = httpErrorReport(ioargs.xhr.status); 
- 	 	          dojo.byId("AlertCon2").innerHTML = message;
- 	 	          dijit.byId("AlertShow2").show();
- 	 	        }
- 	 	      }
- 	  
- 	   	var deferred = dojo.xhrPost(xhrArgs);
+ 	 doPost("/index.php","action=setting&op=deletedb&dbname="+dbname);
  }
 
  function editDatabase(id,dbname){
  	dijit.byId('editDatabase').show();
- 	var xhrArgs = {
- 		      url: "/index.php/setting/getdb/"+dbname,
- 		      handleAs: "json",
- 		      preventCache: true,
- 		     
- 		      load: function(data, ioargs){
- 					var _tbody = dojo.byId("database_edit_table");
- 					
- 					clearTbody(_tbody);
- 					
- 	      			dojo.byId("edit_dbname").value = dbname;
- 	      			
- 	      			fillTbody(_tbody,data);
-					
- 		        },
- 		      error: function(error, ioargs){
- 		          var message = httpErrorReport(ioargs.xhr.status);
- 		          dojo.byId("AlertCon2").innerHTML = message;
-	 	          dijit.byId("AlertShow2").show();
- 		        }
- 		
- 		    }
- 		
- 		    //Call the asynchronous xhrGet
- 		    var deferred = dojo.xhrGet(xhrArgs);
+ 	doGet("/index.php/setting/getdb/"+dbname,'',function(data, ioargs){
+ 					var _tbody = dojo.byId("database_edit_table");			
+ 					clearTbody(_tbody);					
+ 	      			dojo.byId("edit_dbname").value = dbname;	      			
+ 	      			fillTbody(_tbody,data);					
+ 		        });
  }
-
 
  function deleteMemcached(id,host){
  	 dojo.byId('memcachedlist').removeChild(dojo.byId(id));
- 	 var xhrArgs = {
- 			 	url: "/index.php",
- 		        postData: "action=cache&op=deletememcached&host="+host,
- 	 	        handleAs: "json",
- 	 	        load: function(data){
- 	 	          dojo.byId("AlertCon2").innerHTML = data.m;
- 	 	          dijit.byId("AlertShow2").show();
- 	 	        },
- 	 	        error: function(error,ioargs){
- 	 	          var message = httpErrorReport(ioargs.xhr.status);
- 	 	          dojo.byId("AlertCon2").innerHTML = message;
- 	 	          dijit.byId("AlertShow2").show();
- 	 	        }
- 	 	      }
- 	  
- 	   	var deferred = dojo.xhrPost(xhrArgs);
+ 	 doPost("/index.php","action=cache&op=deletememcached&host="+host);
  }
 
  function editMemcached(id,host){
  	dijit.byId('editMemcached').show();
- 	var xhrArgs = {
- 		      url: "/index.php/cache/getmemcached/"+host,
- 		      handleAs: "json",
- 		      preventCache: true,
- 		     
- 		      load: function(data, ioargs){
+ 	doGet("/index.php/cache/getmemcached/"+host,'',function(data, ioargs){
  					var _tbody = dojo.byId("memcached_edit_table");
- 					clearTbody(_tbody);
- 					
- 	      			dojo.byId("edit_host").value = host;
- 	      			
- 	      			fillTbody(_tbody,data);
- 					
- 		        },
- 		      error: function(error, ioargs){
- 		          var message = httpErrorReport(ioargs.xhr.status);
- 		          dojo.byId("AlertCon2").innerHTML = message;
-	 	          dijit.byId("AlertShow2").show();
- 		        }
- 		
- 		    }
- 		
- 		    //Call the asynchronous xhrGet
- 		    var deferred = dojo.xhrGet(xhrArgs);
+ 					clearTbody(_tbody);					
+ 	      			dojo.byId("edit_host").value = host;      			
+ 	      			fillTbody(_tbody,data);					
+ 		        });
  }
 
  function view_memcached(host){
- 	
  	var tabs = dijit.byId("maindiv");
-
  	data = '<iframe src="/plugins/memcache.php?host='+host+'" width="100%" frameborder="0" height="700px"></iframe>';
  	var pane = new dijit.layout.ContentPane({id:host, title:host,closable:true, content:data });
  	tabs.addChild(pane);
@@ -252,72 +212,29 @@ function getText(pathinfo,title,params) {
 
  function deletePageRule(id,page_rule){
  	 dojo.byId('pagerulelist').removeChild(dojo.byId(id));
- 	 var xhrArgs = {
- 			 	url: "/index.php",
- 		        postData: "action=cache&op=deletepagerule&pagerule="+page_rule,
- 	 	        handleAs: "json",
- 	 	        load: function(data){
- 	 	 		  
- 	 	          dojo.byId("AlertCon2").innerHTML = data.m;
- 	 	 		  
- 	 	          dijit.byId("AlertShow2").show();
- 	 	        },
- 	 	        error: function(error,ioargs){
- 	 	          var message = httpErrorReport(ioargs.xhr.status);
- 	 	          dojo.byId("AlertCon2").innerHTML = message;
- 	 	          dijit.byId("AlertShow2").show();
- 	 	        }
- 	 	      }
- 	  
- 	   	var deferred = dojo.xhrPost(xhrArgs);
+ 	 doPost("/index.php","action=cache&op=deletepagerule&pagerule="+page_rule);
  }
 
  function editPageRule(id,pagerule){
  	dijit.byId('editPageRule').show();
- 	var xhrArgs = {
- 		      url: "/index.php/cache/getpagerule/"+pagerule,
- 		      handleAs: "json",
- 		      preventCache: true,	     
- 		      load: function(data, ioargs){
+ 	doGet("/index.php/cache/getpagerule/"+pagerule,'',function(data, ioargs){
  					var _tbody = dojo.byId("page_edit_table");
  					clearTbody(_tbody);		 		
  	      			dojo.byId("edit_pagerule").value = pagerule;     			
  	      			fillTbody(_tbody,data);				
- 		        },
- 		      error: function(error, ioargs){
- 		          var message = httpErrorReport(ioargs.xhr.status);
- 		         dojo.byId("AlertCon2").innerHTML = message;
-	 	          dijit.byId("AlertShow2").show();
- 	        	}	
- 		    }
- 		
- 		    //Call the asynchronous xhrGet
- 		    var deferred = dojo.xhrGet(xhrArgs);
+ 		        });
  }
  function viewSessionValue(key,server){
-	 var xhrArgs = {
-			 	url: "/index.php/session/viewsession",
-			 	handleAs: "text",
-			 	content: {
+ 	doGet("/index.php/session/viewsession",{
 	                key: key,
 	                server: server
-	            },
-			 	preventCache: true, 	     
-	 	        load: function(data){ 	 		  
+	            },function(data){ 	 		  
 	 	          dojo.byId("sessionValue").innerHTML = data; 	 		  
 	 	          dijit.byId("sessionDialog").show();
-	 	        },
-	 	        error: function(error,ioargs){
-	 	          var message = httpErrorReport(ioargs.xhr.status);
-	 	          dojo.byId("AlertCon2").innerHTML = message;
-	 	          dijit.byId("AlertShow2").show();
-	 	        }
-	 	      }
-	  
-	   	var deferred = dojo.xhrGet(xhrArgs);
+	 	        });
 	 
  }
- function deleteErrorLog(error_no){
+ function deleteErrorLog(error_no){	
  	 var xhrArgs = {
 		 	url: "/index.php",
 	        postData: "action=monitor&op=delerrorlog&error_no="+error_no,
@@ -337,83 +254,30 @@ function getText(pathinfo,title,params) {
    	var deferred = dojo.xhrPost(xhrArgs);
  }
  function viewErrorLog(error_no){
- 	 var xhrArgs = {
-			 	url: "/index.php/monitor/viewerrorlog",
-			 	handleAs: "text",
-			 	content: {
-	                error_no: error_no
-	            },
-			 	preventCache: true, 	     
-	 	        load: function(data){ 	 		  
-	 	          dojo.byId("errorLogValue").innerHTML = data; 	 		  
-	 	          dijit.byId("errorLogDialog").show();
-	 	        },
-	 	        error: function(error,ioargs){
-	 	        	
-	 	          var message = httpErrorReport(ioargs.xhr.status);
-	 	          dojo.byId("AlertCon2").innerHTML = message;
-	 	          dijit.byId("AlertShow2").show();
-	 	        }
-	 	      }
-	  
-	   	var deferred = dojo.xhrGet(xhrArgs);
+	doGet("/index.php/monitor/viewerrorlog",'',function(data){ 	 		  
+          dojo.byId("errorLogValue").innerHTML = data; 	 		  
+          dijit.byId("errorLogDialog").show();
+        });
  }
  function gotopage(page){ 
 	 dijit.byId("_monitor_errorlog").attr("href","/index.php/monitor/errorlog/page/"+page);
  }
  function renewConfigFile(op){
- 	 var xhrArgs = {
- 		 	url: "/index.php",
- 	        postData: "action=index&op="+op+"&app_name="+gCurAppName,
-  	        handleAs: "json",
-  	        load: function(data){ 
- 		
-  	          dojo.byId("AlertCon2").innerHTML = data.m; 		  
-  	          dijit.byId("AlertShow2").show();
-  	          
-  	        },
-  	        error: function(error,ioargs){
-  	          var message = httpErrorReport(ioargs.xhr.status);
-  	          dojo.byId("AlertCon2").innerHTML = message;
-  	          dijit.byId("AlertShow2").show();
-  	        }
-  	      }
- 
-    var deferred = dojo.xhrPost(xhrArgs);
+ 	doPost("/index.php","action=project&op="+op+"&app_name="+gCurAppName);
  }
+
  function restoreConfigFile(){
- 	var xhrArgs = {
- 		 	url: "/plugins/restore.php",
- 		 	postData: "app_name="+gCurAppName,
-  	        handleAs: "json",
-  	        load: function(data){ 
- 		
-  	          dojo.byId("AlertCon2").innerHTML = data.m; 		  
-  	          dijit.byId("AlertShow2").show();
-  	          
-  	        },
-  	        error: function(error,ioargs){
-  	          var message = httpErrorReport(ioargs.xhr.status);
-  	          dojo.byId("AlertCon2").innerHTML = message;
-  	          dijit.byId("AlertShow2").show();
-  	        }
-  	      }
- 
-    var deferred = dojo.xhrPost(xhrArgs);
- 
+ 	doPost("/plugins/restore.php","app_name="+gCurAppName);
  }
  function refreshTree(){
 	 var app_name = gCurAppName;
-	
-	var app_dir = gCurAppDir;
-		
-	
+	 var app_dir = gCurAppDir;	
 	if(dijit.byId("file_tree")){
 	 	dijit.byId("file_tree").destroy();//Enter the tree widget ID
 	 }
 
 	 var store = new dojo.data.ItemFileReadStore({
-	      url: "/index.php/index/appdir/app_name/"+app_name, urlPreventCache:"true",jsId:"dirStore"
+	      url: "/index.php/project/appdir/app_name/"+app_name, urlPreventCache:"true",jsId:"dirStore"
 	  });
 	//Fetch the data.
 	//test 
@@ -476,7 +340,7 @@ function getText(pathinfo,title,params) {
           // IMPLEMENT CUSTOM MENU BEHAVIOR HERE
       });
  }
- function changeProject(){
+ function openProject(){
 	 gCurAppName = dijit.byId('projectSelect').attr('value');
 	 
 	 projectStore.fetch({
@@ -494,7 +358,37 @@ function getText(pathinfo,title,params) {
              deep: true
          }
      });
-	//alert();
 	 
 	 refreshTree(gCurAppDir);
  }
+ function deleteProject(){
+ 	raiseQueryDialog("确认要删除吗？", "一旦确认删除，所有目录和文件将不复存在！请慎重考虑？！<br>", function(arg){
+ 			
+ 		doPost("/index.php","action=project&op=deleteapp&app_name="+gCurAppName);
+ 		
+ 	});
+ }
+ function raiseQueryDialog(title, question, callbackFn) {
+
+        var errorDialog = new dijit.Dialog({ id: 'queryDialog', title: title });
+        // When either button is pressed, kill the dialog and call the callbackFn.
+        var commonCallback = function(mouseEvent) {
+        errorDialog.hide();
+        errorDialog.destroyRecursive();
+                if (mouseEvent.explicitOriginalTarget.id == 'yesButton') {
+                        callbackFn(true);
+                } else {
+                        callbackFn(false);
+                }
+        };
+                var questionDiv = dojo.create('div', { innerHTML: question });
+        var yesButton = new dijit.form.Button(
+                    { label: '确认', id: 'yesButton', onClick: commonCallback });
+        var noButton = new dijit.form.Button(
+                    { label: '取消', id: 'noButton', onClick: function(){dijit.byId("queryDialog").destroyRecursive();} });
+
+        errorDialog.containerNode.appendChild(questionDiv);
+        errorDialog.containerNode.appendChild(yesButton.domNode);
+        errorDialog.containerNode.appendChild(noButton.domNode);
+        errorDialog.show();
+}
