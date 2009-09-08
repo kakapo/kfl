@@ -769,6 +769,7 @@ function curl_get_content($url){
 
 function json_output($arr){
 	echo json_encode($arr);
+	//echo preg_replace("#\\\u([0-9a-f]+)#ie", "iconv('UCS-2', 'UTF-8', pack('H4', '\\1'))", $code);
 	die;
 }
 ?>

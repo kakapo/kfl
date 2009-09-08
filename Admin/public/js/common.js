@@ -1,3 +1,4 @@
+
 function httpErrorReport(status){
 	var message = "";
  	switch(status){
@@ -363,10 +364,10 @@ function getText(pathinfo,title,params) {
  function renewConfigFile(op){
  	 var xhrArgs = {
  		 	url: "/index.php",
- 	        postData: "action=index&op="+op,
+ 	        postData: "action=index&op="+op+"&app_name="+gCurAppName,
   	        handleAs: "json",
   	        load: function(data){ 
- 		// alert(data);
+ 		
   	          dojo.byId("AlertCon2").innerHTML = data.m; 		  
   	          dijit.byId("AlertShow2").show();
   	          
@@ -383,6 +384,7 @@ function getText(pathinfo,title,params) {
  function restoreConfigFile(){
  	var xhrArgs = {
  		 	url: "/plugins/restore.php",
+ 		 	postData: "app_name="+gCurAppName,
   	        handleAs: "json",
   	        load: function(data){ 
  		
@@ -399,4 +401,100 @@ function getText(pathinfo,title,params) {
  
     var deferred = dojo.xhrPost(xhrArgs);
  
+ }
+ function refreshTree(){
+	 var app_name = gCurAppName;
+	
+	var app_dir = gCurAppDir;
+		
+	
+	if(dijit.byId("file_tree")){
+	 	dijit.byId("file_tree").destroy();//Enter the tree widget ID
+	 }
+
+	 var store = new dojo.data.ItemFileReadStore({
+	      url: "/index.php/index/appdir/app_name/"+app_name, urlPreventCache:"true",jsId:"dirStore"
+	  });
+	//Fetch the data.
+	//test 
+	store.fetch({
+         query: {
+             'dir': app_dir
+         },  
+         onComplete: function(items, request){
+        	 //alert(items.length);
+         },
+         onError: function (error, request) {
+             alert("lookup failed.");
+             alert(error);
+         },
+         queryOptions: {
+             deep: true
+         }
+     });
+
+     var treeModel = new dijit.tree.ForestStoreModel({
+          store: store,
+          query: {
+	     	         "dir": app_dir
+	     	      },
+          rootId: "root",
+          rootLabel: app_name,
+          childrenAttrs: ["folders"]
+      });
+
+     var tree= new dijit.Tree({
+    	  id:"file_tree",
+          model: treeModel,
+          showRoot: true,
+          openOnClick:"true"
+      },
+      "file_tree");
+     var block = document.getElementById('target');
+     block.appendChild(tree.domNode);
+     tree.startup();
+     //tree.connect(tree, "onClick", function(item){	      	    	  
+  	//  alert(store.getLabel(item));
+     //	});
+     var menu = dijit.byId("tree_menu");
+      // when we right-click anywhere on the tree, make sure we open the menu
+      menu.bindDomNode(tree.domNode);
+
+      dojo.connect(menu, "_openMyself", tree, function(e) {
+          // get a hold of, and log out, the tree node that was the source of this open event
+          var tn = dijit.getEnclosingWidget(e.target);
+          //console.debug(tn);
+
+          // now inspect the data store item that backs the tree node:
+         // alert(tn.item);
+
+          // contrived condition: if this tree node doesn't have any children, disable all of the menu items
+          menu.getChildren().forEach(function(i) {
+              i.attr('disabled', !tn.item.children);
+          });
+
+          // IMPLEMENT CUSTOM MENU BEHAVIOR HERE
+      });
+ }
+ function changeProject(){
+	 gCurAppName = dijit.byId('projectSelect').attr('value');
+	 
+	 projectStore.fetch({
+         query: {
+             'app_name': gCurAppName
+         },  
+         onComplete: function(items, request){
+        	 gCurAppDir = items[0].app_dir.toString();
+         },
+         onError: function (error, request) {
+             alert("lookup failed.");
+             alert(error);
+         },
+         queryOptions: {
+             deep: true
+         }
+     });
+	//alert();
+	 
+	 refreshTree(gCurAppDir);
  }
