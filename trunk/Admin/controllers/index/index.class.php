@@ -20,21 +20,7 @@ class index {
 	function view_defaults(){
 		global $tpl;
 		$this->is_login();
-		include_once 'ProjectManage.class.php';
-		$projectObj = new ProjectManage();
-		$app_arr = $projectObj->getAppList();
-		foreach($app_arr as $k=>$v){
-			$app_arr[$k]['app_dir'] = urlencode($v['app_dir']);
-		}
-		$app = $projectObj->getLastApp();
-	
-		$app_name = isset($app['app_name'])?$app['app_name']:'';
-		$app_dir = isset($app['app_dir'])?urlencode($app['app_dir']):'';
-		$tpl->assign("app_name",$app_name);
-		$tpl->assign("app_dir",$app_dir);
-		$tpl->assign("project_json",json_encode($app_arr));
 
-	
 	}
 	function is_login(){
 		if(!(isset($_SESSION['login'])&&$_SESSION['login']==1)){
