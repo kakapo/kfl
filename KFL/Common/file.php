@@ -199,7 +199,7 @@ function list_dir($path,$type = 'all')
 		$list[$i]['basename'] = $pathinfo['basename'];
 		$list[$i]['extension'] = isset($pathinfo['extension'])?$pathinfo['extension']:'';
 		$list[$i]['time'] = $fileinfo['mtime'];
-		$list[$i]['size'] = $fileinfo['size'];
+		$list[$i]['size'] = size_unit_convert($fileinfo['size']);
 		if($filetype=='dir') $list[$i]['folders'] = array(array("_reference"=>''));
 		$list[$i]['dir'] = $dir->path;
 		$list[$i]['path'] = $dir->path.'/'.$filename;
@@ -210,6 +210,7 @@ function list_dir($path,$type = 'all')
 	//@array_multisort($list,SORT_DESC,$list);//排序 如果搜索全部类型则先列数组
 	return $list;
 }
+
 function list_all_dir($path,&$tree){
 	
 	if(!$dir = @dir($path))
@@ -230,17 +231,19 @@ function list_all_dir($path,&$tree){
 		$fileinfo = stat($dir->path.'/'.$filename);
 		$pathinfo = pathinfo($filename);
 		
+		$t['path'] = urlencode(encrypt($dir->path.'/'.$filename));
 		
-		$t['id'] = substr(strrchr($dir->path,"/"),1).'_'.$filename;
+		$filename = mb_convert_encoding($filename, "UTF-8", "GBK");
+		$t['id'] = $filename.uniqid("_");
 		$t['filetype'] = $filetype;
-		$t['name'] = mb_convert_encoding($filename, "UTF-8", "GBK");
+		$t['name'] = $filename;
 		
 		$t['basename'] = $pathinfo['basename'];
 		$t['extension'] = isset($pathinfo['extension'])?$pathinfo['extension']:'';
-		$t['time'] = $fileinfo['mtime'];
-		$t['size'] = $fileinfo['size'];	
+		$t['time'] = date ("Y-m-d H:i:s.", $fileinfo['mtime']);
+		$t['size'] = size_unit_convert($fileinfo['size']);	
 		$t['dir'] = urlencode(path_clean($dir->path));
-		$t['path'] = $dir->path.'/'.$filename;
+		
 		$tree[$i] = $t;
 		$i++;
 		@array_multisort($tree, SORT_REGULAR,SORT_DESC   );//排序 如果搜索全部类型则先列数组
