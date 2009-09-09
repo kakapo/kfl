@@ -231,11 +231,11 @@ class project {
 		
 		if($res){
 			$msg['s'] = 200;
-			$msg['m'] = "生成成功!";
+			$msg['m'] = "同步成功!";
 			$msg['d'] = 'null';	
 		}else{
 			$msg['s'] = 400;
-			$msg['m'] = "生成失败!";
+			$msg['m'] = "同步失败!";
 			$msg['d'] = 'null';	
 		}
 		json_output($msg);
@@ -245,21 +245,24 @@ class project {
 		$app_name = $_POST['app_name'];
 		$res = $this->mProjectObj->getAppByName($app_name);
 		if(!$res){
-			$app_root = $_SERVER["DOCUMENT_ROOT"]."/../".$app_name;
-			$rs1 = create_dir($app_root);
-			create_dir($app_root."/config");
-			create_dir($app_root."/controllers/index");
-			create_dir($app_root."/models");
-			create_dir($app_root."/plugins");
-			create_dir($app_root."/tmp");
-			create_dir($app_root."/views/index");
-			$index_content = file_get_contents(APP_DIR.'/public/install/index.txt');
-			$demo_class = file_get_contents(APP_DIR.'/public/install/demo.class.txt');
-			$demo_defaults = file_get_contents(APP_DIR.'/public/install/demo_defaults.txt');
-			file_put_contents($app_root."/index.php",$index_content);
-			file_put_contents($app_root."/controllers/index/demo.class.php",$demo_class);
-			file_put_contents($app_root."/views/index/demo_defaults.html",$demo_defaults);
-			
+			$app_root = $_SERVER["DOCUMENT_ROOT"]."/".$app_name;
+			if(!is_dir($app_root)){
+				$rs1 = create_dir($app_root);
+				create_dir($app_root."/config");
+				create_dir($app_root."/controllers/index");
+				create_dir($app_root."/models");
+				create_dir($app_root."/plugins");
+				create_dir($app_root."/tmp");
+				create_dir($app_root."/views/index");
+				$index_content = file_get_contents(APP_DIR.'/public/install/index.txt');
+				$demo_class = file_get_contents(APP_DIR.'/public/install/demo.class.txt');
+				$demo_defaults = file_get_contents(APP_DIR.'/public/install/demo_defaults.txt');
+				file_put_contents($app_root."/index.php",$index_content);
+				file_put_contents($app_root."/controllers/index/demo.class.php",$demo_class);
+				file_put_contents($app_root."/views/index/demo_defaults.html",$demo_defaults);
+			}else{
+				$rs1=1;
+			}
 			
 			$rs2 =$this->mProjectObj->createApp($app_name,$app_root);
 			if($rs1 && $rs2){

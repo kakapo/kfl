@@ -9,7 +9,11 @@ else
 	$preht = "http://";
 }
 define("SCRIPT_URL", $preht . $_SERVER["HTTP_HOST"] . $_SERVER["SCRIPT_NAME"]);
-
+$dir_name = dirname($_SERVER["SCRIPT_NAME"]);
+if($dir_name=="\\") $dir_name ='';
+define("BASE_URL", $preht . $_SERVER["HTTP_HOST"] . $dir_name);
+define("HOST_URL", $preht . $_SERVER["HTTP_HOST"]);
+$GLOBALS ["gSiteInfo"] ["www_site_url"] = BASE_URL;
 
 //支持path_info
 if(!isset($_SERVER["PATH_INFO"]))

@@ -49,7 +49,7 @@
 		
 		if (this.validate()) {
             var xhrArgs = {
-                    url:"/index.php",
+                    url:gSiteUrl+"/index.php",
         	        form: "database_form",
         	        handleAs: "json",
         	        load: function(data){
@@ -164,10 +164,11 @@
 	<div style="margin:5px;">
 			<button dojoType="dijit.form.Button" onclick="addRow('database_edit_table');">新增参数</button>
 	</div>
-	<div method="post" jsid="database_edit_form" id="database_edit_form" dojoType="dijit.form.Form" action="/index.php">
+	<div method="" jsid="database_edit_form" id="database_edit_form" dojoType="dijit.form.Form" action="">
 	<script type="dojo/method" event="onSubmit">
 		 if (this.validate()) {
             var xhrArgs = {
+            		url:gSiteUrl+"/index.php",
         	        form: 'database_edit_form',
         	        handleAs: "json",
         	        load: function(data){

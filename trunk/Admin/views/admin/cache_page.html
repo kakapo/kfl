@@ -66,7 +66,7 @@
 	<script type="dojo/method" event="onSubmit">
 		if (this.validate()) {
             var xhrArgs = {
-					url:"/index.php",
+					url:gSiteUrl+"/index.php",
         	        form: 'page_form',
         	        handleAs: "json",
         	        load: function(data){
@@ -198,7 +198,7 @@
 	<script type="dojo/method" event="onSubmit">
 		if (this.validate()) {
             var xhrArgs = {
-					url:"/index.php",
+					url:gSiteUrl+"/index.php",
         	        form: 'page_edit_form',
         	        handleAs: "json",
         	        load: function(data){

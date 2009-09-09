@@ -5,11 +5,11 @@
 
 <title>KFL 开发框架及运维管理平台</title>
 <link rel="stylesheet"
-			href="/public/js/dojotoolkit/dijit/themes/nihilo/nihilo.css" />
-<link rel="shortcut icon" href="/public/image/favicon.ico" />
-<link rel="icon" type="image/gif" href="/public/image/animated_favicon1.gif">
+			href="<?=$www_site_url?>/public/js/dojotoolkit/dijit/themes/nihilo/nihilo.css" />
+<link rel="shortcut icon" href="<?=$www_site_url?>/public/image/favicon.ico" />
+<link rel="icon" type="image/gif" href="<?=$www_site_url?>/public/image/animated_favicon1.gif">
 <!-- load the dojo toolkit base -->
-	<script type="text/javascript" src="/public/js/dojotoolkit/dojo/dojo.js"
+	<script type="text/javascript" src="<?=$www_site_url?>/public/js/dojotoolkit/dojo/dojo.js"
 	    djConfig="parseOnLoad:true, isDebug:false"></script>
     <script type="text/javascript">
 
@@ -39,7 +39,7 @@
 		  dojo.require("dijit.Tree");
 
 		  
-	
+		  var gSiteUrl = '<?=$www_site_url?>';
 		  var gCurAppName = '';	
 		  var gCurAppDir = '';	
 		  var treeStore;
@@ -53,7 +53,7 @@
 	    });
 		  
 	</script>
-	<script type="text/javascript" src="/public/js/common.js"></script>
+	<script type="text/javascript" src="<?=$www_site_url?>/public/js/common.js"></script>
     <style>
 	html, body, #mainDiv {
 	font-size:14px;
@@ -87,13 +87,13 @@
      <div dojoType="dijit.layout.ContentPane" region="top" style="border:0px solid #ccc;height:50px;">
 			
 			<div dojoType="dijit.MenuBar" id="navMenu" style="border: 0px solid #ccc;">
-					<span><img src="/public/image/kfllogo.gif"><img src="/public/image/logo.gif"></span>
+					<span><img src="<?=$www_site_url?>/public/image/kfllogo.gif"><img src="<?=$www_site_url?>/public/image/logo.gif"></span>
 			        <div dojoType="dijit.PopupMenuBarItem">
 			                <span>首页</span>
 			                <div dojoType="dijit.Menu" id="fileMenu">
 			                        <div dojoType="dijit.MenuItem" onClick="aboutus();">关于作者</div>
 			                        <div dojoType="dijit.MenuItem" onClick="view_phpinfo('phpinfo');">PHP INFO</div>
-			                        <div dojoType="dijit.MenuItem" onClick="window.location.href='/index.php/index/logout';">退出</div>
+			                        <div dojoType="dijit.MenuItem" onClick="window.location.href='<?=$www_site_url?>/index.php/index/logout';">退出</div>
 			                </div>
 			        </div>
 
@@ -220,7 +220,7 @@
 			          <div dojoType="dijit.TitlePane" title="第三步：开发调试" style="margin-top:15px">     
 					     
 					     <button dojoType="dijit.form.Button" onclick="getText('/monitor/errorlog','错误日志')">错误日志</button>
-					     <button dojoType="dijit.form.Button" onclick="visitApp();">访问项目</button>
+					     <button dojoType="dijit.form.Button" onclick="visitApp('<?=HOST_URL?>');">访问项目</button>
 					  </div>
 	        	 </div>
 	        	 <!-- 项目管理 end -->

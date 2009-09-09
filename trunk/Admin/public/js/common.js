@@ -102,7 +102,7 @@ function fillTbody(_tbody,data){
 }
  function submitForm(formid){
      var xhrArgs = {
-    	        url: "/index.php",
+    	        url: gSiteUrl+"/index.php",
     	        form: formid,
     	        handleAs: "json",
     	        load: function(data,ioargs){
@@ -129,7 +129,7 @@ function getText(pathinfo,title) {
 		pane.attr("onDownloadError", function(e){
 			alert(e);
 		});
-		pane.attr("href", "/index.php"+pathinfo);
+		pane.attr("href", gSiteUrl+"/index.php"+pathinfo);
 
 	}
   }
@@ -170,12 +170,12 @@ function getText(pathinfo,title) {
 
  function deleteDatabase(id,dbname){
  	 dojo.byId('dblist').removeChild(dojo.byId(id));
- 	 doPost("/index.php","action=setting&op=deletedb&dbname="+dbname);
+ 	 doPost(gSiteUrl+"/index.php","action=setting&op=deletedb&dbname="+dbname);
  }
 
  function editDatabase(id,dbname){
  	dijit.byId('editDatabase').show();
- 	doGet("/index.php/setting/getdb/"+dbname,'',function(data, ioargs){
+ 	doGet(gSiteUrl+"/index.php/setting/getdb/"+dbname,'',function(data, ioargs){
  					var _tbody = dojo.byId("database_edit_table");			
  					clearTbody(_tbody);					
  	      			dojo.byId("edit_dbname").value = dbname;	      			
@@ -185,12 +185,12 @@ function getText(pathinfo,title) {
 
  function deleteMemcached(id,host){
  	 dojo.byId('memcachedlist').removeChild(dojo.byId(id));
- 	 doPost("/index.php","action=cache&op=deletememcached&host="+host);
+ 	 doPost(gSiteUrl+"/index.php","action=cache&op=deletememcached&host="+host);
  }
 
  function editMemcached(id,host){
  	dijit.byId('editMemcached').show();
- 	doGet("/index.php/cache/getmemcached/"+host,'',function(data, ioargs){
+ 	doGet(gSiteUrl+"/index.php/cache/getmemcached/"+host,'',function(data, ioargs){
  					var _tbody = dojo.byId("memcached_edit_table");
  					clearTbody(_tbody);					
  	      			dojo.byId("edit_host").value = host;      			
@@ -200,7 +200,7 @@ function getText(pathinfo,title) {
 
  function view_memcached(host){
  	var tabs = dijit.byId("maindiv");
- 	data = '<iframe src="/plugins/memcache.php?host='+host+'" width="100%" frameborder="0" height="700px"></iframe>';
+ 	data = '<iframe src="'+gSiteUrl+'/plugins/memcache.php?host='+host+'" width="100%" frameborder="0" height="700px"></iframe>';
  	var pane = new dijit.layout.ContentPane({id:host, title:host,closable:true, content:data });
  	tabs.addChild(pane);
  	tabs.selectChild(pane);
@@ -208,7 +208,7 @@ function getText(pathinfo,title) {
  function view_phpinfo(id){
 	 var tabs = dijit.byId("maindiv");
 
- 	data = '<iframe src="/index.php/index/phpinfo" width="100%" frameborder="0" height="700px"></iframe>';
+ 	data = '<iframe src="'+gSiteUrl+'/index.php/index/phpinfo" width="100%" frameborder="0" height="700px"></iframe>';
  	var pane = new dijit.layout.ContentPane({id:id, title:id,closable:true, content:data });
  	tabs.addChild(pane);
  	tabs.selectChild(pane);
@@ -216,12 +216,12 @@ function getText(pathinfo,title) {
 
  function deletePageRule(id,page_rule){
  	 dojo.byId('pagerulelist').removeChild(dojo.byId(id));
- 	 doPost("/index.php","action=cache&op=deletepagerule&pagerule="+page_rule);
+ 	 doPost(gSiteUrl+"/index.php","action=cache&op=deletepagerule&pagerule="+page_rule);
  }
 
  function editPageRule(id,pagerule){
  	dijit.byId('editPageRule').show();
- 	doGet("/index.php/cache/getpagerule/"+pagerule,'',function(data, ioargs){
+ 	doGet(gSiteUrl+"/index.php/cache/getpagerule/"+pagerule,'',function(data, ioargs){
  					var _tbody = dojo.byId("page_edit_table");
  					clearTbody(_tbody);		 		
  	      			dojo.byId("edit_pagerule").value = pagerule;     			
@@ -229,7 +229,7 @@ function getText(pathinfo,title) {
  		        });
  }
  function viewSessionValue(key,server){
- 	doGet("/index.php/session/viewsession",{
+ 	doGet(gSiteUrl+"/index.php/session/viewsession",{
 	                key: key,
 	                server: server
 	            },function(data){ 	 		  
@@ -240,7 +240,7 @@ function getText(pathinfo,title) {
  }
  function deleteErrorLog(error_no){	
  	 var xhrArgs = {
-		 	url: "/index.php",
+		 	url: gSiteUrl+"/index.php",
 	        postData: "action=monitor&op=delerrorlog&error_no="+error_no,
  	        handleAs: "json",
  	        load: function(data){ 
@@ -258,7 +258,7 @@ function getText(pathinfo,title) {
  }
  function viewErrorLog(error_no){
 	 var xhrArgs = {
-		      url: "/index.php/monitor/viewerrorlog",
+		      url: gSiteUrl+"/index.php/monitor/viewerrorlog",
 		      handleAs: "text",
 		      content:{error_no: error_no},
 		      preventCache: true,     
@@ -276,11 +276,11 @@ function getText(pathinfo,title) {
 
  }
  function gotopage(page){ 
-	 dijit.byId("_monitor_errorlog").attr("href","/index.php/monitor/errorlog/page/"+page);
+	 dijit.byId("_monitor_errorlog").attr("href",gSiteUrl+"/index.php/monitor/errorlog/page/"+page);
  }
  function renewConfigFile(op){
 	 if(gCurAppName=='') return myAlert('请选择项目');
- 	doPost("/index.php","action=project&op="+op+"&app_name="+gCurAppName);
+ 	doPost(gSiteUrl+"/index.php","action=project&op="+op+"&app_name="+gCurAppName);
  }
 
  function restoreConfigFile(){
@@ -300,7 +300,7 @@ function getText(pathinfo,title) {
 	 }
 
 	 treeStore = new dojo.data.ItemFileReadStore({
-	      url: "/index.php/project/appdir/app_name/"+app_name, urlPreventCache:"true",jsId:"dirStore"
+	      url: gSiteUrl+"/index.php/project/appdir/app_name/"+app_name, urlPreventCache:"true",jsId:"dirStore"
 	  });
 	//Fetch the data.
 	//test 
@@ -376,7 +376,7 @@ function getText(pathinfo,title) {
              'id': id
          },  
          onComplete: function(items, request){
-        	 window.open("/index.php/project/download/path/"+items[0]['path']);   	
+        	 window.open(gSiteUrl+"/index.php/project/download/path/"+items[0]['path']);   	
          },
          onError: function (error, request) {
              alert("lookup failed.");
@@ -441,12 +441,12 @@ function getText(pathinfo,title) {
 			pane.attr("onDownloadError", function(e){
 				alert(e);
 			});
-			pane.attr("href", "/index.php/project/dumpfile/"+path);
+			pane.attr("href", gSiteUrl+"/index.php/project/dumpfile/"+path);
 
 	}
  }
  function newProject(){
-	 doPost("/index.php",'','appcreate_form',function(data){ 
+	 doPost(gSiteUrl+"/index.php",'','appcreate_form',function(data){ 
 		myAlert(data.m);
 		
 		if(data.s==200){
@@ -483,7 +483,7 @@ function getText(pathinfo,title) {
 	if(toDeleteApp=='') return myAlert('请选择项目');
  	raiseQueryDialog("确认要删除吗？", "一旦确认删除，所有目录和文件将不复存在！请慎重考虑？！<br>", function(arg){
  		
- 		doPost("/index.php","action=project&op=deleteapp&app_name="+toDeleteApp,'',function(data){ 
+ 		doPost(gSiteUrl+"/index.php","action=project&op=deleteapp&app_name="+toDeleteApp,'',function(data){ 
  				myAlert(data.m);
 				if(toDeleteApp==gCurAppName) gCurAppName = '';
 				loadProject(gCurAppName);
@@ -518,7 +518,7 @@ function getText(pathinfo,title) {
 		 dijit.byId("projectSelect").destroyRecursive();//Enter the tree widget ID
 	 }
 	 projectStore = new dojo.data.ItemFileReadStore({
-         url: "/index.php/project/getallapp",
+         url: gSiteUrl+"/index.php/project/getallapp",
          preventCache: true
      });
 
@@ -535,4 +535,12 @@ function getText(pathinfo,title) {
      projectContainer.appendChild(projectSelect.domNode);
      
      projectSelect.startup();
+ }
+ 
+ function searchErrorLog(){
+ 	dijit.byId("_monitor_errorlog").attr("href",gSiteUrl+"/index.php/monitor/errorlog/error_no/"+dojo.byId("error_no").value)
+ }
+ function visitApp(hosturl){
+ 	if(gCurAppName=='') return myAlert('请选择项目');
+ 	window.open(hosturl+"/"+gCurAppName);
  }
