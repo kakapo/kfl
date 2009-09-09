@@ -64,11 +64,11 @@
 	<div style="margin:5px;">
 			<button dojoType="dijit.form.Button" onclick="addRow('memcached_table');">新增参数</button>
 	</div>
-	<div method="post" jsid="memcached_form" id="memcached_form" dojoType="dijit.form.Form" action="/index.php">
+	<div method="" jsid="memcached_form" id="memcached_form" dojoType="dijit.form.Form" action="">
 		<script type="dojo/method" event="onSubmit">
 		 if (this.validate()) {
             var xhrArgs = {
-					url:"/index.php",
+					url:gSiteUrl+"/index.php",
         	        form: "memcached_form",
         	        handleAs: "json",
         	        load: function(data){
@@ -169,7 +169,7 @@
 		<script type="dojo/method" event="onSubmit">
 		if (this.validate()) {
             var xhrArgs = {
-					url:"/index.php",
+					url:gSiteUrl+"/index.php",
         	        form: dojo.byId('memcached_edit_form'),
         	        handleAs: "json",
         	        load: function(data){

@@ -14,7 +14,7 @@
 		
 	$GLOBALS ["gSiteInfo"] ["title"] =  "果动网";
 	$GLOBALS ["gSiteInfo"] ["vision"] =  "V2.0.0";
-	$GLOBALS ["gSiteInfo"] ["www_site_url"] =  "http://www.guodong.dev3";
+	$GLOBALS ["gSiteInfo"] ["www_site_url"] =  "http://www.kfl.net/Admin";
 	$GLOBALS ["gSiteInfo"] ["webcharset"] =  "utf-8";
 	$GLOBALS ["gSiteInfo"] ["site_name"] =  "3D-widget-果动网";
 	
@@ -38,6 +38,11 @@
 //				Database   Settings	                //
 //////////////////////////////////////////////////////		
 		
+	$GLOBALS ["gDataBase"] ["db_setting.db3"] = array (
+  'dbname' => 'setting.db3',
+  'type' => 'sqlite',
+  'path' => APP_DIR."/config",
+);
 	$GLOBALS ["gDataBase"] ["db_main"] = array (
   'dbname' => 'main',
   'type' => 'mysql',
@@ -45,11 +50,6 @@
   'port' => '3306',
   'user' => 'root',
   'passwd' => '111111',
-);
-	$GLOBALS ["gDataBase"] ["db_setting.db3"] = array (
-  'dbname' => 'setting.db3',
-  'type' => 'sqlite',
-  'path' => APP_DIR."/config",
 );
 	
 //////////////////////////////////////////////////////
@@ -124,6 +124,5 @@ $GLOBALS ["gMemcacheServer"]["192.168.1.5:11213"]);;
 		
 	$GLOBALS ["log"] ["subject"] =  "应用错误报告";
 	$GLOBALS ["log"] ["receiver"] =  "zswu@tsong.cn";
-	$GLOBALS ["log"] ["sendemail"] =  "0";
 	
 ?>
