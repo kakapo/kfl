@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
-<title>KFL 项目开发管理平台</title>
+<title>KFL 开发框架及运维管理平台</title>
 <link rel="stylesheet"
 			href="/public/js/dojotoolkit/dijit/themes/nihilo/nihilo.css" />
 <link rel="shortcut icon" href="/public/image/favicon.ico" />
@@ -20,7 +20,6 @@
 
 		dojo.require("dijit.TitlePane");
 		
-		dojo.require("dojo.dnd.move");
 
 		  dojo.require("dijit.MenuBar");
 		  dojo.require("dijit.PopupMenuBarItem");
@@ -40,18 +39,19 @@
 		  dojo.require("dijit.Tree");
 
 		  
-		  var projectStore = {
-			        identifier: 'app_id',
-			        label: 'app_name',
-			        items: <?=$project_json?>
-			    }
-
-		  var gCurAppName = '<?=$app_name?>';	
-		  var gCurAppDir = '<?=$app_dir?>';	
+	
+		  var gCurAppName = '';	
+		  var gCurAppDir = '';	
+		  var treeStore;
 		  dojo.addOnLoad(function(){
-			  refreshTree();
+			  //refreshTree();
 			  }
 		  )
+		  var projectStore;
+		  dojo.addOnLoad(function() {
+			  loadProject();
+	    });
+		  
 	</script>
 	<script type="text/javascript" src="/public/js/common.js"></script>
     <style>
@@ -70,15 +70,21 @@
     <li dojoType="dijit.MenuItem" onClick="refreshTree();">
         刷新
     </li>
-    <li dojoType="dijit.MenuItem">
-        Item #2
+    <li dojoType="dijit.MenuItem" onClick="viewFile(this.title)">
+       打开
+    </li>
+    <li dojoType="dijit.MenuItem" onClick="downloadFile(this.title)">
+       下载
+    </li>
+   <li dojoType="dijit.MenuItem" onClick="fileInfo(this.title)">
+       属性
     </li>
 </ul>
 
 <!-- layout start -->
 <div id="mainDiv" dojoType="dijit.layout.BorderContainer">
 	 <!-- top start -->
-     <div dojoType="dijit.layout.ContentPane" region="top" style="border: 0px solid #ccc;margin-bottom:5px;">
+     <div dojoType="dijit.layout.ContentPane" region="top" style="border:0px solid #ccc;height:50px;">
 			
 			<div dojoType="dijit.MenuBar" id="navMenu" style="border: 0px solid #ccc;">
 					<span><img src="/public/image/kfllogo.gif"><img src="/public/image/logo.gif"></span>
@@ -166,57 +172,28 @@
           
      		<div dojoType="dijit.layout.ContentPane" title="控制面板" id="dashboard" >
           		<!-- 项目列表 start -->
-          		 <div style="width:400px;" dojoType="dojo.dnd.Moveable">
+          		 <div style="width:400px;" >
 	         		  <script type="dojo/method">this.mover = dojo.dnd.boxConstrainedMover({l: 0, t: 0, w: 800, h: 700}, true);</script>
 			          <div dojoType="dijit.TitlePane" title="所有项目" >     
-					    <div dojoType="dojo.data.ItemFileReadStore" data="projectStore" jsId="projectStore">
-						</div>
-						<div dojoType="dijit.form.ComboBox" id="projectSelect" store="projectStore" searchAttr="app_name"
-						 value="<?=$app_name?>">
-						</div>   <button dojoType="dijit.form.Button"  onClick="openProject()"> 打开 </button>  <button dojoType="dijit.form.Button"  onClick="deleteProject()"> 删除 </button>
+					   	<div id="projectContainer"><input id="projectSelect"></div>
+						<button dojoType="dijit.form.Button"  onClick="openProject()"> 打开 </button>  <button dojoType="dijit.form.Button"  onClick="deleteProject()"> 删除 </button>
 					  </div>
 	        	 </div>
           		<!-- 项目列表 end -->
           
           		<!-- 创建项目 start -->
-	         	<div style="width:400px;" dojoType="dojo.dnd.Moveable">
+	         	<div style="width:400px;" >
 	         		  <script type="dojo/method">this.mover = dojo.dnd.boxConstrainedMover({l: 0, t: 0, w: 800, h: 700}, true);</script>
-			          <div dojoType="dijit.TitlePane" title="创建项目" style="margin-top:15px">     
+			          <div dojoType="dijit.TitlePane" title="第一步：创建项目" style="margin-top:15px">     
 				        <div method="" jsid="appcreate_form" id="appcreate_form" dojoType="dijit.form.Form" action="">
 				         <input type="hidden" name="action" value="project">
-						<input type="hidden" name="op" value="createapp">
+						 <input type="hidden" name="op" value="createapp">
 							<script type="dojo/method" event="onSubmit">
-									if (this.validate()) {
-						            var xhrArgs = {
-											url:"/index.php",
-						        	        form: 'appcreate_form',
-						        	        handleAs: "json",
-						        	        load: function(data){
-						    	      			//alert(data);
-												if(data.s==200){
-								        	        dojo.byId("AlertCon2").innerHTML = data.m;
-								        	        dijit.byId("AlertShow2").show();
-												}
-												if(data.s==400){
-						    	        			dojo.byId("AlertCon2").innerHTML = data.m;
-								        	        dijit.byId("AlertShow2").show();
-						    	        		}
-						        	        },
-						        	        error: function(error,ioargs){
-											  alert(error);
-						       	        	  var message = httpErrorReport(ioargs.xhr.status);
-						        	          dojo.byId("AlertCon2").innerHTML = message;
-						        	          dijit.byId("AlertShow2").show();
-						        	        }
-						        	      }
-						         
-						          	var deferred = dojo.xhrPost(xhrArgs);
-						        	
-						            return false;
-						        } else {
-						          
-						            return false;
-						        }
+								if (this.validate()) {
+									
+									newProject();
+						        } 
+								return false;
 							</script>
 						   项目名称 <input dojoType="dijit.form.ValidationTextBox" required="true" regExp='([a-zA-Z0-9_]+)' invalidMessage='变量名不符合规则:([a-zA-Z0-9_]+)' type="text" name="app_name" id="app_name" value=""> 
 						   <button type="submit" dojoType="dijit.form.Button" >新建</button>
@@ -226,12 +203,24 @@
 	        	 <!-- 创建项目 end -->
 	        	 
 	        	 <!-- 项目管理 start -->
-	        	 <div style="width:400px;" dojoType="dojo.dnd.Moveable">
+	        	 <div style="width:400px;" >
 	         		  <script type="dojo/method">this.mover = dojo.dnd.boxConstrainedMover({l: 0, t: 0, w: 800, h: 700}, true);</script>
-			          <div dojoType="dijit.TitlePane" title="项目配置文件管理" style="margin-top:15px">     
-					     <button dojoType="dijit.form.Button" onclick="renewConfigFile('renewconfig');">重新生成</button>
+			          <div dojoType="dijit.TitlePane" title="第二步：配置项目" style="margin-top:15px">   
+			          	<p>config.ini.php全局配置文件管理。</p>  
+					     <button dojoType="dijit.form.Button" onclick="renewConfigFile('renewconfig');">生成文件</button>
 					     <button dojoType="dijit.form.Button" onclick="renewConfigFile('copyconfig');">同步文件</button>
 					     <button dojoType="dijit.form.Button" onclick="restoreConfigFile();">恢复文件</button>
+					  </div>
+	        	 </div>
+	        	 <!-- 项目管理 end -->
+	        	 
+	        	  <!-- 项目管理 start -->
+	        	 <div style="width:400px;" >
+	         		  <script type="dojo/method">this.mover = dojo.dnd.boxConstrainedMover({l: 0, t: 0, w: 800, h: 700}, true);</script>
+			          <div dojoType="dijit.TitlePane" title="第三步：开发调试" style="margin-top:15px">     
+					     
+					     <button dojoType="dijit.form.Button" onclick="getText('/monitor/errorlog','错误日志')">错误日志</button>
+					     <button dojoType="dijit.form.Button" onclick="visitApp();">访问项目</button>
 					  </div>
 	        	 </div>
 	        	 <!-- 项目管理 end -->
@@ -271,5 +260,10 @@
    <div id="AlertCon2" style="width:200px;height:80px;"></div>
  </div>
  
+    <!-- Alert3 div -->
+ <div dojoType="dijit.Dialog" id="AlertShow3" title="文件属性"
+    execute="alert('submitted w/args:\n' + dojo.toJson(arguments[0], true));">
+   <div id="AlertCon3" style="width:240px;height:120px;"></div>
+ </div>
 </body>
 </html>

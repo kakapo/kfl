@@ -1,21 +1,26 @@
- function doPost(url,postdata,form){
+function myAlert(text){
+	dojo.byId("AlertCon2").innerHTML = text; 		  
+    dijit.byId("AlertShow2").show();   
+}
+function doPost(url,postdata,form,callback){
+	 
  	 var xhrArgs = {
  		 	url: url,
-  	        handleAs: "text",
+  	        handleAs: "json",
   	        load: function(data){ 
-  	        	alert(data);
-  	          dojo.byId("AlertCon2").innerHTML = data.m; 		  
-  	          dijit.byId("AlertShow2").show();      
+  	        	//alert(data);
+  	        	myAlert(data.m);
+   
   	        },
   	        error: function(error,ioargs){
-  	        	alert(error);
+  	        	//alert(error);
   	          var message = httpErrorReport(ioargs.xhr.status);
-  	          dojo.byId("AlertCon2").innerHTML = message;
-  	          dijit.byId("AlertShow2").show();
+  	          myAlert(message);
   	        }
   	      }
  	if(postdata) xhrArgs.postData = postdata;
  	if(form) xhrArgs.form = form;
+ 	if(callback) xhrArgs.load = callback;
     var deferred = dojo.xhrPost(xhrArgs);
  }
  function doGet(url,content,loadCallBack){
@@ -26,8 +31,7 @@
 		      load: loadCallBack,
 		      error: function(error, ioargs){
 		          var message = httpErrorReport(ioargs.xhr.status);
-		          dojo.byId("AlertCon2").innerHTML = message;
- 	          dijit.byId("AlertShow2").show();
+		          myAlert(message);
 		        }	
 		    }		
     if(content) xhrArgs.content=content;
@@ -115,11 +119,11 @@ function fillTbody(_tbody,data){
      var deferred = dojo.xhrPost(xhrArgs);
      return false;
  }
-function getText(pathinfo,title,params) {
+function getText(pathinfo,title) {
 	var _id = pathinfo.replace(/\//g,'_');
-	var tabs = dijit.byId("maindiv");
 	if(!dojo.byId(_id)){
 		var pane = new dijit.layout.ContentPane({id:_id, title:title,closable:true });
+		var tabs = dijit.byId("maindiv");
 		tabs.addChild(pane);
 		tabs.selectChild(pane);
 		pane.attr("onDownloadError", function(e){
@@ -240,48 +244,67 @@ function getText(pathinfo,title,params) {
 	        postData: "action=monitor&op=delerrorlog&error_no="+error_no,
  	        handleAs: "json",
  	        load: function(data){ 
- 	          dojo.byId("AlertCon2").innerHTML = data.m; 		  
- 	          dijit.byId("AlertShow2").show();
+ 		 	  myAlert(data.m);
  	          dijit.byId("_monitor_errorlog").refresh();
  	        },
  	        error: function(error,ioargs){
  	          var message = httpErrorReport(ioargs.xhr.status);
- 	          dojo.byId("AlertCon2").innerHTML = message;
- 	          dijit.byId("AlertShow2").show();
+ 	          myAlert(message);
+
  	        }
  	      }
   
    	var deferred = dojo.xhrPost(xhrArgs);
  }
  function viewErrorLog(error_no){
-	doGet("/index.php/monitor/viewerrorlog",'',function(data){ 	 		  
-          dojo.byId("errorLogValue").innerHTML = data; 	 		  
-          dijit.byId("errorLogDialog").show();
-        });
+	 var xhrArgs = {
+		      url: "/index.php/monitor/viewerrorlog",
+		      handleAs: "text",
+		      content:{error_no: error_no},
+		      preventCache: true,     
+		      load: function(data){ 	 		  
+		         dojo.byId("errorLogValue").innerHTML = data; 	 		  
+		         dijit.byId("errorLogDialog").show();
+		       },
+		      error: function(error, ioargs){
+		          var message = httpErrorReport(ioargs.xhr.status);
+		          myAlert(message);
+		        }	
+		    }		
+  
+   var deferred = dojo.xhrGet(xhrArgs);
+
  }
  function gotopage(page){ 
 	 dijit.byId("_monitor_errorlog").attr("href","/index.php/monitor/errorlog/page/"+page);
  }
  function renewConfigFile(op){
+	 if(gCurAppName=='') return myAlert('请选择项目');
  	doPost("/index.php","action=project&op="+op+"&app_name="+gCurAppName);
  }
 
  function restoreConfigFile(){
+	 if(gCurAppName=='') return myAlert('请选择项目');
  	doPost("/plugins/restore.php","app_name="+gCurAppName);
  }
  function refreshTree(){
 	 var app_name = gCurAppName;
 	 var app_dir = gCurAppDir;	
-	if(dijit.byId("file_tree")){
-	 	dijit.byId("file_tree").destroy();//Enter the tree widget ID
+	// alert('gCurAppName：'+gCurAppName+" len:"+gCurAppName.length);
+	// alert('gCurAppDir:'+gCurAppDir+" len:"+gCurAppDir.length);
+	 if(dijit.byId("file_tree")){
+		 dijit.byId("tree_menu").unBindDomNode(dijit.byId("file_tree").domNode);
+		 dojo.disconnect(handle);
+
+	 	 dijit.byId("file_tree").destroyRecursive();//Enter the tree widget ID	
 	 }
 
-	 var store = new dojo.data.ItemFileReadStore({
+	 treeStore = new dojo.data.ItemFileReadStore({
 	      url: "/index.php/project/appdir/app_name/"+app_name, urlPreventCache:"true",jsId:"dirStore"
 	  });
 	//Fetch the data.
 	//test 
-	store.fetch({
+	 treeStore.fetch({
          query: {
              'dir': app_dir
          },  
@@ -298,7 +321,7 @@ function getText(pathinfo,title,params) {
      });
 
      var treeModel = new dijit.tree.ForestStoreModel({
-          store: store,
+          store: treeStore,
           query: {
 	     	         "dir": app_dir
 	     	      },
@@ -317,38 +340,68 @@ function getText(pathinfo,title,params) {
      var block = document.getElementById('target');
      block.appendChild(tree.domNode);
      tree.startup();
-     //tree.connect(tree, "onClick", function(item){	      	    	  
-  	//  alert(store.getLabel(item));
-     //	});
+     tree.connect(tree, "onClick", function(item){	      	    	  
+    	 var _id = item.id.toString();//treeStore.getValue(item, "id");
+    	 var title = item.name.toString();//treeStore.getValue(item, "name");
+    	 var path = item.path.toString();//treeStore.getValue(item, "path");
+    	 viewFile(_id,title,path);
+  	  
+     });
+     
      var menu = dijit.byId("tree_menu");
       // when we right-click anywhere on the tree, make sure we open the menu
-      menu.bindDomNode(tree.domNode);
+      menu.bindDomNode(dijit.byId('file_tree').domNode);
 
-      dojo.connect(menu, "_openMyself", tree, function(e) {
+      var handle = dojo.connect(menu, "_openMyself", dijit.byId('file_tree'), function(e) {
           // get a hold of, and log out, the tree node that was the source of this open event
           var tn = dijit.getEnclosingWidget(e.target);
           //console.debug(tn);
-
+          
           // now inspect the data store item that backs the tree node:
-         // alert(tn.item);
+          //console.debug(tn.item.name);
 
           // contrived condition: if this tree node doesn't have any children, disable all of the menu items
           menu.getChildren().forEach(function(i) {
-              i.attr('disabled', !tn.item.children);
+             //i.attr('disabled', !tn.item.children);
+             i.attr('title', tn.item.id.toString());
+           
           });
-
+          
           // IMPLEMENT CUSTOM MENU BEHAVIOR HERE
       });
  }
- function openProject(){
-	 gCurAppName = dijit.byId('projectSelect').attr('value');
-	 
-	 projectStore.fetch({
+ function downloadFile(id){
+	 treeStore.fetch({
          query: {
-             'app_name': gCurAppName
+             'id': id
          },  
          onComplete: function(items, request){
-        	 gCurAppDir = items[0].app_dir.toString();
+        	 window.open("/index.php/project/download/path/"+items[0]['path']);   	
+         },
+         onError: function (error, request) {
+             alert("lookup failed.");
+             alert(error);
+         },
+         queryOptions: {
+             deep: true
+         }
+     }); 
+ }
+ function fileInfo(id){
+	 treeStore.fetch({
+         query: {
+             'id': id
+         },  
+         onComplete: function(items, request){
+        	 var info='';
+        	 for(var i in items){
+        		 info += '位置:'+unescape(items[i]['dir'])+"<br>";
+        		 info += '大小:'+items[i]['size']+"<br>";
+        		 info += '最后修改:'+items[i]['time'];
+        	 }
+        	dojo.byId("AlertCon3").innerHTML = info; 		  
+        	dijit.byId("AlertShow3").show();   
+        	 //alert(items.length);
          },
          onError: function (error, request) {
              alert("lookup failed.");
@@ -358,32 +411,99 @@ function getText(pathinfo,title,params) {
              deep: true
          }
      });
+	
+ }
+ function viewFile(id,title,path){
+	if(!title && !path){
+		 treeStore.fetch({
+	         query: {
+	             'id': id
+	         },  
+	         onComplete: function(items, request){
+	        	 title = items[0].name.toString();
+	        	 path = items[0].path.toString();
+	        	 //alert(items.length);
+	         },
+	         onError: function (error, request) {
+	             alert("lookup failed.");
+	             alert(error);
+	         },
+	         queryOptions: {
+	             deep: true
+	         }
+	     });
+	}
+	 if(!dojo.byId(id)){
+			var pane = new dijit.layout.ContentPane({id:id, title:title,closable:true });
+			var tabs = dijit.byId("maindiv");
+			tabs.addChild(pane);
+			tabs.selectChild(pane);
+			pane.attr("onDownloadError", function(e){
+				alert(e);
+			});
+			pane.attr("href", "/index.php/project/dumpfile/"+path);
+
+	}
+ }
+ function newProject(){
+	 doPost("/index.php",'','appcreate_form',function(data){ 
+		myAlert(data.m);
+		
+		if(data.s==200){
+			gCurAppName = dojo.byId('app_name').value;
+			loadProject(gCurAppName);
+			openProject();
+		}
+	});
+ }
+ function openProject(){
+	 gCurAppName = dijit.byId('projectSelect').attr('value');
+	 if(gCurAppName=='') return myAlert('请选择项目');
+	 projectStore.fetch({
+         query: {
+             'app_name': gCurAppName
+         },  
+         onComplete: function(items, request){
+        	 gCurAppDir = items[0].app_dir.toString();
+        	 refreshTree();
+         },
+         onError: function (error, request) {
+             alert("lookup failed.");
+             alert(error);
+         },
+         queryOptions: {
+             deep: true
+         }
+     });
+	
 	 
-	 refreshTree(gCurAppDir);
  }
  function deleteProject(){
+	 var toDeleteApp = dijit.byId('projectSelect').attr('value');
+	if(toDeleteApp=='') return myAlert('请选择项目');
  	raiseQueryDialog("确认要删除吗？", "一旦确认删除，所有目录和文件将不复存在！请慎重考虑？！<br>", function(arg){
- 			
- 		doPost("/index.php","action=project&op=deleteapp&app_name="+gCurAppName);
+ 		
+ 		doPost("/index.php","action=project&op=deleteapp&app_name="+toDeleteApp,'',function(data){ 
+ 				myAlert(data.m);
+				if(toDeleteApp==gCurAppName) gCurAppName = '';
+				loadProject(gCurAppName);
+				if(dijit.byId("file_tree")){
+				 	dijit.byId("file_tree").destroyRecursive();//Enter the tree widget ID
+				}
+		});
  		
  	});
  }
  function raiseQueryDialog(title, question, callbackFn) {
 
         var errorDialog = new dijit.Dialog({ id: 'queryDialog', title: title });
-        // When either button is pressed, kill the dialog and call the callbackFn.
-        var commonCallback = function(mouseEvent) {
-        errorDialog.hide();
-        errorDialog.destroyRecursive();
-                if (mouseEvent.explicitOriginalTarget.id == 'yesButton') {
-                        callbackFn(true);
-                } else {
-                        callbackFn(false);
-                }
-        };
-                var questionDiv = dojo.create('div', { innerHTML: question });
+        
+        var questionDiv = dojo.create('div', { innerHTML: question });
         var yesButton = new dijit.form.Button(
-                    { label: '确认', id: 'yesButton', onClick: commonCallback });
+                    { label: '确认', id: 'yesButton', onClick: function(){
+                    	errorDialog.hide();
+                    	errorDialog.destroyRecursive();
+                    	callbackFn(true) } });
         var noButton = new dijit.form.Button(
                     { label: '取消', id: 'noButton', onClick: function(){dijit.byId("queryDialog").destroyRecursive();} });
 
@@ -392,3 +512,27 @@ function getText(pathinfo,title,params) {
         errorDialog.containerNode.appendChild(noButton.domNode);
         errorDialog.show();
 }
+ function loadProject(default_value){
+	 
+	 if(dijit.byId("projectSelect")){
+		 dijit.byId("projectSelect").destroyRecursive();//Enter the tree widget ID
+	 }
+	 projectStore = new dojo.data.ItemFileReadStore({
+         url: "/index.php/project/getallapp",
+         preventCache: true
+     });
+
+     var projectSelect = new dijit.form.ComboBox({
+         id: "projectSelect",
+         name: "state",
+         value: default_value,
+         store: projectStore,
+         searchAttr: "app_name"
+     },
+     "projectSelect");
+
+     var projectContainer = document.getElementById('projectContainer');
+     projectContainer.appendChild(projectSelect.domNode);
+     
+     projectSelect.startup();
+ }

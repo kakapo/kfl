@@ -1,5 +1,5 @@
 <?php
-class index{
+class demo{
 
     function view_defaults(){
 	global $tpl;

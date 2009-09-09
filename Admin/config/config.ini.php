@@ -6,7 +6,7 @@
 	define("APP_DIR", dirname(__FILE__)."/../");
 	define("APP_STATUS", "dev");
 	define("APP_LANG", "ch");
-	define("APP_TEMP_DIR", APP_DIR."/../tmp/");
+	define("APP_TEMP_DIR", APP_DIR."/tmp/");
 	
 //////////////////////////////////////////////////////
 //				Website Settings	                //
@@ -106,7 +106,7 @@
 	$GLOBALS ["pagecache"] ["index"] ["cachetime"]=  10;
 	$GLOBALS ["pagecache"] ["index"] ["compressed"]=  1;
 	$GLOBALS ["pagecache"] ["index"] ["action"]=  "index";
-	$GLOBALS ["pagecache"] ["index"] ["view"]=  "login";
+	$GLOBALS ["pagecache"] ["index"] ["view"]=  "*";
 	
 //////////////////////////////////////////////////////
 //				Session   Settings	                //

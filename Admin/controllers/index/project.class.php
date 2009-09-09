@@ -4,6 +4,7 @@ class project {
 	function __construct(){
 		$this->mProjectObj =  new ProjectManage();
 	}
+	
 	function view_appdir(){
 		$app_name = $_GET['app_name'];
 		
@@ -18,6 +19,7 @@ class project {
 		
 		json_output($arr);
 	}
+	
 	
 	function readfolder($folders,&$return){
 		$tmp = array();
@@ -205,6 +207,7 @@ class project {
 		json_output($msg);
 	}
 	
+	
 	function op_copyconfig(){
 		
 		$app_info = $this->mProjectObj ->getAppByName($_POST['app_name']);
@@ -240,36 +243,44 @@ class project {
 	
 	function op_createapp(){
 		$app_name = $_POST['app_name'];
-		
-		$app_root = $_SERVER["DOCUMENT_ROOT"]."/../".$app_name;
-		$res = create_dir($app_root);
-		create_dir($app_root."/config");
-		create_dir($app_root."/controllers/index");
-		create_dir($app_root."/models");
-		create_dir($app_root."/plugins");
-		create_dir($app_root."/tmp");
-		create_dir($app_root."/views/index");
-		$index_content = file_get_contents(APP_DIR.'/public/install/index.txt');
-		$index_class = file_get_contents(APP_DIR.'/public/install/index.class.txt');
-		$index_defaults = file_get_contents(APP_DIR.'/public/install/index_defaults.txt');
-		file_put_contents($app_root."/index.php",$index_content);
-		file_put_contents($app_root."/controllers/index/index.class.php",$index_class);
-		file_put_contents($app_root."/views/index/index_defaults.html",$index_defaults);
-		
-		
-		$this->mProjectObj->createApp($app_name,$app_root);
-		
-		if($res){
-			$msg['s'] = 200;
-			$msg['m'] = "生成成功!";
-			$msg['d'] = 'null';	
+		$res = $this->mProjectObj->getAppByName($app_name);
+		if(!$res){
+			$app_root = $_SERVER["DOCUMENT_ROOT"]."/../".$app_name;
+			$rs1 = create_dir($app_root);
+			create_dir($app_root."/config");
+			create_dir($app_root."/controllers/index");
+			create_dir($app_root."/models");
+			create_dir($app_root."/plugins");
+			create_dir($app_root."/tmp");
+			create_dir($app_root."/views/index");
+			$index_content = file_get_contents(APP_DIR.'/public/install/index.txt');
+			$demo_class = file_get_contents(APP_DIR.'/public/install/demo.class.txt');
+			$demo_defaults = file_get_contents(APP_DIR.'/public/install/demo_defaults.txt');
+			file_put_contents($app_root."/index.php",$index_content);
+			file_put_contents($app_root."/controllers/index/demo.class.php",$demo_class);
+			file_put_contents($app_root."/views/index/demo_defaults.html",$demo_defaults);
+			
+			
+			$rs2 =$this->mProjectObj->createApp($app_name,$app_root);
+			if($rs1 && $rs2){
+				$msg['s'] = 200;
+				$msg['m'] = "生成成功!";
+				$msg['d'] = 'null';	
+			}else{
+				$msg['s'] = 400;
+				$msg['m'] = "生成失败!";
+				$msg['d'] = 'null';	
+			}
 		}else{
 			$msg['s'] = 400;
-			$msg['m'] = "生成失败!";
+			$msg['m'] = "项目名称已存在!";
 			$msg['d'] = 'null';	
 		}
+		
+		
 		json_output($msg);
 	}
+	
 	
 	function op_deleteapp(){
 		$app_name = $_POST['app_name'];
@@ -289,6 +300,45 @@ class project {
 			$msg['d'] = 'null';	
 		}
 		json_output($msg);
+	}
+	
+	function view_getallapp(){
+		$app_arr = $this->mProjectObj->getAppList();
+		foreach($app_arr as $k=>$v){
+			$app_arr[$k]['app_dir'] = urlencode($v['app_dir']);
+		}
+		$arr['identifier'] = 'app_id';
+		$arr['label'] = 'app_name';
+		$arr['items'] = $app_arr;
+		json_output($arr);
+	}
+	
+	function view_dumpfile(){
+		$file = decrypt($_GET['dumpfile']);
+		if(is_file($file)){
+			highlight_file($file);
+		}
+		die;
+	}
+	
+	function view_download(){
+		$file = decrypt($_GET['path']);
+		//echo $file;die;
+		if(is_file($file)){
+			//header( "Pragma: public" );
+			
+			Header("Content-type: ".mime_content_type($file));
+			Header("Accept-Ranges: bytes");
+			Header("Accept-Length: ".filesize($file));
+			
+			// It will be called downloaded.pdf
+			
+			header('Content-Disposition: attachment; filename="'.basename($file).'"');
+			
+			// The PDF source is in original.pdf
+			readfile($file);
+		}
+		die();
 	}
 }
 ?>
