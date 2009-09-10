@@ -7,12 +7,12 @@
 </head>
 <body class="nihilo">
 
- <div dojoType="dijit.layout.AccordionContainer" style="width:300px;height:300px;float:right">
+ <div dojoType="dijit.layout.AccordionContainer" style="width:300px;height:500px;float:right">
 	<div dojoType="dijit.layout.ContentPane" title="功能说明">
 		<p>
-		数据库的缓存配置
-		<li>1、支持本地file，多级目录缓存支持</li>
-		<li>2、分布式内存缓存</li>
+		数据库访问类的缓存配置。
+		<li>1、支持本地硬盘存储，多级目录缓存</li>
+		<li>2、支持memcached分布式内存缓存</li>
 		</p>
 	  
 	</div>
@@ -20,14 +20,19 @@
 		<p>
 		影响到方法：getRow(),getOne(),getAll();
 		使用缓存举例：<br>
-		1、简单：<br>$db->getAll("select * from table ",'',3600);
+		1、默认MD5($sql)作为cacheId：<br>
+		<? 
+		$p= '<?php $db->getAll("select * from table","",3600);?>';
+		highlight_string($p);
+		?>
 		<br><br>
-		2、指定cacheId：<br>$db->getRow("select * from table where id=?",array(5),3600,'table5');
+		2、指定cacheId=table5：<br><? highlight_string('<?php $db->getRow("select * from table where id=?",array(5),3600,"table5");?>');?>
 		<br><br>
 		
 		</p>
 	  <p>不使用缓存举例：<br>
-	  1、$db->getRow("select * from table where id=?",array(5));
+	  <? highlight_string('<?php $db->getRow("select * from table where id=?",array(5));?>');?>
+	  
 	  </p>
 	</div>
 </div>

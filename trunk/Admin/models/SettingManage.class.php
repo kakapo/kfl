@@ -10,7 +10,7 @@ class SettingManage extends Model{
 		$sth = $this->db->query($sql);
 		$return = array();
 		while($row = $sth->fetch(PDO::FETCH_ASSOC)){
-			$row['value'] = htmlspecialchars_decode($row['value']);
+			$row['value'] = htmlspecialchars_decode($row['value'],ENT_NOQUOTES);
 			$return [] = $row;
 		}
 		return $return;

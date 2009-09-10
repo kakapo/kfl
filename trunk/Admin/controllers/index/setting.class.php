@@ -9,17 +9,29 @@ class setting{
 	function view_system(){
 		global $tpl;	
 		$items = $this->mSettingObj->getSettings('system');
-		foreach ($items as $k=>$v){
-			$v['value'] = htmlspecialchars($v['value'],ENT_QUOTES);
-			$items[$k] = $v;
+		$pre_defined = array('APP_STATUS','APP_LANG','APP_TEMP_DIR','KFL_DIR');
+		$sets= array();
+		$left_items = array();
+		if(is_array($items)){
+			foreach($items as $v){
+				if(in_array($v['name'],$pre_defined)){
+					$sets[$v['name']] = $v['value'];
+				}else{
+					
+					$left_items[] = $v;
+				}
+			}
 		}
 		
+		$tpl->assign('sets',$sets);
 		$tpl->assign('set_type','system');
-		$tpl->assign('items',$items);
+		$tpl->assign('items',$left_items);
 	}
+	
 	function view_website(){
 		global $tpl;	
 		$items = $this->mSettingObj->getSettings('website');
+	
 		$tpl->assign('set_type','website');
 		$tpl->assign('items',$items);
 	}
@@ -27,8 +39,23 @@ class setting{
 	function view_email(){
 		global $tpl;	
 		$items = $this->mSettingObj->getSettings('email');
+		$pre_defined = array('smtp_host','smtp_account','smtp_pass','smtp_from');
+		$sets= array();
+		$left_items = array();
+		if(is_array($items)){
+			foreach($items as $v){
+				if(in_array($v['name'],$pre_defined)){
+					$sets[$v['name']] = $v['value'];
+				}else{
+					
+					$left_items[] = $v;
+				}
+			}
+		}
+		
+		$tpl->assign('sets',$sets);
 		$tpl->assign('set_type','email');
-		$tpl->assign('items',$items);
+		$tpl->assign('items',$left_items);
 	}
 	
 	function view_database(){
@@ -52,6 +79,10 @@ class setting{
 	function view_getdb(){
 		//global $tpl;
 		$items = $this->mSettingObj->getSettings($_GET['getdb']);
+		foreach($items as $k=>$v){
+			$v['value'] = htmlspecialchars_decode($v['value'],ENT_QUOTES);
+			$items[$k] = $v;
+		}
 		json_output($items);	
 	}
 	

@@ -8,10 +8,11 @@ else
 {
 	$preht = "http://";
 }
-define("SCRIPT_URL", $preht . $_SERVER["HTTP_HOST"] . $_SERVER["SCRIPT_NAME"]);
+
 $dir_name = dirname($_SERVER["SCRIPT_NAME"]);
 if($dir_name=="\\") $dir_name ='';
 define("BASE_URL", $preht . $_SERVER["HTTP_HOST"] . $dir_name);
+
 define("HOST_URL", $preht . $_SERVER["HTTP_HOST"]);
 $GLOBALS ["gSiteInfo"] ["www_site_url"] = BASE_URL;
 
@@ -44,7 +45,7 @@ if(count($GLOBALS['KFL_PATHINFO_ARRAY'])>1){
 		}
 	}
 }
-define("VIRTUAL_URL", SCRIPT_URL . $GLOBALS['KFL_PATH_INFO']);
+define("WEB_URL", $preht . $_SERVER["HTTP_HOST"] . $_SERVER["SCRIPT_NAME"] . $GLOBALS['KFL_PATH_INFO']);
 
 //过滤post和get变量
 foreach ($_POST as $k=>$v){
@@ -215,12 +216,12 @@ function get_misc_error_info()
 	}
 	list ( $usec, $sec ) = explode ( " ", microtime () );
 	$exec_time =  (( float ) $usec + ( float ) $sec);
-	$time_usage = $exec_time - $GLOBALS['_App_Start_Time'] ;
+	$time_usage = $exec_time - $GLOBALS['gAppStartTime'] ;
 	$ret .= "<tr style='background-color:#fff'><td>\n\tMemory Usage</td><td>\n\t" . round(memory_get_usage()/1024,2). " k bytes</td></tr>\n";
 	$ret .= "<tr style='background-color:#fff'><td>\n\tTime Usage</td><td>\n\t" . $time_usage. " second</td></tr>\n";
 	$ret .= "<tr style='background-color:#fff'><td>\n\tNow</td><td>\n\t" . date("r") . "</td></tr>\n";
 	$ret .= "<tr style='background-color:#fff'><td>\n\tIP</td><td>\n\t" . getip() . "</td></tr>\n";
-	$ret .= "<tr style='background-color:#fff'><td>\n\tURL</td><td>\n\t" . VIRTUAL_URL. "</td></tr>\n";
+	$ret .= "<tr style='background-color:#fff'><td>\n\tURL</td><td>\n\t" . WEB_URL. "</td></tr>\n";
 	$ret .= "</table>";
 	return $ret;
 }
@@ -259,7 +260,7 @@ function error_live_handler($errno, $errmsg, $filename, $linenum, $vars)
 		$host = $_SERVER["SERVER_ADDR"];
 	} else {
 		$host = '127.0.0.1';
-		define('VIRTUAL_URL', $_SERVER["SCRIPT_NAME"]);
+		define('WEB_URL', $_SERVER["SCRIPT_NAME"]);
 	}
 	$num="";
 	$tmp="";
@@ -286,7 +287,7 @@ function error_live_handler($errno, $errmsg, $filename, $linenum, $vars)
 						";
 				
 			//Do not log repeated messages
-		 	error_log($crcno."\n", 3, LOG_FILE."/ignore_repeated_errors.txt");
+		 	error_log($crcno."\n", 3, LOG_FILE_DIR."/ignore_repeated_errors.txt");
 		 	
 		 	// log error backtrace in database
 		 	if(isset($GLOBALS ['gDataBase'] ['setting'])){
@@ -297,8 +298,8 @@ function error_live_handler($errno, $errmsg, $filename, $linenum, $vars)
 			 	}
 		 	}
 		 	//send email to notice
-		 	if(isset($GLOBALS['log']['sendemail']) && $GLOBALS['log']['sendemail']==1){
-		 		send_email($GLOBALS['email']['from'],$GLOBALS['log']['receiver'],$GLOBALS['log']['subject'],$brief_message.$backtrace_msg);
+		 	if(isset($GLOBALS['gLog']['sendemail']) && $GLOBALS['gLog']['sendemail']==1){
+		 		send_email($GLOBALS['gEmail']['smtp_from'],$GLOBALS['gLog']['receiver'],$GLOBALS['gLog']['subject'],$brief_message.$backtrace_msg);
 		 	}
 	 	}
 	}
@@ -312,7 +313,7 @@ function error_live_handler($errno, $errmsg, $filename, $linenum, $vars)
 		<meta http-equiv='pragma' content='no-cache' />
 		<meta HTTP-EQUIV='cache-control' content='no-cache'>
 		<p style='font-size: 12px;'>
-		<strong>该应用发生错误。 错误代号： #$errNum. <a href='mailto:".$GLOBALS['email']['from']."?subject=errorNum:".$errNum."&body=Thank You!'>通知管理员。</strong>
+		<strong>该应用发生错误。 错误代号： #$errNum. <a href='mailto:".$GLOBALS['gEmail']['smtp_from']."?subject=errorNum:".$errNum."&body=Thank You!'>通知管理员。</strong>
 		</p>
 		";
 		echo $message;
@@ -434,7 +435,7 @@ function fetch_backtrace($full = false)
 
 function is_error_in_log($crcno)
 {
-	$rows = file(LOG_FILE."/ignore_repeated_errors.txt");
+	$rows = file(LOG_FILE_DIR."/ignore_repeated_errors.txt");
 	
 	$flag=0;
 	foreach ($rows as $key =>$v) {
@@ -572,11 +573,11 @@ function send_email($from="no-reply@guodong.com",  $to, $subject, $message)
 	$subject= mb_convert_encoding($subject,"gb2312","utf-8");
 	$message= mb_convert_encoding($message,"gb2312","utf-8");
 
-	$smtpServer = $GLOBALS['email']['smtp_host']; //ip accepted as well
+	$smtpServer = $GLOBALS['gEmail']['smtp_host']; //ip accepted as well
 	$port = "25"; // should be 25 by default
 	$timeout = "30"; //typical timeout. try 45 for slow servers
-	$username = $GLOBALS['email']['smtp_account'];//"no-reply@guodong.com"; //the login for your smtp
-	$password = $GLOBALS['email']['smtp_pass'];//"tsong-0810"; //the pass for your smtp
+	$username = $GLOBALS['gEmail']['smtp_account'];//"no-reply@guodong.com"; //the login for your smtp
+	$password = $GLOBALS['gEmail']['smtp_pass'];//"tsong-0810"; //the pass for your smtp
 	$localhost = "127.0.0.1"; //this seems to work always
 	$newLine = "\r\n"; //var just for nelines in MS
 	$secure = 0; //change to 1 if you need a secure connect

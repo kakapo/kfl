@@ -8,19 +8,19 @@ class SessionManage extends Model{
 	
 	function getOnlineStats($type='',$slabid=0,$limit=100){
 		$this->mMemcacheObj = new Memcache;
-		if(is_array($GLOBALS['session']['memcached'])){
-			foreach ($GLOBALS['session']['memcached'] as $server){
-				$this->mMemcacheObj->addserver($server['host'],$server['port']);
+		if(is_array($GLOBALS['gSession']['memcached'])){
+			foreach ($GLOBALS['gSession']['memcached'] as $server){
+				$this->mMemcacheObj->addserver($server['mmhost'],$server['mmport']);
 			}
 		}
 		return $this->mMemcacheObj->getExtendedStats($type,$slabid,$limit);
 	}
 	
 	function getOnlineStatsDb(){
-		$db = parent::dbConnect($GLOBALS['session']['database']);
-		if($GLOBALS['session']['database']['type']=='sqlite') 
+		$db = parent::dbConnect($GLOBALS['gSession']['database']);
+		if($GLOBALS['gSession']['database']['type']=='sqlite') 
 		$sql = "select sesskey,expiry,strftime('%s','now') as nowtime from session";
-		if($GLOBALS['session']['database']['type']=='mysql') 
+		if($GLOBALS['gSession']['database']['type']=='mysql') 
 		$sql = "select sesskey,expiry,UNIX_TIMESTAMP() as nowtime from session";
 		return $db->getAll($sql);
 	}
@@ -33,7 +33,7 @@ class SessionManage extends Model{
 		return $this->mMemcacheObj->get($key);
 	}
 	function getSessionBySesskey($sesskey){
-		$db = parent::dbConnect($GLOBALS['session']['database']);
+		$db = parent::dbConnect($GLOBALS['gSession']['database']);
 		return $db->getOne("select data from session where sesskey='$sesskey'");
 	}
 }

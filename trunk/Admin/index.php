@@ -6,8 +6,9 @@ $config['password']='123456';
 /* portal of the application
 /*
 /*************/
-include_once (dirname ( __file__ ) . "/config/config.ini.php");
-include_once (APP_DIR . "/../KFL/KFL.php");
+define("APP_DIR", dirname(__FILE__));
+include_once (APP_DIR . "/config/config.ini.php");
+include_once (KFL_DIR . "/KFL.php");
 
 
 // new application

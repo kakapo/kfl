@@ -16,7 +16,7 @@ class session{
 		$sets= array();
 		if(is_array($items)){
 			foreach($items as $item){
-				$sets[$item['name']] = htmlspecialchars($item['value'],ENT_QUOTES);
+				$sets[$item['name']] = $item['value'];
 			}
 		}
 		
@@ -27,8 +27,8 @@ class session{
 	function view_stats(){
 		global $tpl;
 	
-		$tpl->assign("sessionHadle",$GLOBALS['session']['sessionHandle']);
-		if($GLOBALS['session']['sessionHandle']=='memcache'){
+		$tpl->assign("sessionHadle",$GLOBALS['gSession']['sessionHandle']);
+		if($GLOBALS['gSession']['sessionHandle']=='memcache'){
 			$server_slabs = array();
 			$server_slabs = $this->mSessionObj->getOnlineStats("slabs");
 			$all_stats = $this->mSessionObj->getOnlineStats();
@@ -64,17 +64,17 @@ class session{
 			$tpl->assign("total_stats",$total_stats);
 		}
 		
-		if($GLOBALS['session']['sessionHandle']=='database'){
+		if($GLOBALS['gSession']['sessionHandle']=='database'){
 			$all_stats = $this->mSessionObj->getOnlineStatsDb();
 			$tpl->assign("all_stats",$all_stats);
 		}
 		
 	}
 	function view_viewsession(){
-		if($GLOBALS['session']['sessionHandle']=='memcache'){
+		if($GLOBALS['gSession']['sessionHandle']=='memcache'){
 			$value  = $this->mSessionObj->getSessionByKey($_GET['server'],$_GET['key']);
 		}
-		if($GLOBALS['session']['sessionHandle']=='database'){
+		if($GLOBALS['gSession']['sessionHandle']=='database'){
 			$value  = $this->mSessionObj->getSessionBySesskey($_GET['key']);
 		}
 		echo "<pre>";

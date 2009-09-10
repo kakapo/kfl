@@ -1,0 +1,12 @@
+<?php
+class DemoManage extends Model{
+	private $db;
+	function __construct(){
+		$this->db = parent::dbConnect($GLOBALS ['gDataBase'] ['dbname']);
+	}
+	function getList(){
+		return $this->db->getAll("select *  from project");
+	}
+}
+
+?>
