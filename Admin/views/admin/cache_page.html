@@ -18,16 +18,15 @@
 	 <div dojoType="dijit.layout.AccordionContainer" style="width:300px;height:300px;float:right">
 		<div dojoType="dijit.layout.ContentPane" title="功能说明">
 			<p>
-			&nbsp;&nbsp;KFL是之前KFC框架的轻量级版本，框架KFL目录下所有文件大小35k，主要去除了KFC的组件概念，保留了MVC的开发模式，特别适合前台的网站开发。
-			</p>
-		  
-		</div>
-		<div dojoType="dijit.layout.ContentPane" title="如何使用">
-			<p>
+			页面缓存设置。
+			<li>1、支持本地硬盘存储</li>
+			<li>2、支持memcached分布式内存缓存</li>
+			<li>3、支持自定义页面缓存</li>
 			
 			</p>
 		  
 		</div>
+		
 	</div>
 	
 	<div style="margin:10px;">位置: 缓存管理  > 页面缓存设置</div>
@@ -246,6 +245,7 @@
     	        		}
         	        },
         	        error: function(error,ioargs){
+					alert(error);
        	        	 var message = httpErrorReport(ioargs.xhr.status);
         	          dojo.byId("AlertCon2").innerHTML = message;
         	          dijit.byId("AlertShow2").show();

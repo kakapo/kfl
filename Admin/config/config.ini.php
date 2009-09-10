@@ -3,10 +3,10 @@
 //////////////////////////////////////////////////////
 //					Application	Settings			//
 //////////////////////////////////////////////////////
-	define("APP_DIR", dirname(__FILE__)."/../");
 	define("APP_STATUS", "dev");
 	define("APP_LANG", "ch");
 	define("APP_TEMP_DIR", APP_DIR."/tmp/");
+	define("KFL_DIR", "D:/GoogleCodeKFL/KFL");
 	
 //////////////////////////////////////////////////////
 //				Website Settings	                //
@@ -22,11 +22,11 @@
 //				Email   Settings	                //
 //////////////////////////////////////////////////////		
 		
-	$GLOBALS ["email"] ["smtp_host"] =  "smtp.guodong.com";
-	$GLOBALS ["email"] ["smtp_account"] =  "no-reply@guodong.com";
-	$GLOBALS ["email"] ["smtp_pass"] =  "tsong-0810";
-	$GLOBALS ["email"] ["from"] =  "no-reply@guodong.com";
-	$GLOBALS ["email"] ["pop3_host"] =  "pop3.guodong.com";
+	$GLOBALS ["gEmail"] ["smtp_host"] =  "smtp.guodong.com";
+	$GLOBALS ["gEmail"] ["smtp_account"] =  "no-reply@guodong.com";
+	$GLOBALS ["gEmail"] ["smtp_pass"] =  "tsong-0810";
+	$GLOBALS ["gEmail"] ["smtp_from"] =  "no-reply@guodong.com";
+	$GLOBALS ["gEmail"] ["pop3_host"] =  "pop3.guodong.com";
 	
 //////////////////////////////////////////////////////
 //				TimeZone   Settings	                //
@@ -89,40 +89,40 @@
 //				Packet   Settings	                //
 //////////////////////////////////////////////////////		
 		
-	$GLOBALS ["packet"] ["cacheOpen"] =  1;
-	$GLOBALS ["packet"] ["cacheStore"] =  "file";
-	$GLOBALS ["packet"] ["cacheTime"] =  3600;
-	$GLOBALS ["packet"] ["cacheDir"] =  APP_TEMP_DIR;
-	$GLOBALS ["packet"] ["cacheServer"] =  array($GLOBALS ["gMemcacheServer"]["192.168.1.5:11213"]);
+	$GLOBALS ["gPacket"] ["cacheOpen"] =  1;
+	$GLOBALS ["gPacket"] ["cacheStore"] =  "file";
+	$GLOBALS ["gPacket"] ["cacheTime"] =  3600;
+	$GLOBALS ["gPacket"] ["cacheDir"] =  APP_TEMP_DIR;
+	$GLOBALS ["gPacket"] ["cacheServer"] =  array($GLOBALS ["gMemcacheServer"]["192.168.1.5:11213"]);
 	
 //////////////////////////////////////////////////////
 //				PageCache  Settings	                //
 //////////////////////////////////////////////////////		
 		
-	$GLOBALS ["pagecache"] ["index"] ["rulename"]=  "index";
-	$GLOBALS ["pagecache"] ["index"] ["cachestore"]=  "file";
-	$GLOBALS ["pagecache"] ["index"] ["cacheserver"]=  array($GLOBALS ["gMemcacheServer"]["192.168.1.5:11212"]);;
-	$GLOBALS ["pagecache"] ["index"] ["cachedir"]=  APP_TEMP_DIR ."/_cache";
-	$GLOBALS ["pagecache"] ["index"] ["cachetime"]=  10;
-	$GLOBALS ["pagecache"] ["index"] ["compressed"]=  1;
-	$GLOBALS ["pagecache"] ["index"] ["action"]=  "index";
-	$GLOBALS ["pagecache"] ["index"] ["view"]=  "*";
+	$GLOBALS ["gPageCache"] ["index"] ["rulename"]=  "index";
+	$GLOBALS ["gPageCache"] ["index"] ["cachestore"]=  "file";
+	$GLOBALS ["gPageCache"] ["index"] ["cacheserver"]=  array($GLOBALS ["gMemcacheServer"]["192.168.1.5:11212"]);;
+	$GLOBALS ["gPageCache"] ["index"] ["cachedir"]=  APP_TEMP_DIR ."/_cache";
+	$GLOBALS ["gPageCache"] ["index"] ["cachetime"]=  10;
+	$GLOBALS ["gPageCache"] ["index"] ["compressed"]=  1;
+	$GLOBALS ["gPageCache"] ["index"] ["action"]=  "index";
+	$GLOBALS ["gPageCache"] ["index"] ["view"]=  "*";
 	
 //////////////////////////////////////////////////////
 //				Session   Settings	                //
 //////////////////////////////////////////////////////		
 		
-	$GLOBALS ["session"] ["sessionHandle"] =  "file";
-	$GLOBALS ["session"] ["lifeTime"] =  1440;
-	$GLOBALS ["session"] ["database"] =  "db_setting.db3";
-	$GLOBALS ["session"] ["memcached"] =  array($GLOBALS ["gMemcacheServer"]["192.168.1.5:11213"],
+	$GLOBALS ["gSession"] ["sessionHandle"] =  "memcache";
+	$GLOBALS ["gSession"] ["lifeTime"] =  1440;
+	$GLOBALS ["gSession"] ["database"] =  $GLOBALS ["gDataBase"] ["db_setting.db3"];
+	$GLOBALS ["gSession"] ["memcached"] =  array($GLOBALS ["gMemcacheServer"]["192.168.1.5:11213"],
 $GLOBALS ["gMemcacheServer"]["192.168.1.5:11213"]);;
 	
 //////////////////////////////////////////////////////
 //				Log   Settings	                //
 //////////////////////////////////////////////////////		
 		
-	$GLOBALS ["log"] ["subject"] =  "应用错误报告";
-	$GLOBALS ["log"] ["receiver"] =  "zswu@tsong.cn";
+	$GLOBALS ["gLog"] ["subject"] =  "应用错误报告";
+	$GLOBALS ["gLog"] ["receiver"] =  "zswu@tsong.cn";
 	
 ?>

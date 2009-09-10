@@ -10,26 +10,13 @@
  <div id="packetRightDiv" dojoType="dijit.layout.AccordionContainer" style="width:300px;height:300px;float:right">
 	<div dojoType="dijit.layout.ContentPane" title="功能说明">
 		<p>
-		数据库的缓存配置
-		<li>1、支持本地file，多级目录缓存支持</li>
-		<li>2、分布式内存缓存</li>
+		会话全局变量
+		<li>1、支持数据库存储</li>
+		<li>2、分布式Memcached存储</li>
 		</p>
-	  
+	  <p>注意：memcached支持多服务器，用","分隔</p>
 	</div>
-	<div dojoType="dijit.layout.ContentPane" title="如何使用">
-		<p>
-		影响到方法：getRow(),getOne(),getAll();
-		使用缓存举例：<br>
-		1、简单：<br>$db->getAll("select * from table ",'',3600);
-		<br><br>
-		2、指定cacheId：<br>$db->getRow("select * from table where id=?",array(5),3600,'table5');
-		<br><br>
-		
-		</p>
-	  <p>不使用缓存举例：<br>
-	  1、$db->getRow("select * from table where id=?",array(5));
-	  </p>
-	</div>
+	
 </div>
 
 <div style="height:50px;">

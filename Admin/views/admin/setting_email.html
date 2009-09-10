@@ -6,6 +6,29 @@
 
 </head>
 <body class="nihilo">
+<div dojoType="dijit.layout.AccordionContainer" style="width:300px;height:300px;float:right">
+	<div dojoType="dijit.layout.ContentPane" title="功能说明">
+		<p>
+		邮件发送全局变量。支持自定义变量。
+		<br><br>规则：变量命名要求符合正则表达式 ^[A-Za-z_]{1}[A-Za-z0-9_]*。
+		<br>
+		</p>
+			  
+	</div>
+	<div dojoType="dijit.layout.ContentPane" title="如何使用">
+	<p>
+	举例：
+	<br><br>
+	
+	<? highlight_string('<?php 
+$GLOBALS ["gEmail"] ["smtp_host"] 
+=  "smtp.guodong.com";
+?>') ?>
+	<br><br>
+	</p>
+	</div>
+</div>
+
 <div style="height:50px;">
 	<div style="margin:10px;">位置: 配置管理  > 邮件设置</div>
 	<div style="margin:10px;">
@@ -39,6 +62,33 @@
 </tr>
 </thead>
 <tbody id="email_table">
+
+
+<tr id="row_smtp_host">
+<td>smtp_host<input type="hidden" name="name_smtp_host" value="smtp_host"></td>
+<td><input dojoType="dijit.form.ValidationTextBox" required="true" type="text" name="valu_smtp_host" id="valu_smtp_host" value="<?=$sets['smtp_host']?>"></td>
+<td style="font-size:12px;color:#666">SMTP地址</td>
+</tr>
+
+<tr id="row_smtp_account">
+<td>smtp_account<input type="hidden" name="name_smtp_account" value="smtp_account"></td>
+<td><input dojoType="dijit.form.ValidationTextBox" required="true"  type="text" name="valu_smtp_account" id="valu_smtp_account" value="<?=$sets['smtp_account']?>"></td>
+<td style="font-size:12px;color:#666">邮箱帐号</td>
+</tr>
+
+<tr id="row_smtp_pass">
+<td>smtp_pass<input type="hidden" name="name_smtp_pass" value="smtp_pass"></td>
+<td><input dojoType="dijit.form.ValidationTextBox" required="true"  type="text" name="valu_smtp_pass" id="valu_smtp_pass" value="<?=$sets['smtp_pass']?>"></td>
+<td style="font-size:12px;color:#666">邮箱密码</td>
+</tr>
+
+<tr id="row_smtp_from">
+<td>smtp_from<input type="hidden" name="name_smtp_from" value="smtp_from"></td>
+<td><input dojoType="dijit.form.ValidationTextBox" required="true" regExp='^[a-z]([a-z0-9]*[-_]?[a-z0-9]+)*@([a-z0-9]*[-_]?[a-z0-9]+)+[\.][a-z]{2,3}([\.][a-z]{2})?$' invalidMessage='变量名不符合规则:^[a-z]([a-z0-9]*[-_]?[a-z0-9]+)*@([a-z0-9]*[-_]?[a-z0-9]+)+[\.][a-z]{2,3}([\.][a-z]{2})?$' type="text" name="valu_smtp_from" id="valu_smtp_from" value="<?=$sets['smtp_from']?>"></td>
+<td style="font-size:12px;color:#666">回复邮箱地址</td>
+</tr>
+
+
 <?php foreach($items as $item){?>
 <tr id="row_<?=$item['name']?>">
 <td><?=$item['name']?><input type="hidden" name="name_<?=$item['name']?>" value="<?=$item['name']?>"></td>

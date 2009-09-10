@@ -1,7 +1,7 @@
 <?php
 // KFL config File
 list ( $usec, $sec ) = explode ( " ", microtime () );
-$GLOBALS['_App_Start_Time'] =  (( float ) $usec + ( float ) $sec);
+$GLOBALS['gAppStartTime'] =  (( float ) $usec + ( float ) $sec);
 
 if(!defined("KFL_DIR")) define("KFL_DIR", dirname(__FILE__));
 
@@ -15,15 +15,15 @@ define("APP_DIR_V",APP_DIR. "/views");
 define("APP_DIR_C",APP_DIR. "/controllers");
 
 // define applications temporary dicrectory
-define("APP_TEMP_DIR", APP_DIR."/tmp");
+if(!defined("APP_TEMP_DIR")) define("APP_TEMP_DIR", APP_DIR."/tmp");
 
-define("APP_LANG_DIR", APP_DIR. "/languages");
+define("APP_LANG_DIR", APP_DIR. "/langs");
 
 // define error log file
-define("LOG_FILE", APP_DIR . "/tmp/logs");
+define("LOG_FILE_DIR", APP_TEMP_DIR . "/logs");
 
 // define upload directory
-define("UPLOAD_DIR", APP_DIR . "/tmp/uploads");
+define("UPLOAD_DIR", APP_TEMP_DIR . "/uploads");
 
 // if using the KFL/Components/libs instead of your systemwide pear libraries.
 if(PHP_OS=='Linux'){
@@ -112,8 +112,8 @@ class KFL
 	 */
 	private function _getPageCacheRule(){
 		$cur_action = !empty($GLOBALS['gDispatcher'])?$GLOBALS['gDispatcher']:$this->mDefaultController;
-		if(isset($GLOBALS['pagecache'])){
-			foreach($GLOBALS['pagecache'] as $rule){
+		if(isset($GLOBALS['gPageCache'])){
+			foreach($GLOBALS['gPageCache'] as $rule){
 				if(isset($rule['action']) && $rule['action']==$cur_action)	{
 					if(isset($rule['view']) && ($rule['view']=='*')){ 
 						return $rule;
@@ -173,7 +173,7 @@ class KFL
 		//add core components
 		if($this->mCoreSettings['is_session']){
 			require_once("Libs/SessionHandle.class.php");
-			new SessionHandle();
+			new SessionHandle($GLOBALS ["gSession"]);
 			$this->mCore[] = 'session';
 		}
 
@@ -240,7 +240,7 @@ class Controller{
 		// include controller file and instance controller object
 		$entrance = basename($_SERVER["SCRIPT_NAME"]);
 		$entrance = substr($entrance,0,strpos($entrance,"."));
-		if(!defined("ENTRANCE")) define("ENTRANCE",$entrance);
+		
 		$file =APP_DIR_C."/".$entrance."/".self::$mDispatcher.".class.php";
 
 		if(is_file($file)){
@@ -352,7 +352,7 @@ class Model
 			}
 			try{
 				$GLOBALS[$db_resource] = new Database($dsn,$user,$passwd,array(PDO::ATTR_PERSISTENT => false));
-				$cache_setting = isset($GLOBALS ['packet'])?$GLOBALS ['packet']:'';
+				$cache_setting = isset($GLOBALS ['gPacket'])?$GLOBALS ['gPacket']:'';
 				if($cache_setting) {
 					$GLOBALS[$db_resource]->setCache($cache_setting);
 				}

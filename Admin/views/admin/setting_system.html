@@ -7,6 +7,38 @@
 
 </head>
 <body class="nihilo">
+
+ <div dojoType="dijit.layout.AccordionContainer" style="width:300px;height:500px;float:right">
+	<div dojoType="dijit.layout.ContentPane" title="功能说明">
+		<p>
+		定义系统常量。支持自定义常量。
+		<br><br>规则：常量命名全部用大写。
+		<br>
+		</p>
+		<p>
+		KFL预定义常量列表：
+		<ul>
+		<li>APP_DIR : 应用根目录</li>
+		<li>APP_STATUS : 应用运行状态</li>
+		<li>KFL_DIR : 	KFL框架目录绝对路径</li>
+		<li>APP_LANG : 	默认语言包</li>
+		<li>APP_TEMP_DIR : 应用缓存路径</li>
+		<li>APP_DIR_M : 应用模型路径</li>
+		<li>APP_DIR_V : 应用试图路径</li>
+		<li>APP_DIR_C : 应用控制器路径</li>
+		<li>APP_LANG_DIR : 应用语言包路径</li>
+		<li>LOG_FILE_DIR : 应用日志路径</li>
+		<li>UPLOAD_DIR : 应用临时上传路径</li>
+		<li>BASE_URL : 当前访问根目录地址</li>
+		<li>HOST_URL : 当前访问域名地址</li>
+		<li>WEB_URL : 当前访问完整地址</li>
+		</ul>
+		</p>
+	  
+	</div>
+	
+</div>
+
 <div style="height:50px;">
 	<div style="margin:10px;">位置: 配置管理  > 系统配置</div>
 	<div style="margin:10px;">
@@ -34,12 +66,39 @@
 <table style="width:600px;margin:10px">
 <thead>
 <tr >
-<td style="border-bottom:1px solid #ccc;width:150px;background-color:#eee">变量</td>
+<td style="border-bottom:1px solid #ccc;width:150px;background-color:#eee">常量</td>
 <td style="border-bottom:1px solid #ccc;width:300px;background-color:#eee">值</td>
-<td style="border-bottom:1px solid #ccc;width:150px;background-color:#eee">操作</td>
+<td style="border-bottom:1px solid #ccc;width:150px;background-color:#eee">备注</td>
 </tr>
 </thead>
 <tbody id="system_table">
+
+
+
+<tr id="row_APP_STATUS">
+<td>APP_STATUS<input type="hidden" name="name_APP_STATUS" value="APP_STATUS"></td>
+<td><input dojoType="dijit.form.ValidationTextBox" required="true" regExp='("dev"|"online")' invalidMessage='变量名不符合规则:("dev"|"online")' type="text" name="valu_APP_STATUS" id="valu_APP_STATUS" value="<?=$sets['APP_STATUS']?>"></td>
+<td style="font-size:12px;color:#666">应用运行状态</td>
+</tr>
+
+<tr id="row_KFL_DIR">
+<td>KFL_DIR<input type="hidden" name="name_KFL_DIR" value="KFL_DIR"></td>
+<td><input dojoType="dijit.form.ValidationTextBox" required="true" regExp='^"[a-zA-Z0-9_\-:\/~]+"$' invalidMessage='变量名不符合规则:^"[a-zA-Z0-9_\-:\/~]+"$' type="text" name="valu_KFL_DIR" id="valu_KFL_DIR" value="<?=$sets['KFL_DIR']?>"></td>
+<td style="font-size:12px;color:#666">KFL框架目录绝对路径</td>
+</tr>
+
+<tr id="row_APP_LANG">
+<td>APP_LANG<input type="hidden" name="name_APP_LANG" value="APP_LANG"></td>
+<td><input dojoType="dijit.form.ValidationTextBox" required="true" regExp='^"[a-z_]+"$' invalidMessage='变量名不符合规则:^"[a-z_]+"$' type="text" name="valu_APP_LANG" id="valu_APP_LANG" value="<?=$sets['APP_LANG']?>"></td>
+<td style="font-size:12px;color:#666">默认语言包</td>
+</tr>
+
+<tr id="row_APP_TEMP_DIR">
+<td>APP_TEMP_DIR<input type="hidden" name="name_APP_TEMP_DIR" value="APP_TEMP_DIR"></td>
+<td><input dojoType="dijit.form.ValidationTextBox" required="true" regExp='[a-zA-Z0-9_\-:\/~\."]+' invalidMessage='变量名不符合规则:[a-zA-Z0-9_\-:\/~\."]+' type="text" name="valu_APP_TEMP_DIR" id="valu_APP_TEMP_DIR" value="<?=$sets['APP_TEMP_DIR']?>"></td>
+<td style="font-size:12px;color:#666">应用缓存路径</td>
+</tr>
+
 <?php foreach($items as $item){?>
 <tr id="row_<?=$item['name']?>">
 <td><?=$item['name']?><input type="hidden" name="name_<?=$item['name']?>" value="<?=$item['name']?>"></td>

@@ -1,13 +1,13 @@
 <?php
 class SessionHandle
 {
-	function __construct(){
-		if($GLOBALS['session']['sessionHandle']=='file'){
+	function __construct($setting){
+		if($setting['sessionHandle']=='file'){
 			session_start();
-		}elseif($GLOBALS['session']['sessionHandle']=='database'){
-			SessionHandleMySQL::Init();
-		}elseif($GLOBALS['session']['sessionHandle']=='memcache'){
-			SessionHandleMemcache::Init();
+		}elseif($setting['sessionHandle']=='database'){
+			SessionHandleMySQL::Init($setting);
+		}elseif($setting['sessionHandle']=='memcache'){
+			SessionHandleMemcache::Init($setting);
 		}
 		// user tracks IIS DO NOT PROVIDE REQUEST_URI
 		if(!isset($_SERVER['REQUEST_URI'])){
@@ -30,15 +30,17 @@ class SessionHandle
 class SessionHandleMySQL extends Model
 {
 	static $db_static;
-    static function Init()
+	static $set;
+    static function Init($setting)
     {
-    	self::$db_static = parent::dbConnect ($GLOBALS['session']['database']);
+    	self::$set = $setting;
+    	self::$db_static = parent::dbConnect (self::$set['database']);
 
         $domain = strstr($_SERVER['HTTP_HOST'],".");
         //不使用 GET/POST 变量方式
         ini_set('session.use_trans_sid',    0);
         //设置垃圾回收最大生存时间
-        ini_set('session.gc_maxlifetime',   $GLOBALS['session']['lifeTime']);
+        ini_set('session.gc_maxlifetime',   self::$set['lifeTime']);
 
         //使用 COOKIE 保存 SESSION ID 的方式
         ini_set('session.use_cookies',      1);
@@ -78,7 +80,7 @@ class SessionHandleMySQL extends Model
     public static function write($sesskey, $data) {
 
         $qkey = $sesskey;//self::$db_static->qstr($sesskey);
-        $expiry = time() + $GLOBALS['session']['lifeTime'];    //设置过期时间
+        $expiry = time() + self::$set['lifeTime'];    //设置过期时间
 
         //写入 SESSION
         $arr = array(
@@ -100,7 +102,7 @@ class SessionHandleMySQL extends Model
         self::$db_static->execute($sql);
         //由于经常性的对表 sess 做删除操作，容易产生碎片，
         //所以在垃圾回收中对该表进行优化操作。
-        if($GLOBALS['session']['database']['type']=='mysql') {
+        if(self::$set['database']['type']=='mysql') {
        		$sql = 'OPTIMIZE TABLE session';
        		self::$db_static->execute($sql);
         }
@@ -112,9 +114,10 @@ class SessionHandleMySQL extends Model
 class SessionHandleMemcache
 {
 	static $mMemcacheObj;
-	public static function Init()
+	static $set;
+	public static function Init($setting)
 	{
-
+		self::$set = $setting;
 		$domain = isset($_SERVER['HTTP_HOST'])?strstr($_SERVER['HTTP_HOST'],"."):'';
 		if (!class_exists('Memcache'))
         {
@@ -128,7 +131,7 @@ class SessionHandleMemcache
         self::_AddMemcacheServers();
 
 		ini_set("session.use_trans_sid", 0);
-		ini_set("session.gc_maxlifetime", $GLOBALS['session']['lifeTime']);
+		ini_set("session.gc_maxlifetime", self::$set['lifeTime']);
 		ini_set("session.use_cookies", 1);
 		ini_set("session.cookie_path", "/");
 		ini_set("session.cookie_domain", $domain);
@@ -156,7 +159,7 @@ class SessionHandleMemcache
 	}
 	
 	public static function Write($sesskey, $data) {
-		self::$mMemcacheObj->set($sesskey, $data,0, $GLOBALS['session']['lifeTime']);
+		self::$mMemcacheObj->set($sesskey, $data,0, self::$set['lifeTime']);
 
 		return true;
 	}
@@ -176,8 +179,8 @@ class SessionHandleMemcache
 	public static function _AddMemcacheServers(){
 		
 		self::$mMemcacheObj = new Memcache;
-		if(is_array($GLOBALS['session']['memcached'])){
-			foreach ($GLOBALS['session']['memcached'] as $server){
+		if(is_array(self::$set['memcached'])){
+			foreach (self::$set['memcached'] as $server){
 				self::$mMemcacheObj->addserver($server['mmhost'],$server['mmport']);
 			}
 		}

@@ -127,7 +127,7 @@ class cache{
 		$sets= array();
 		if(is_array($items)){
 			foreach($items as $item){
-				$sets[$item['name']] = htmlspecialchars($item['value'],ENT_QUOTES);
+				$sets[$item['name']] = $item['value'];
 			}
 		}
 		
@@ -194,6 +194,10 @@ class cache{
 	
 	function view_getpagerule(){
 		$items = $this->mSettingObj->getSettings($_GET['getpagerule']);
+		foreach($items as $k=>$v){
+			$v['value'] = htmlspecialchars_decode($v['value'],ENT_QUOTES);
+			$items[$k] = $v;
+		}
 		json_output($items);
 	}
 	

@@ -55,6 +55,7 @@ class project {
 //					Application	Settings			//
 //////////////////////////////////////////////////////'.$nt;
 		foreach ($systems as $v){
+			$v['value'] = htmlspecialchars_decode($v['value']);
 			$content .= 'define("'.$v['name'].'", '.$v['value'].');'.$nt; 
 		}
 		
@@ -66,6 +67,7 @@ class project {
 		'.$nt;
 		$array = $this->mSettingObj->getSettings('website');
 		foreach ($array as $v){
+			//$v['value'] = htmlspecialchars_decode($v['value'],ENT_QUOTES);
 			$content .= '$GLOBALS ["gSiteInfo"] ["'.$v['name'].'"] =  "'.$v['value'].'";'.$nt; 
 		}
 		
@@ -76,7 +78,8 @@ class project {
 		'.$nt;
 		$array = $this->mSettingObj->getSettings('email');
 		foreach ($array as $v){
-			$content .= '$GLOBALS ["email"] ["'.$v['name'].'"] =  "'.$v['value'].'";'.$nt; 
+			$v['value'] = htmlspecialchars_decode($v['value']);
+			$content .= '$GLOBALS ["gEmail"] ["'.$v['name'].'"] =  "'.$v['value'].'";'.$nt; 
 		}
 		
 		$content .='
@@ -86,6 +89,7 @@ class project {
 		'.$nt;
 		$array = $this->mSettingObj->getSettings('timezone');
 		foreach ($array as $v){
+			$v['value'] = htmlspecialchars_decode($v['value']);
 			$content .= 'date_default_timezone_set("'.$v['value'].'");'.$nt; 
 		}
 		
@@ -101,6 +105,7 @@ class project {
 			$sets = $this->mSettingObj->getSettings($db['dbname']);
 			$db_info = array();
 			foreach($sets as $v){
+				$v['value'] = htmlspecialchars_decode($v['value']);
 				$db_info[$v['name']] = $v['value'];
 			}		
 			$tmp = var_export($db_info,true);
@@ -119,6 +124,7 @@ class project {
 			$sets = $this->mSettingObj->getSettings($memdb['host']);
 			$info = array();
 			foreach($sets as $v){
+				$v['value'] = htmlspecialchars_decode($v['value']);
 				$info[$v['name']] = $v['value'];
 			}
 			
@@ -134,10 +140,11 @@ class project {
 		
 		$packet = array();
 		foreach ($array as $v){
+			$v['value'] = htmlspecialchars_decode($v['value']);
 			if($v['name']=='cacheServer'){
 				$v['value'] = "array(".preg_replace("/(\"[0-9\.:]+\")/",'$GLOBALS ["gMemcacheServer"][\\1]',$v['value']).')';
 			}
-			$content .= '$GLOBALS ["packet"] ["'.$v['name'].'"] =  '.$v['value'].';'.$nt; 
+			$content .= '$GLOBALS ["gPacket"] ["'.$v['name'].'"] =  '.$v['value'].';'.$nt; 
 		}
 		
 		
@@ -153,10 +160,11 @@ class project {
 			$sets = $this->mSettingObj->getSettings($rule['rule_name']);
 			$info = array();
 			foreach($sets as $v){
+				$v['value'] = htmlspecialchars_decode($v['value']);
 				if($v['name']=='cacheserver'){
 					$v['value'] = "array(".preg_replace("/(\"[0-9\.:]+\")/",'$GLOBALS ["gMemcacheServer"][\\1]',$v['value']).');';
 				}
-				$content .= '$GLOBALS ["pagecache"] ["'.$rule['rule_name'].'"] ["'.$v['name'].'"]=  '.$v['value'].';'.$nt; 
+				$content .= '$GLOBALS ["gPageCache"] ["'.$rule['rule_name'].'"] ["'.$v['name'].'"]=  '.$v['value'].';'.$nt; 
 			}
 		}		
 		
@@ -169,14 +177,15 @@ class project {
 		
 		$packet = array();
 		foreach ($array as $v){
+			$v['value'] = htmlspecialchars_decode($v['value']);
 			if($v['name']=='memcached'){
 				$v['value'] = "array(".preg_replace("/(\"[0-9\.:]+\")/",'$GLOBALS ["gMemcacheServer"][\\1]',$v['value']).');';
 			}			
 			if($v['name']=='database'){
-				$v['value'] = preg_replace("/(\"[a-z_0-9]+\")/ism",'$GLOBALS ["gDataBase"][\\1]',$v['value']);
+				$v['value'] = preg_replace("/(\"[a-z0-9_\.]+\")/ism",'$GLOBALS ["gDataBase"][\\1]',$v['value']);
 			}
 			
-			$content .= '$GLOBALS ["session"] ["'.$v['name'].'"] =  '.$v['value'].';'.$nt; 
+			$content .= '$GLOBALS ["gSession"] ["'.$v['name'].'"] =  '.$v['value'].';'.$nt; 
 		}		
 		
 		$content .='
@@ -186,7 +195,8 @@ class project {
 		'.$nt;
 		$array = $this->mSettingObj->getSettings('noticeset');
 		foreach ($array as $v){
-			$content .= '$GLOBALS ["log"] ["'.$v['name'].'"] =  "'.$v['value'].'";'.$nt; 
+			$v['value'] = htmlspecialchars_decode($v['value']);
+			$content .= '$GLOBALS ["gLog"] ["'.$v['name'].'"] =  "'.$v['value'].'";'.$nt; 
 		}	
 		
 		$app_info = $this->mProjectObj->getAppByName($_POST['app_name']);
@@ -207,7 +217,7 @@ class project {
 		json_output($msg);
 	}
 	
-	
+
 	function op_copyconfig(){
 		
 		$app_info = $this->mProjectObj ->getAppByName($_POST['app_name']);
@@ -251,15 +261,22 @@ class project {
 				create_dir($app_root."/config");
 				create_dir($app_root."/controllers/index");
 				create_dir($app_root."/models");
+				create_dir($app_root."/public");
 				create_dir($app_root."/plugins");
+				create_dir($app_root."/langs/ch");
 				create_dir($app_root."/tmp");
 				create_dir($app_root."/views/index");
 				$index_content = file_get_contents(APP_DIR.'/public/install/index.txt');
-				$demo_class = file_get_contents(APP_DIR.'/public/install/demo.class.txt');
-				$demo_defaults = file_get_contents(APP_DIR.'/public/install/demo_defaults.txt');
-				file_put_contents($app_root."/index.php",$index_content);
-				file_put_contents($app_root."/controllers/index/demo.class.php",$demo_class);
-				file_put_contents($app_root."/views/index/demo_defaults.html",$demo_defaults);
+				
+				copy(APP_DIR.'/public/install/index.txt',$app_root."/index.php");
+				copy(APP_DIR.'/public/install/demo.class.txt',$app_root."/controllers/index/demo.class.php");
+				copy(APP_DIR.'/public/install/demo_defaults.txt',$app_root."/views/index/demo_defaults.html");
+				copy(APP_DIR.'/public/install/DemoManage.class.txt',$app_root."/models/DemoManage.class.php");
+				copy(APP_DIR.'/public/install/index.html',$app_root."/tmp/index.html");
+				copy(APP_DIR.'/public/install/index.html',$app_root."/plugins/index.html");
+				copy(APP_DIR.'/public/install/index.html',$app_root."/config/index.html");
+				copy(APP_DIR.'/public/install/index.html',$app_root."/public/index.html");
+				copy(APP_DIR.'/public/install/index.html',$app_root."/langs/ch/index.html");
 			}else{
 				$rs1=1;
 			}
@@ -284,7 +301,7 @@ class project {
 		json_output($msg);
 	}
 	
-	
+
 	function op_deleteapp(){
 		$app_name = $_POST['app_name'];
 		$app_info = $this->mProjectObj->getAppByName($app_name);
