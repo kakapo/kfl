@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
-<title>KFL 开发框架及运维管理平台</title>
+<title><?=$title?></title>
 <link rel="stylesheet"
 			href="<?=$www_site_url?>/public/js/dojotoolkit/dijit/themes/nihilo/nihilo.css" />
 <link rel="shortcut icon" href="<?=$www_site_url?>/public/image/favicon.ico" />
@@ -147,23 +147,25 @@
 	 <!-- top end -->
 	<!-- left start --> 
 	 <div id="leftDiv" dojoType="dijit.layout.AccordionContainer" region="leading" splitter="true" style="width:200px">
-			<div dojoType="dijit.layout.ContentPane" title="浏览项目" >	
-			  	
-			  <div id="target"></div> <div id="file_tree"></div>
-			</div>	
-			 <div dojoType="dijit.layout.ContentPane" title="KFL 简介">
+			<div dojoType="dijit.layout.ContentPane" title="KFL 简介" >
 					<p>
-					&nbsp;&nbsp;KFL是一个轻快的、友好的、MVC模式的PHP开发框架，基于应用层解决Webserver集群带来的系列问题。
+					&nbsp;&nbsp;KFL是一个轻快的、友好的、MVC模式的PHP开发框架，试图在应用层解决Webserver集群带来的系列问题。
 					</p>
 						<label>主要特点:</label>			
 						<ul style="list-style-type: decimal;padding-left:20px;">
 						<li>统一配置，一键同步。</li>
 						<li>支持数据片和网页的分布式缓存。</li>
+						<li>支持分布式Memcached服务的监控管理。</li>
 						<li>支持Session会话数据同步和在线用户统计。</li>
-						<li>支持错误日志和应用服务监控。</li>
+						<li>支持错误日志管理和应用服务监控。</li>
 						<li>集成用户数据文件的分布式存储服务。</li>				
 						</ul>	  
-				</div>
+			</div>
+			<div dojoType="dijit.layout.ContentPane" title="浏览项目" id="explorerApp">	
+			  	
+			  <div id="target"><div id="file_tree">请从右边【控制面板】->【所有项目】中选择并打开项目。</div></div> 
+			</div>	
+			 
 	 </div>
 	 <!-- left end -->
 	 
@@ -230,7 +232,7 @@
     <!-- main end -->
     
     <!-- bottom start -->
-     <div dojoType="dijit.layout.ContentPane" region="bottom" align="center">Powered by KFL Framework.GUI by Dojo Toolkit.</div>
+     <div dojoType="dijit.layout.ContentPane" region="bottom" align="center" style="font-size:12px;color:#666">Powered by KFL Framework, Dojo Toolkit. Since 2009.9</div>
 	<!-- bottom end -->
      
 </div>

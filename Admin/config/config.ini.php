@@ -12,11 +12,11 @@
 //				Website Settings	                //
 //////////////////////////////////////////////////////
 		
-	$GLOBALS ["gSiteInfo"] ["title"] =  "果动网";
+	$GLOBALS ["gSiteInfo"] ["title"] =  "KFL--项目开发框架及在线管理平台";
 	$GLOBALS ["gSiteInfo"] ["vision"] =  "V2.0.0";
 	$GLOBALS ["gSiteInfo"] ["www_site_url"] =  "http://www.kfl.net/Admin";
 	$GLOBALS ["gSiteInfo"] ["webcharset"] =  "utf-8";
-	$GLOBALS ["gSiteInfo"] ["site_name"] =  "3D-widget-果动网";
+	$GLOBALS ["gSiteInfo"] ["site_name"] =  "KFL项目开发框架及在线管理平台";
 	
 //////////////////////////////////////////////////////
 //				Email   Settings	                //

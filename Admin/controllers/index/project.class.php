@@ -20,7 +20,6 @@ class project {
 		json_output($arr);
 	}
 	
-	
 	function readfolder($folders,&$return){
 		$tmp = array();
 		foreach($folders as $f){
@@ -217,7 +216,6 @@ class project {
 		json_output($msg);
 	}
 	
-
 	function op_copyconfig(){
 		
 		$app_info = $this->mProjectObj ->getAppByName($_POST['app_name']);
@@ -277,6 +275,7 @@ class project {
 				copy(APP_DIR.'/public/install/index.html',$app_root."/config/index.html");
 				copy(APP_DIR.'/public/install/index.html',$app_root."/public/index.html");
 				copy(APP_DIR.'/public/install/index.html',$app_root."/langs/ch/index.html");
+				copy(APP_DIR.'/public/install/globals.txt',$app_root."/langs/ch/globals.php");
 			}else{
 				$rs1=1;
 			}
@@ -301,7 +300,6 @@ class project {
 		json_output($msg);
 	}
 	
-
 	function op_deleteapp(){
 		$app_name = $_POST['app_name'];
 		$app_info = $this->mProjectObj->getAppByName($app_name);

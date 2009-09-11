@@ -219,7 +219,7 @@ class KFL
 	 * @return void
 	 */	
 	public function execTime(){
-		exit(getmicrotime ()-$this->mStartTime);
+		exit("<!-- execute time :".(getmicrotime ()-$this->mStartTime)."-->");
 	}
 
 }
