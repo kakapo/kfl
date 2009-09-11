@@ -1,0 +1,7 @@
+<?php
+$GLOBALS['gLang']['l_index_username']="用户名";
+$GLOBALS['gLang']['l_index_password']="密码";
+$GLOBALS['gLang']['l_index_submitbtn']="登录";
+
+
+?>

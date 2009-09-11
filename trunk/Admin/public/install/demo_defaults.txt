@@ -6,5 +6,12 @@
 </head>
 <body>
 <?=$name?>
+<form action="" method="get">
+<li><?=$l_index_username?>:<input type="text" name="user_name"></li>
+
+<li><?=$l_index_password?>:<input type="password" name="user_pass"></li>
+
+<li><input type="submit" name="login" value="<?=$l_index_submitbtn?>"></li>
+</form>
 </body>
 </html>

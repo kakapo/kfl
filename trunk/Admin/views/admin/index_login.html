@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>KFL--Kindly Fast Light php 开发框架</title>
+<title><?=$title?></title>
 <link rel="stylesheet"
 			href="<?=$www_site_url?>/public/js/dojotoolkit/dijit/themes/nihilo/nihilo.css" />
 <link rel="shortcut icon" href="<?=$www_site_url?>/public/image/favicon.ico" />
@@ -25,7 +25,7 @@
 	}
 	#mainDiv{
 		margin:auto;
-		width: 500px; height: 300px; border: 1px solid #ccc;
+		width: 500px; height: 350px; border: 1px solid #ccc;
 		top:150px;
 	}
 	</style>
@@ -34,24 +34,29 @@
 
 
 <div id="mainDiv" dojoType="dijit.layout.BorderContainer">
+	<div dojoType="dijit.layout.ContentPane" region="top" style="border:1px solid #ccc;height:100px;" > 
+	<table style="margin:0 auto;"><tr><td><h3><img src="<?=$www_site_url?>/public/image/kfllogo.gif"><?=$site_name?></h3></td></tr></table>
+	</div>
 	<div dojoType="dijit.layout.ContentPane" region="center" >
-	    <div style="margin-left:50px"><h1>KFL 后台管理系统用户登录</h1></div>
+	   
 		<form method="post" id="loginform">
 			<input type="hidden" name="action" value="index">
 			<input type="hidden" name="op" value="dologin">
 			<table style="margin:50px auto;">
 			    <tr>
 			      <td align="right"><label for="name">用户名: </label></td>
-			      <td><input dojoType="dijit.form.TextBox" type="text" name="name" id="name"></td>
+			      <td><input dojoType="dijit.form.TextBox" type="text" name="name" id="name" style="width:150px"></td>
 			    </tr>
 			    <tr>
 			      <td align="right"><label for="password">密码: </label></td>
-			      <td><input dojoType="dijit.form.TextBox" type="password" name="password" id="loc"></td>
+			      <td><input dojoType="dijit.form.TextBox" type="password" name="password" id="loc" style="width:150px"></td>
 			    </tr>
 			    
 			    <tr>
-			      <td colspan="2" align="center">
-			        <button dojoType="dijit.form.Button" type="submit">登陆</button>
+			    	<td align="right"></td>
+			      <td  align="center">
+			      
+			        <button dojoType="dijit.form.Button" type="submit">登录</button>
 			        <button dojoType="dijit.form.Button" type="reset">重置</button>
 			        </td>
 			    </tr>

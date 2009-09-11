@@ -8,7 +8,7 @@ class index {
 			$_SESSION['login']=1;
 			redirect($GLOBALS ["gSiteInfo"] ["www_site_url"]."/index.php/index/defaults");
 		}else{
-			//show_message_goback("用户名或者密码不正确！");
+			show_message_goback("用户名或者密码不正确！");
 		}
 		
 	}

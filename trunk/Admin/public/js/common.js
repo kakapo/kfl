@@ -481,6 +481,8 @@ function getText(pathinfo,title) {
          },  
          onComplete: function(items, request){
         	 gCurAppDir = items[0].app_dir.toString();
+        	
+        	 dijit.byId("leftDiv").selectChild(dijit.byId("explorerApp"));
         	 refreshTree();
          },
          onError: function (error, request) {
