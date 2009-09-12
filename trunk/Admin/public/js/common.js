@@ -1,3 +1,5 @@
+var selected_copy_file='';
+
 function myAlert(text){
 	dojo.byId("AlertCon2").innerHTML = text; 		  
     dijit.byId("AlertShow2").show();   
@@ -13,7 +15,7 @@ function doPost(url,postdata,form,callback){
    
   	        },
   	        error: function(error,ioargs){
-  	        	//alert(error);
+  	          alert(error);
   	          var message = httpErrorReport(ioargs.xhr.status);
   	          myAlert(message);
   	        }
@@ -328,8 +330,9 @@ function getText(pathinfo,title) {
         	 //alert(items.length);
          },
          onError: function (error, request) {
-             alert("lookup failed.");
-             alert(error);
+             alert("项目目录不存在!");
+             //alert(error);
+             
          },
          queryOptions: {
              deep: true
@@ -374,11 +377,37 @@ function getText(pathinfo,title) {
           //console.debug(tn);
           
           // now inspect the data store item that backs the tree node:
-          //console.debug(tn.item.name);
+          console.debug(tn.item.id);
+         
 
           // contrived condition: if this tree node doesn't have any children, disable all of the menu items
           menu.getChildren().forEach(function(i) {
-             //i.attr('disabled', !tn.item.children);
+          	// 
+             if(tn.item.filetype=='file'){
+             	if(i.label=='新建文件夹' || i.label=='上传文件') {            		
+             		i.attr('disabled', true);
+             	}
+             	if(i.label=='下载'){
+             		i.attr('disabled', false);
+             	}
+             }
+             if(tn.item.filetype=='dir'){
+             	if(i.label=='新建文件夹' || i.label=='上传文件') {
+             		i.attr('disabled', false);
+             	}
+             	if(i.label=='下载'){
+             		i.attr('disabled', true);
+             	}
+             	
+             }
+             if(i.label=='粘帖'){
+             	i.attr('disabled', true);
+             }
+             
+             if(selected_copy_file!='' && i.label=='粘帖' && tn.item.filetype=='dir'){
+             	i.attr('disabled', false);
+             }
+             
              i.attr('title', tn.item.id.toString());
            
           });
@@ -386,81 +415,9 @@ function getText(pathinfo,title) {
           // IMPLEMENT CUSTOM MENU BEHAVIOR HERE
       });
  }
- function downloadFile(id){
-	 treeStore.fetch({
-         query: {
-             'id': id
-         },  
-         onComplete: function(items, request){
-        	 window.open(gSiteUrl+"/index.php/project/download/path/"+items[0]['path']);   	
-         },
-         onError: function (error, request) {
-             alert("lookup failed.");
-             alert(error);
-         },
-         queryOptions: {
-             deep: true
-         }
-     }); 
- }
- function fileInfo(id){
-	 treeStore.fetch({
-         query: {
-             'id': id
-         },  
-         onComplete: function(items, request){
-        	 var info='';
-        	 for(var i in items){
-        		 info += '位置:'+unescape(items[i]['dir'])+"<br>";
-        		 info += '大小:'+items[i]['size']+"<br>";
-        		 info += '最后修改:'+items[i]['time'];
-        	 }
-        	dojo.byId("AlertCon3").innerHTML = info; 		  
-        	dijit.byId("AlertShow3").show();   
-        	 //alert(items.length);
-         },
-         onError: function (error, request) {
-             alert("lookup failed.");
-             alert(error);
-         },
-         queryOptions: {
-             deep: true
-         }
-     });
-	
- }
- function viewFile(id,title,path){
-	if(!title && !path){
-		 treeStore.fetch({
-	         query: {
-	             'id': id
-	         },  
-	         onComplete: function(items, request){
-	        	 title = items[0].name.toString();
-	        	 path = items[0].path.toString();
-	        	 //alert(items.length);
-	         },
-	         onError: function (error, request) {
-	             alert("lookup failed.");
-	             alert(error);
-	         },
-	         queryOptions: {
-	             deep: true
-	         }
-	     });
-	}
-	 if(!dojo.byId(id)){
-			var pane = new dijit.layout.ContentPane({id:id, title:title,closable:true });
-			var tabs = dijit.byId("maindiv");
-			tabs.addChild(pane);
-			tabs.selectChild(pane);
-			pane.attr("onDownloadError", function(e){
-				alert(e);
-			});
-			pane.attr("href", gSiteUrl+"/index.php/project/dumpfile/"+path);
 
-	}
- }
+ 
+ 
  function newProject(){
 	 doPost(gSiteUrl+"/index.php",'','appcreate_form',function(data){ 
 		myAlert(data.m);
@@ -561,4 +518,102 @@ function getText(pathinfo,title) {
  function visitApp(hosturl){
  	if(gCurAppName=='') return myAlert('请选择项目');
  	window.open(hosturl+"/"+gCurAppName);
+ }
+ function getItemById(id){
+ 	var item;
+	treeStore.fetch({
+	     query: {
+	         'id': id
+	     },  
+	     onComplete: function(items, request){
+			item = items[0];
+	    	 //alert(items.length);
+	     },
+	     onError: function (error, request) {
+	         alert("lookup failed.");
+	         alert(error);
+	     },
+	     queryOptions: {
+	         deep: true
+	     }
+	 });
+	
+	return item;
+ }
+ function viewFile(id,title,path){
+	if(!title && !path){
+		item = getItemById(id);
+		title = item['name'];
+	    path = item['path'];	 
+	}
+	 if(!dojo.byId(id)){
+			var pane = new dijit.layout.ContentPane({id:id, title:title,closable:true });
+			var tabs = dijit.byId("maindiv");
+			tabs.addChild(pane);
+			tabs.selectChild(pane);
+			pane.attr("onDownloadError", function(e){
+				alert(e);
+			});
+			pane.attr("href", gSiteUrl+"/index.php/project/dumpfile/"+path);
+
+	}
+ }
+ function fileInfo(id){
+ 	item = getItemById(id);
+ 	var info='';
+	 info += '位置:'+unescape(item['dir'])+"<br>";
+	 info += '大小:'+item['size']+"<br>";
+	 info += '最后修改:'+item['time']; 
+	dojo.byId("AlertCon3").innerHTML = info; 		  
+	dijit.byId("AlertShow3").show();   
+ }
+  function downloadFile(id){
+  	item = getItemById(id);
+  	window.open(gSiteUrl+"/index.php/project/download/path/"+item['path']);
+  }
+  function deleteFile(id){
+  	item = getItemById(id);
+ 	raiseQueryDialog("确认要删除吗？", "是否确定要删除'"+item['name']+"'？所有数据将丢失并且无法恢复。<br>", 		function(arg){
+ 		
+	 	doPost(gSiteUrl+"/index.php","action=project&op=deletefile&file="+item['path'],'',function(data)	{ 
+ 				myAlert(data.m);
+				if(data.s==200) refreshTree();
+		});
+ 		
+ 	});
+ }
+ 
+ function copyFile(id){
+ 	item = getItemById(id);
+ 	selected_copy_file = item['path'];
+ }
+ function pasteFile(id){
+ 	item = getItemById(id);
+ 	doPost(gSiteUrl+"/index.php","action=project&op=pastefile&file="+selected_copy_file+"&todir="+item['path'],'',function(data)	{ 
+ 				myAlert(data.m);
+				if(data.s==200) refreshTree();
+	});
+ }
+ function newFolder(){
+ 	
+ 	var id = dojo.byId('under_which_dir').value;
+ 	var newfolder = dojo.byId('newfolder').value;
+ 	var reCat = /^[A-Za-z_]{1}[A-Za-z0-9_]*/gi;
+    if(!reCat.test(newfolder)) {
+    	return;
+    }
+ 	item = getItemById(id);
+ 	doPost(gSiteUrl+"/index.php","action=project&op=newfolder&newfolder="+newfolder+"&todir="+item['path'],'',function(data){ 
+ 		
+ 				myAlert(data.m);
+				if(data.s==200) 
+				{
+					refreshTree();
+					dojo.byId('newfolder').value='';
+					dijit.byId('AlertShow4').hide();
+				}
+	});
+ }
+ function renameFile(){
+ 	
  }

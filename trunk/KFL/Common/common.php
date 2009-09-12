@@ -456,7 +456,7 @@ function getmicrotime() {
 }
 function show_message($msg=''){
 	echo '<meta http-equiv="Content-Type" content="text/html; charset='.$GLOBALS ['gSiteInfo'] ['webcharset'].'" />';
-	echo "<div style='width:300px; margin:auto; padding:3px; font-size:12px;color:#000; background:#FFF repeat-x left top'>".$msg."</div>";
+	echo "<div style='width:300px; padding:3px; font-size:12px;color:#000; background:#FFF repeat-x left top'>".$msg."</div>";
 
 }
 

@@ -15,6 +15,7 @@ class project {
 		
 		list_all_dir($app_info['app_dir'],$tree);
 		$this->readfolder($tree,$return);
+		
 		$arr['items'] = $return;
 		
 		json_output($arr);
@@ -22,7 +23,11 @@ class project {
 	
 	function readfolder($folders,&$return){
 		$tmp = array();
+		if(!is_array($folders)){
+			return false;
+		}
 		foreach($folders as $f){
+		
 			if(isset($f['folders'])&&count($f['folders'])>0) {
 				$r = $this->readfolder($f['folders'],$return);
 				if(count($r)>0) $f['folders'] = $r ;
@@ -332,9 +337,12 @@ class project {
 	}
 	
 	function view_dumpfile(){
+		
 		$file = decrypt($_GET['dumpfile']);
 		if(is_file($file)){
 			highlight_file($file);
+		}else{
+			echo "此目录为空！";
 		}
 		die;
 	}
@@ -349,14 +357,63 @@ class project {
 			Header("Accept-Ranges: bytes");
 			Header("Accept-Length: ".filesize($file));
 			
-			// It will be called downloaded.pdf
-			
+			// It will be called downloaded.pdf		
 			header('Content-Disposition: attachment; filename="'.basename($file).'"');
 			
 			// The PDF source is in original.pdf
 			readfile($file);
 		}
 		die();
+	}
+	function op_deletefile(){
+		$file = decrypt($_POST['file']);
+		if(is_file($file)) $res = unlink($file);
+		else $res = del($file,true);
+		if($res){
+			$msg['s'] = 200;
+			$msg['m'] = "删除成功!";
+			$msg['d'] = 'null';	
+		}else{
+			$msg['s'] = 400;
+			$msg['m'] = "删除失败!";
+			$msg['d'] = 'null';	
+		}
+		json_output($msg);
+		
+	}
+	function op_pastefile(){
+		$file = decrypt($_POST['file']);
+		$todir = decrypt($_POST['todir']);
+		if(is_file($file) && is_dir($todir)){
+			$res = copy($file,$todir."/".basename($file));
+		}
+		if($res){
+			$msg['s'] = 200;
+			$msg['m'] = "粘帖成功!";
+			$msg['d'] = 'null';	
+		}else{
+			$msg['s'] = 400;
+			$msg['m'] = "粘帖失败!";
+			$msg['d'] = 'null';	
+		}
+		json_output($msg);
+	}
+	function op_newfolder(){
+		$newfolder = $_POST['newfolder'];
+		$todir = decrypt($_POST['todir']);
+		if(is_dir($todir)){
+			$res = mkdir($todir."/".$newfolder,0777);
+		}
+		if($res){
+			$msg['s'] = 200;
+			$msg['m'] = "创建文件夹成功!";
+			$msg['d'] = 'null';	
+		}else{
+			$msg['s'] = 400;
+			$msg['m'] = "创建文件夹失败!";
+			$msg['d'] = 'null';	
+		}
+		json_output($msg);
 	}
 }
 ?>

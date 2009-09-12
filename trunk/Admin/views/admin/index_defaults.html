@@ -10,7 +10,7 @@
 <link rel="icon" type="image/gif" href="<?=$www_site_url?>/public/image/animated_favicon1.gif">
 <!-- load the dojo toolkit base -->
 	<script type="text/javascript" src="<?=$www_site_url?>/public/js/dojotoolkit/dojo/dojo.js"
-	    djConfig="parseOnLoad:true, isDebug:false"></script>
+	    djConfig="parseOnLoad:true, isDebug:true"></script>
     <script type="text/javascript">
 
 		dojo.require("dijit.layout.BorderContainer");
@@ -51,7 +51,7 @@
 		  dojo.addOnLoad(function() {
 			  loadProject();
 	    });
-		  
+		 document.oncontextmenu = new Function("return false");
 	</script>
 	<script type="text/javascript" src="<?=$www_site_url?>/public/js/common.js"></script>
     <style>
@@ -67,18 +67,17 @@
 <body class="nihilo">
 
 <ul dojoType="dijit.Menu" id="tree_menu" style="display: none;">
-    <li dojoType="dijit.MenuItem" onClick="refreshTree();">
-        刷新
-    </li>
-    <li dojoType="dijit.MenuItem" onClick="viewFile(this.title)">
-       打开
-    </li>
-    <li dojoType="dijit.MenuItem" onClick="downloadFile(this.title)">
-       下载
-    </li>
-   <li dojoType="dijit.MenuItem" onClick="fileInfo(this.title)">
-       属性
-    </li>
+    <li dojoType="dijit.MenuItem" onClick="refreshTree();">刷新</li>
+    <li dojoType="dijit.MenuItem" onClick="viewFile(this.title)">打开</li>     
+    <li iconClass="dijitEditorIcon dijitEditorIconCopy"  dojoType="dijit.MenuItem" onClick="copyFile(this.title)">复制</li>
+    <li iconClass="dijitEditorIcon dijitEditorIconPaste"  dojoType="dijit.MenuItem" onClick="pasteFile(this.title)">粘帖</li>
+    <li iconClass="dijitEditorIcon dijitEditorIconDelete" dojoType="dijit.MenuItem" onClick="deleteFile(this.title)">删除</li>
+    <li dojoType="dijit.MenuItem" onClick="dijit.byId('AlertShow4').show();dojo.byId('under_which_dir').value =this.title">新建文件夹</li>
+    
+    <li dojoType="dijit.MenuItem" onClick="uploadFile(this.title)">上传文件</li>
+    <li dojoType="dijit.MenuItem" onClick="downloadFile(this.title)">下载</li>
+    <li dojoType="dijit.MenuItem" onClick="renameFile(this.title)">重命名</li>
+   <li dojoType="dijit.MenuItem" onClick="fileInfo(this.title)">属性</li>
 </ul>
 
 <!-- layout start -->
@@ -266,6 +265,17 @@
  <div dojoType="dijit.Dialog" id="AlertShow3" title="文件属性"
     execute="alert('submitted w/args:\n' + dojo.toJson(arguments[0], true));">
    <div id="AlertCon3" style="width:240px;height:120px;"></div>
+ </div>
+ 
+     <!-- Alert3 div -->
+ <div dojoType="dijit.Dialog" id="AlertShow4" title="新文件夹"
+    execute="alert('submitted w/args:\n' + dojo.toJson(arguments[0], true));">
+   <div id="AlertCon4" style="width:240px;height:120px;">
+   输入新文件夹名称: <input dojoType="dijit.form.ValidationTextBox" required="true" type="text" name="newfolder" id="newfolder" value="" regExp="^[A-Za-z_]{1}[A-Za-z0-9_]*" invalidMessage="变量名不符合规则:^[A-Za-z_]{1}[A-Za-z0-9_]*">
+   <input type="hidden" id="under_which_dir" name="under_which_dir" value="">
+   <button dojoType="dijit.form.Button" onclick="newFolder();">确定</button>
+   <button dojoType="dijit.form.Button" onclick="dijit.byId('AlertShow4').hide();">取消</button>
+   </div>
  </div>
 </body>
 </html>
