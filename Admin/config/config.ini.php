@@ -112,7 +112,7 @@
 //				Session   Settings	                //
 //////////////////////////////////////////////////////		
 		
-	$GLOBALS ["gSession"] ["sessionHandle"] =  "memcache";
+	$GLOBALS ["gSession"] ["sessionHandle"] =  "file";
 	$GLOBALS ["gSession"] ["lifeTime"] =  1440;
 	$GLOBALS ["gSession"] ["database"] =  $GLOBALS ["gDataBase"] ["db_setting.db3"];
 	$GLOBALS ["gSession"] ["memcached"] =  array($GLOBALS ["gMemcacheServer"]["192.168.1.5:11213"],

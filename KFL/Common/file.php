@@ -212,8 +212,8 @@ function list_dir($path,$type = 'all')
 }
 
 function list_all_dir($path,&$tree){
-	
-	if(!$dir = @dir($path))
+	if(!is_dir($path)) return false;
+	if( !$dir = dir($path))
 	{
 		return false;
 	}
