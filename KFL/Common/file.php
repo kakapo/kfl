@@ -242,7 +242,7 @@ function list_all_dir($path,&$tree){
 		$t['extension'] = isset($pathinfo['extension'])?$pathinfo['extension']:'';
 		$t['time'] = date ("Y-m-d H:i:s.", $fileinfo['mtime']);
 		$t['size'] = size_unit_convert($fileinfo['size']);	
-		$t['dir'] = urlencode(path_clean($dir->path));
+		$t['dir'] = urlencode($dir->path);
 		
 		$tree[$i] = $t;
 		$i++;
