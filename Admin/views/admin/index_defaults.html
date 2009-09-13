@@ -37,6 +37,7 @@
 		  
 		  dojo.require("dojo.data.ItemFileReadStore");
 		  dojo.require("dijit.Tree");
+		  dojo.require("dojox.form.FileUploader");
 
 		  
 		  var gSiteUrl = '<?=$www_site_url?>';
@@ -60,7 +61,31 @@
   width: 100%; height: 100%;
   border: 0; padding: 5; margin: 0;
 }
-	
+	.uploadBtn{
+    border:1px solid #333333;
+    background:url(buttonEnabled.png) #d0d0d0 repeat-x scroll 0px top;
+    font-size:14px;
+    width:201px;
+    height:30px;
+    vertical-align:middle; /* emulates a <button> if node is not */
+    text-align:center;
+}
+.uploadHover{
+    background-image:url(buttonHover.png);
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.uploadPress{
+    background-image:url(buttonActive.png);
+}
+.uploadDisabled{
+    background-image:none;
+    background-color:#666;
+    color:#999;
+    border:1px solid #999;
+}
+
 	</style>
 
 </head>
@@ -74,9 +99,9 @@
     <li iconClass="dijitEditorIcon dijitEditorIconDelete" dojoType="dijit.MenuItem" onClick="deleteFile(this.title)">删除</li>
     <li dojoType="dijit.MenuItem" onClick="dijit.byId('AlertShow4').show();dojo.byId('under_which_dir').value =this.title">新建文件夹</li>
     
-    <li dojoType="dijit.MenuItem" onClick="uploadFile(this.title)">上传文件</li>
+    <li dojoType="dijit.MenuItem" onClick="prepareUpload(this.title);">上传文件</li>
     <li dojoType="dijit.MenuItem" onClick="downloadFile(this.title)">下载</li>
-    <li dojoType="dijit.MenuItem" onClick="renameFile(this.title)">重命名</li>
+    <li dojoType="dijit.MenuItem" onClick="dijit.byId('AlertShow5').show();dojo.byId('old_file_id').value =this.title">重命名</li>
    <li dojoType="dijit.MenuItem" onClick="fileInfo(this.title)">属性</li>
 </ul>
 
@@ -267,14 +292,36 @@
    <div id="AlertCon3" style="width:240px;height:120px;"></div>
  </div>
  
-     <!-- Alert3 div -->
+   <!-- Alert4 div -->
  <div dojoType="dijit.Dialog" id="AlertShow4" title="新文件夹"
     execute="alert('submitted w/args:\n' + dojo.toJson(arguments[0], true));">
-   <div id="AlertCon4" style="width:240px;height:120px;">
+   <div id="AlertCon4" style="width:240px;height:80px;">
    输入新文件夹名称: <input dojoType="dijit.form.ValidationTextBox" required="true" type="text" name="newfolder" id="newfolder" value="" regExp="^[A-Za-z_]{1}[A-Za-z0-9_]*" invalidMessage="变量名不符合规则:^[A-Za-z_]{1}[A-Za-z0-9_]*">
    <input type="hidden" id="under_which_dir" name="under_which_dir" value="">
    <button dojoType="dijit.form.Button" onclick="newFolder();">确定</button>
    <button dojoType="dijit.form.Button" onclick="dijit.byId('AlertShow4').hide();">取消</button>
+   </div>
+ </div>
+    <!-- Alert5 div -->
+ <div dojoType="dijit.Dialog" id="AlertShow5" title="文件重命名"
+    execute="alert('submitted w/args:\n' + dojo.toJson(arguments[0], true));">
+   <div id="AlertCon4" style="width:240px;height:80px;">
+   输入新名称: <input dojoType="dijit.form.ValidationTextBox" required="true" type="text" name="newfilename" id="newfilename" value="" regExp="^[A-Za-z_]{1}[A-Za-z0-9_\.]*" invalidMessage="变量名不符合规则:^[A-Za-z_]{1}[A-Za-z0-9_\.]*">
+   <input type="hidden" id="old_file_id" name="old_file_id" value="">
+   <button dojoType="dijit.form.Button" onclick="renameFile();">确定</button>
+   <button dojoType="dijit.form.Button" onclick="dijit.byId('AlertShow5').hide();">取消</button>
+   </div>
+ </div>
+ 
+     <!-- Alert6 div -->
+ <div dojoType="dijit.Dialog" id="AlertShow6" title="文件上传"
+    execute="alert('submitted w/args:\n' + dojo.toJson(arguments[0], true));">
+   <div id="AlertCon4" style="width:240px;height:80px;">
+  
+	<input dojoType="dijit.form.TextBox" id="fileToUpload" style="width:150px">
+	<div id="btn0" class="browse" dojoType="dijit.form.Button">选择...</div>
+ 	<div id="uploadBtn" onClick="uploadFile();" dojoType="dijit.form.Button">上传</div>
+   <button dojoType="dijit.form.Button" onclick="dijit.byId('AlertShow6').hide();">取消</button>
    </div>
  </div>
 </body>
