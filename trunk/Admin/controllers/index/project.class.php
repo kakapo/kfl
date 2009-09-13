@@ -400,7 +400,12 @@ class project {
 	}
 	function op_newfolder(){
 		$newfolder = $_POST['newfolder'];
-		$todir = decrypt($_POST['todir']);
+		if($_POST['id']=='root'){
+			$todir = $_POST['todir'];
+		}else{
+			$todir = decrypt($_POST['todir']);
+		}
+		$res = 0;
 		if(is_dir($todir)){
 			$res = mkdir($todir."/".$newfolder,0777);
 		}
@@ -414,6 +419,56 @@ class project {
 			$msg['d'] = 'null';	
 		}
 		json_output($msg);
+	}
+	function op_renamefile(){
+		$newfilename = $_POST['newfilename'];
+
+		$oldfile = decrypt($_POST['oldfile']);
+		$res = 0;
+		if(is_dir($oldfile) || is_file($oldfile)){
+			$res=rename($oldfile,dirname($oldfile)."/".$newfilename);
+		}
+		if($res){
+			$msg['s'] = 200;
+			$msg['m'] = "重命名成功!";
+			$msg['d'] = 'null';	
+		}else{
+			$msg['s'] = 400;
+			$msg['m'] = "重命名失败!";
+			$msg['d'] = 'null';	
+		}
+		json_output($msg);
+	}
+	function op_uploadfile(){
+		$fieldName = "flashUploadFiles";//Filedata";
+		$upload_path = decrypt($_POST['path']);
+		if( isset($_FILES[$fieldName])){
+		
+			$returnFlashdata = true; //for dev
+			$m = move_uploaded_file($_FILES[$fieldName]['tmp_name'],  $upload_path."/" . $_FILES[$fieldName]['name']);
+			$name = $_FILES[$fieldName]['name'];
+			$file = $upload_path ."/". $name;
+			try{
+			  list($width, $height) = getimagesize($file);
+			} catch(Exception $e){
+			  $width=0;
+			  $height=0;
+			}
+			$type = strtolower(substr(strrchr($file,"."),1));
+			//trace("file: " . $file ."  ".$type." ".$width);
+			// 		Flash gets a string back:
+			$data = '';
+			$data .='file='.$file.',name='.$name.',width='.$width.',height='.$height.',type='.$type;
+			if($returnFlashdata){
+				//trace("returnFlashdata:\n=======================");
+				//trace($data);
+				//trace("=======================");
+				// echo sends data to Flash:
+				echo($data);
+				// return is just to stop the script:
+				die;
+			}	
+		}
 	}
 }
 ?>

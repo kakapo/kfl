@@ -377,12 +377,21 @@ function getText(pathinfo,title) {
           //console.debug(tn);
           
           // now inspect the data store item that backs the tree node:
-          console.debug(tn.item.id);
+         // console.debug(tn.item.id);
          
 
           // contrived condition: if this tree node doesn't have any children, disable all of the menu items
           menu.getChildren().forEach(function(i) {
           	// 
+          	 if(tn.item.id=='root' ){
+             if( i.label=='打开' ||  i.label=='复制' || i.label=='删除' ||  i.label=='下载'||  i.label=='重命名' || i.label=='属性') i.attr('disabled', true);
+             	if(i.label=='新建文件夹' || i.label=='上传文件') {            		
+             		i.attr('disabled', false);
+             	}
+             }
+             if(tn.item.id!='root' ){
+             	if(  i.label=='打开' ||  i.label=='复制' || i.label=='删除' ||  i.label=='下载'||  i.label=='重命名' || i.label=='属性') i.attr('disabled', false);
+             }
              if(tn.item.filetype=='file'){
              	if(i.label=='新建文件夹' || i.label=='上传文件') {            		
              		i.attr('disabled', true);
@@ -404,7 +413,7 @@ function getText(pathinfo,title) {
              	i.attr('disabled', true);
              }
              
-             if(selected_copy_file!='' && i.label=='粘帖' && tn.item.filetype=='dir'){
+             if(selected_copy_file!='' && i.label=='粘帖' && (tn.item.filetype=='dir' || tn.item.id=='root')){
              	i.attr('disabled', false);
              }
              
@@ -520,7 +529,12 @@ function getText(pathinfo,title) {
  	window.open(hosturl+"/"+gCurAppName);
  }
  function getItemById(id){
- 	var item;
+ 	//alert(typeof(id)+id.length);
+ 	var item=[];
+ 	if(id=='root') {
+ 		item['path'] = gCurAppDir;
+ 		return item;
+ 	}
 	treeStore.fetch({
 	     query: {
 	         'id': id
@@ -603,7 +617,7 @@ function getText(pathinfo,title) {
     	return;
     }
  	item = getItemById(id);
- 	doPost(gSiteUrl+"/index.php","action=project&op=newfolder&newfolder="+newfolder+"&todir="+item['path'],'',function(data){ 
+ 	doPost(gSiteUrl+"/index.php","action=project&op=newfolder&id="+id+"&newfolder="+newfolder+"&todir="+item['path'],'',function(data){ 
  		
  				myAlert(data.m);
 				if(data.s==200) 
@@ -615,5 +629,78 @@ function getText(pathinfo,title) {
 	});
  }
  function renameFile(){
- 	
+ 	var id = dojo.byId('old_file_id').value;
+ 	var newfilename = dojo.byId('newfilename').value;
+ 	var reCat = /^[A-Za-z_]{1}[A-Za-z0-9_\.]*/gi;
+    if(!reCat.test(newfilename)) {
+    	return;
+    }
+ 	item = getItemById(id);
+ 	doPost(gSiteUrl+"/index.php","action=project&op=renamefile&newfilename="+newfilename+"&oldfile="+item['path'],'',function(data){ 
+ 		
+ 				myAlert(data.m);
+				if(data.s==200) 
+				{
+					refreshTree();
+					dojo.byId('newfilename').value='';
+					dijit.byId('AlertShow5').hide();
+				}
+	});
  }
+var uploadUrl = gSiteUrl+"/index.php";
+var rmFiles = "";
+var fileMask = [
+	["Php File", 	"*.php"],
+	["Js File", 	"*.js"],
+	["Css File", 	"*.css"],
+	["HTML File", 	"*.html"],
+	["Jpeg File", 	"*.jpg;*.jpeg"],
+	["GIF File", 	"*.gif"],
+	["PNG File", 	"*.png"],
+	["All Images", 	"*.jpg;*.jpeg;*.gif;*.png"]
+];
+function prepareUpload(id){
+	dijit.byId('AlertShow6').show();
+	item = getItemById(id);
+	var f0 = new dojox.form.FileUploader({
+		button:dijit.byId("btn0"), 
+		degradable:false,
+		uploadUrl:uploadUrl, 
+		uploadOnChange:false, 
+		selectMultipleFiles:false,
+		fileMask:fileMask,
+		isDebug:false,
+		postData:{action:"project", op:"uploadfile",path:item['path']}
+
+	});
+	
+	dojo.connect(f0, "onChange", function(data){
+		//console.log("DATA:", data);
+		dojo.forEach(data, function(d){
+			//file.type no workie from flash selection (Mac?)
+			dojo.byId("fileToUpload").value = d.name+" "+Math.ceil(d.size*.001)+"kb \n";
+		});
+	});
+
+	dojo.connect(f0, "onProgress", function(data){
+		//console.warn("onProgress", data);
+		dojo.byId("fileToUpload").value = "";
+		dojo.forEach(data, function(d){
+			dojo.byId("fileToUpload").value += "("+d.percent+"%) "+d.name+" \n";
+			
+		});
+	});
+
+	dojo.connect(f0, "onComplete", function(data){
+		//console.warn("onComplete", data);
+		refreshTree();
+		dojo.byId("fileToUpload").value = '';
+		dijit.byId('AlertShow6').hide();
+	});
+	uploadFile = function(){
+		//console.log("doUpload");
+		
+		dojo.byId("fileToUpload").innerHTML = "uploading...";
+		f0.upload();
+	}
+}
