@@ -287,14 +287,12 @@
  </div>
  
     <!-- Alert3 div -->
- <div dojoType="dijit.Dialog" id="AlertShow3" title="文件属性"
-    execute="alert('submitted w/args:\n' + dojo.toJson(arguments[0], true));">
+ <div dojoType="dijit.Dialog" id="AlertShow3" title="文件属性">
    <div id="AlertCon3" style="width:240px;height:120px;"></div>
  </div>
  
    <!-- Alert4 div -->
- <div dojoType="dijit.Dialog" id="AlertShow4" title="新文件夹"
-    execute="alert('submitted w/args:\n' + dojo.toJson(arguments[0], true));">
+ <div dojoType="dijit.Dialog" id="AlertShow4" title="新文件夹">
    <div id="AlertCon4" style="width:240px;height:80px;">
    输入新文件夹名称: <input dojoType="dijit.form.ValidationTextBox" required="true" type="text" name="newfolder" id="newfolder" value="" regExp="^[A-Za-z_]{1}[A-Za-z0-9_]*" invalidMessage="变量名不符合规则:^[A-Za-z_]{1}[A-Za-z0-9_]*">
    <input type="hidden" id="under_which_dir" name="under_which_dir" value="">
@@ -303,8 +301,7 @@
    </div>
  </div>
     <!-- Alert5 div -->
- <div dojoType="dijit.Dialog" id="AlertShow5" title="文件重命名"
-    execute="alert('submitted w/args:\n' + dojo.toJson(arguments[0], true));">
+ <div dojoType="dijit.Dialog" id="AlertShow5" title="文件重命名">
    <div id="AlertCon4" style="width:240px;height:80px;">
    输入新名称: <input dojoType="dijit.form.ValidationTextBox" required="true" type="text" name="newfilename" id="newfilename" value="" regExp="^[A-Za-z_]{1}[A-Za-z0-9_\.]*" invalidMessage="变量名不符合规则:^[A-Za-z_]{1}[A-Za-z0-9_\.]*">
    <input type="hidden" id="old_file_id" name="old_file_id" value="">
@@ -314,8 +311,7 @@
  </div>
  
      <!-- Alert6 div -->
- <div dojoType="dijit.Dialog" id="AlertShow6" title="文件上传"
-    execute="alert('submitted w/args:\n' + dojo.toJson(arguments[0], true));">
+ <div dojoType="dijit.Dialog" id="AlertShow6" title="文件上传">
    <div id="AlertCon4" style="width:240px;height:80px;">
   
 	<input dojoType="dijit.form.TextBox" id="fileToUpload" style="width:150px">
