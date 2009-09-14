@@ -290,9 +290,9 @@ function error_live_handler($errno, $errmsg, $filename, $linenum, $vars)
 		 	error_log($crcno."\n", 3, LOG_FILE_DIR."/ignore_repeated_errors.txt");
 		 	
 		 	// log error backtrace in database
-		 	if(isset($GLOBALS ['gDataBase'] ['setting'])){
+		 	if(isset($GLOBALS ['gDataBase'] ['db_setting.db3'])){
 		 		if(!class_exists("Database")) require_once("Libs/Database.class.php");
-			 	$db = Model::dbConnect($GLOBALS ['gDataBase'] ['setting']);
+			 	$db = Model::dbConnect($GLOBALS ['gDataBase'] ['db_setting.db3']);
 			 	if(!$db->getOne("select error_no from errorlog where error_no='$errNum'")){
 			 		$db->execute("insert into errorlog (error_no,linenum,filename,errmsg,backtrace_msg) values ('$errNum','$linenum','$filename','".htmlspecialchars($errmsg,ENT_QUOTES)."','".htmlspecialchars($backtrace_msg,ENT_QUOTES)."')");
 			 	}
