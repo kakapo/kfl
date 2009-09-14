@@ -1,0 +1,35 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+<table style="width:98%;margin:10px">
+		<thead>
+		<tr >
+		<td style="border-bottom:1px solid #ccc;width:400px;background-color:#eee">名称</td>
+		
+		<td style="border-bottom:1px solid #ccc;width:100px;background-color:#eee">大小</td>
+		<td style="border-bottom:1px solid #ccc;width:100px;background-color:#eee">类型</td>
+		<td style="border-bottom:1px solid #ccc;width:200px;background-color:#eee">修改日期</td>
+		<td style="border-bottom:1px solid #ccc;width:150px;background-color:#eee">操作</td>
+		</tr>
+		</thead>
+		<tbody>
+		<?php if(isset($folders)){ foreach($folders as $k=>$item){?>
+		<tr id="row_<?=$item['id']?>" <?if($k%2) echo 'style="background-color:#efefef"'?> >
+		<td><? if($item['type']=='dir') {?><span class="dijitFolderClosed" style="padding-left:16px;"></span>
+		<? }else{?><span class="dijitLeaf" style="padding-left:16px;padding-bottom:2px;"></span><? }?>
+		<span style="cursor:pointer" ondblclick='viewFile("<?=$item['id']?>","<?=$item['name']?>","<?=$item['path']?>");'><?=$item['name']?></span></td>
+		<td><? if($item['type']=='file') echo $item['size'];?></td>
+		<td><? if($item['type']=='dir') echo "目录";if($item['type']=='file') echo "文件";?></td>
+		<td><?=$item['time']?></td>
+		<td><button dojoType="dijit.form.Button" onclick='viewFile("<?=$item['id']?>","<?=$item['name']?>","<?=$item['path']?>");'>浏览</button></td>
+		</tr>
+		<? }}?>
+		</tbody>
+		
+	</table>
+</body>
+</html>

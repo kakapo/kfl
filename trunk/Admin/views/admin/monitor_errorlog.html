@@ -43,7 +43,7 @@
 		</thead>
 		<tbody >
 		<?php if(isset($items['records'])){ foreach($items['records'] as $k=>$item){?>
-		<tr id="row_<?=$item['error_no']?>" <?if($k%2) echo 'style="background-color:#efefef"'?>
+		<tr id="row_<?=$item['error_no']?>" <?if($k%2) echo 'style="background-color:#efefef"'?> >
 		<td><?=$item['error_no']?></td>
 		<td><?=$item['errmsg']?></td>
 		<td><?=$item['filename']?></td>
