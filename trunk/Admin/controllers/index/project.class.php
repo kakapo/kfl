@@ -339,6 +339,7 @@ class project {
 	function view_dumpfile(){
 		global $tpl;
 		$file = decrypt($_GET['dumpfile']);
+		
 		$types = array("php",'html','htm','js','css','txt','csv','json','bak','cache','xml','htaccess');
 		$img_types = array('jpg','jpeg','gif','png');
 		if(is_file($file)){
@@ -353,15 +354,17 @@ class project {
 				echo '<img src="/index.php/project/image/'.urlencode($_GET['dumpfile']).'">';				
 			}
 			die;
-		}elseif(is_dir($file)){
+		}elseif($file!='' && is_dir($file)){
+			echo 123;
 			$tpl->assign("folders",list_dir($file));
 		}
 		
 	}
 	
 	function view_image(){
-			
+		//echo $_GET['image'];
 		$file = decrypt(urldecode($_GET['image']));
+		//echo $file;
 		if(is_file($file)){
 			$size = getimagesize($file);		
 			$fp = fopen($file, "rb");
