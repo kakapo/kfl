@@ -59,27 +59,27 @@ function size_unit_convert($size,$tounit='auto')
 	{
 		if(($convert_size = $size_bit) < 1024)
 		{
-			return round($convert_size,2).'B';
+			return round($convert_size,2).' Bytes';
 		}
 
 		if(($convert_size = $size_bit/1024) < 1024)
 		{
-			return round($convert_size,2).'KB';
+			return round($convert_size,2).' KB';
 		}
 
 		if(($convert_size = $size_bit/1048576) < 1024)
 		{
-			return round($convert_size,2).'MB';
+			return round($convert_size,2).' MB';
 		}
 
 		if(($convert_size = $size_bit/1073741824) < 1024)
 		{
-			return round($convert_size,2).'GB';
+			return round($convert_size,2).' GB';
 		}
 
 		if(($convert_size = $size_bit/1099511627776) < 1024)
 		{
-			return round($convert_size).'TB';
+			return round($convert_size).' TB';
 		}
 	}
 	else
@@ -193,16 +193,16 @@ function list_dir($path,$type = 'all')
 		//if($filetype == 'dir') list_dir($dir->path,$list[$i]);
 		if(($type == 'file' && $filetype == 'dir') && $type != 'all'){	continue;	}
 		if(($type == 'dir' && $filetype == 'file') && $type != 'all'){	continue;	}
-		$list[$i]['id'] = $filename;
+		$list[$i]['id'] = $filename.uniqid("_");
 		$list[$i]['type'] = $filetype;
-		$list[$i]['name'] = $filename;
+		$list[$i]['name'] = mb_convert_encoding($filename, "UTF-8", "GBK");
 		$list[$i]['basename'] = $pathinfo['basename'];
 		$list[$i]['extension'] = isset($pathinfo['extension'])?$pathinfo['extension']:'';
-		$list[$i]['time'] = $fileinfo['mtime'];
+		$list[$i]['time'] = date ("Y-m-d H:i:s", $fileinfo['mtime']);
 		$list[$i]['size'] = size_unit_convert($fileinfo['size']);
 		if($filetype=='dir') $list[$i]['folders'] = array(array("_reference"=>''));
 		$list[$i]['dir'] = $dir->path;
-		$list[$i]['path'] = $dir->path.'/'.$filename;
+		$list[$i]['path'] = urlencode(encrypt($dir->path.'/'.$filename));
 
 		$i++;
 	}
