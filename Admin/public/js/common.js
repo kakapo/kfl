@@ -1,5 +1,8 @@
 var selected_copy_file='';
-
+String.prototype.Trim = function() 
+{ 
+	return this.replace(/(^\s*)|(\s*$)/g, ""); 
+} 
 function myAlert(text){
 	dojo.byId("AlertCon2").innerHTML = text; 		  
     dijit.byId("AlertShow2").show();   
@@ -359,7 +362,7 @@ function getText(pathinfo,title) {
      var block = document.getElementById('target');
      block.appendChild(tree.domNode);
      tree.startup();
-     tree.connect(tree, "onClick", function(item){	      	    	  
+     tree.connect(tree, "onDblClick", function(item){	      	    	  
     	 var _id = item.id.toString();//treeStore.getValue(item, "id");
     	 var title = item.name.toString();//treeStore.getValue(item, "name");
     	 var path = item.path.toString();//treeStore.getValue(item, "path");
@@ -383,6 +386,7 @@ function getText(pathinfo,title) {
           // contrived condition: if this tree node doesn't have any children, disable all of the menu items
           menu.getChildren().forEach(function(i) {
           	// 
+        	  i.label = i.label.Trim();
           	 if(tn.item.id=='root' ){
              if( i.label=='打开' ||  i.label=='复制' || i.label=='删除' ||  i.label=='下载'||  i.label=='重命名' || i.label=='属性') i.attr('disabled', true);
              	if(i.label=='新建文件夹' || i.label=='上传文件') {            		
@@ -530,18 +534,21 @@ function getText(pathinfo,title) {
  }
  function getItemById(id){
  	//alert(typeof(id)+id.length);
- 	var item=[];
+ 	var item=new Array();
+ 	
  	if(id=='root') {
  		item['path'] = gCurAppDir;
  		return item;
  	}
+ 
 	treeStore.fetch({
 	     query: {
 	         'id': id
 	     },  
 	     onComplete: function(items, request){
-			item = items[0];
-	    	 //alert(items.length);
+			
+	    	 item = items[0];
+	    	
 	     },
 	     onError: function (error, request) {
 	         alert("lookup failed.");
@@ -551,15 +558,18 @@ function getText(pathinfo,title) {
 	         deep: true
 	     }
 	 });
-	
+	//alert("item+"+typeof(item));
 	return item;
  }
  function viewFile(id,title,path){
-	if(!title && !path){
-		item = getItemById(id);
+	//alert("t:"+title+';tof:'+typeof(title));
+	 //alert("t:"+path+';tof:'+typeof(path));
+	if(title==undefined && path==undefined){
+		var item = getItemById(id);		
 		title = item['name'];
 	    path = item['path'];	 
 	}
+
 	 if(!dojo.byId(id)){
 			var pane = new dijit.layout.ContentPane({id:id, title:title,closable:true });
 			var tabs = dijit.byId("maindiv");
@@ -573,7 +583,7 @@ function getText(pathinfo,title) {
 	}
  }
  function fileInfo(id){
- 	item = getItemById(id);
+ 	var item = getItemById(id);
  	var info='';
 	 info += '位置:'+unescape(item['dir'])+"<br>";
 	 info += '大小:'+item['size']+"<br>";
@@ -582,11 +592,11 @@ function getText(pathinfo,title) {
 	dijit.byId("AlertShow3").show();   
  }
   function downloadFile(id){
-  	item = getItemById(id);
+  	var item = getItemById(id);
   	window.open(gSiteUrl+"/index.php/project/download/path/"+item['path']);
   }
   function deleteFile(id){
-  	item = getItemById(id);
+  	var item = getItemById(id);
  	raiseQueryDialog("确认要删除吗？", "是否确定要删除'"+item['name']+"'？所有数据将丢失并且无法恢复。<br>", 		function(arg){
  		
 	 	doPost(gSiteUrl+"/index.php","action=project&op=deletefile&file="+item['path'],'',function(data)	{ 
@@ -598,12 +608,13 @@ function getText(pathinfo,title) {
  }
  
  function copyFile(id){
- 	item = getItemById(id);
+ 	var item = getItemById(id);
  	selected_copy_file = item['path'];
  }
  function pasteFile(id){
- 	item = getItemById(id);
- 	doPost(gSiteUrl+"/index.php","action=project&op=pastefile&file="+selected_copy_file+"&todir="+item['path'],'',function(data)	{ 
+ 	var item = getItemById(id);
+ 	
+ 	doPost(gSiteUrl+"/index.php","action=project&op=pastefile&id="+id+"&file="+selected_copy_file+"&todir="+item['path'],'',function(data)	{ 
  				myAlert(data.m);
 				if(data.s==200) refreshTree();
 	});
@@ -616,7 +627,7 @@ function getText(pathinfo,title) {
     if(!reCat.test(newfolder)) {
     	return;
     }
- 	item = getItemById(id);
+ 	var item = getItemById(id);
  	doPost(gSiteUrl+"/index.php","action=project&op=newfolder&id="+id+"&newfolder="+newfolder+"&todir="+item['path'],'',function(data){ 
  		
  				myAlert(data.m);
@@ -635,7 +646,7 @@ function getText(pathinfo,title) {
     if(!reCat.test(newfilename)) {
     	return;
     }
- 	item = getItemById(id);
+ 	var item = getItemById(id);
  	doPost(gSiteUrl+"/index.php","action=project&op=renamefile&newfilename="+newfilename+"&oldfile="+item['path'],'',function(data){ 
  		
  				myAlert(data.m);
@@ -653,15 +664,14 @@ var fileMask = [
 	["Php File", 	"*.php"],
 	["Js File", 	"*.js"],
 	["Css File", 	"*.css"],
-	["HTML File", 	"*.html"],
 	["Jpeg File", 	"*.jpg;*.jpeg"],
 	["GIF File", 	"*.gif"],
 	["PNG File", 	"*.png"],
-	["All Images", 	"*.jpg;*.jpeg;*.gif;*.png"]
+	["All Images", 	"*.jpg;*.jpeg;*.gif;*.png;*.php;*.js;*.css;*.htm;*.html"]
 ];
 function prepareUpload(id){
 	dijit.byId('AlertShow6').show();
-	item = getItemById(id);
+	var item = getItemById(id);
 	var f0 = new dojox.form.FileUploader({
 		button:dijit.byId("btn0"), 
 		degradable:false,
@@ -670,12 +680,12 @@ function prepareUpload(id){
 		selectMultipleFiles:false,
 		fileMask:fileMask,
 		isDebug:false,
-		postData:{action:"project", op:"uploadfile",path:item['path']}
+		postData:{action:"project", op:"uploadfile",id:id,path:item['path']}
 
 	});
 	
 	dojo.connect(f0, "onChange", function(data){
-		//console.log("DATA:", data);
+		console.log("DATA:", data);
 		dojo.forEach(data, function(d){
 			//file.type no workie from flash selection (Mac?)
 			dojo.byId("fileToUpload").value = d.name+" "+Math.ceil(d.size*.001)+"kb \n";
@@ -683,8 +693,8 @@ function prepareUpload(id){
 	});
 
 	dojo.connect(f0, "onProgress", function(data){
-		//console.warn("onProgress", data);
-		dojo.byId("fileToUpload").value = "";
+		console.warn("onProgress", data);
+		
 		dojo.forEach(data, function(d){
 			dojo.byId("fileToUpload").value += "("+d.percent+"%) "+d.name+" \n";
 			
@@ -692,15 +702,14 @@ function prepareUpload(id){
 	});
 
 	dojo.connect(f0, "onComplete", function(data){
-		//console.warn("onComplete", data);
+		console.warn("onComplete", data);
 		refreshTree();
 		dojo.byId("fileToUpload").value = '';
 		dijit.byId('AlertShow6').hide();
 	});
 	uploadFile = function(){
-		//console.log("doUpload");
-		
-		dojo.byId("fileToUpload").innerHTML = "uploading...";
+		console.log("doUpload");		
+		dojo.byId("fileToUpload").value = "uploading...";
 		f0.upload();
 	}
 }

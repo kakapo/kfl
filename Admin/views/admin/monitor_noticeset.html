@@ -51,6 +51,12 @@
 <tbody id="notice_table">
 
 <tr id="row_sessionHandle">
+<td>sendemail<input type="hidden" name="name_sendemail" value="sendemail"></td>
+<td><input dojoType="dijit.form.ValidationTextBox" required="true" regExp="[0|1]" invalidMessage="变量名不符合规则:[0|1]" type="text" name="valu_sendemail" id="valu_sendemail" value="<?=$sets['sendemail']?>"></td>
+<td style="font-size:12px;color:#666">是否发送邮件</td>
+</tr>
+
+<tr id="row_sessionHandle">
 <td>subject<input type="hidden" name="name_subject" value="subject"></td>
 <td><input dojoType="dijit.form.ValidationTextBox" required="true" type="text" name="valu_subject" id="valu_subject" value="<?=$sets['subject']?>"></td>
 <td style="font-size:12px;color:#666">通知主题</td>

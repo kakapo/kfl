@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////
 //					Application	Settings			//
 //////////////////////////////////////////////////////
-	define("APP_STATUS", "dev");
+	define("APP_STATUS", "online");
 	define("APP_LANG", "ch");
 	define("APP_TEMP_DIR", APP_DIR."/tmp/");
 	define("KFL_DIR", "D:/GoogleCodeKFL/KFL");
@@ -121,7 +121,7 @@ $GLOBALS ["gMemcacheServer"]["192.168.1.5:11213"]);;
 //////////////////////////////////////////////////////
 //				Log   Settings	                //
 //////////////////////////////////////////////////////		
-		
+	$GLOBALS['gLog']['sendemail'] = 1;	
 	$GLOBALS ["gLog"] ["subject"] =  "应用错误报告";
 	$GLOBALS ["gLog"] ["receiver"] =  "zswu@tsong.cn";
 	
