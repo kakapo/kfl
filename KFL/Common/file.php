@@ -202,7 +202,7 @@ function list_dir($path,$type = 'all')
 		$list[$i]['size'] = size_unit_convert($fileinfo['size']);
 		if($filetype=='dir') $list[$i]['folders'] = array(array("_reference"=>''));
 		$list[$i]['dir'] = $dir->path;
-		$list[$i]['path'] = urlencode(encrypt($dir->path.'/'.$filename));
+		$list[$i]['path'] = $dir->path.'/'.$filename;
 
 		$i++;
 	}
@@ -240,8 +240,8 @@ function list_all_dir($path,&$tree){
 		
 		$t['basename'] = $pathinfo['basename'];
 		$t['extension'] = isset($pathinfo['extension'])?$pathinfo['extension']:'';
-		$t['time'] = date ("Y-m-d H:i:s.", $fileinfo['mtime']);
-		$t['size'] = size_unit_convert($fileinfo['size']);	
+		$t['time'] = date ("Y-m-d H:i:s", $fileinfo['mtime']);
+		$t['size'] = $fileinfo['size'];	
 		$t['dir'] = urlencode($dir->path);
 		
 		$tree[$i] = $t;

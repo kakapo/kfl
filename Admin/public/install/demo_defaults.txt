@@ -1,8 +1,10 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title><?=$title?></title>
+<meta http-equiv="Content-Type" content="text/html; charset=<?=$web_charset?>">
+<meta name="keywords" contect="<?=$web_keyword?>">
+<meta name="description" contect="<?=$web_description?>">
+<title><?=$web_title?></title>
 </head>
 <body>
 <?=$name?>

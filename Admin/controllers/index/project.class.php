@@ -338,8 +338,8 @@ class project {
 	
 	function view_dumpfile(){
 		global $tpl;
-		$file = decrypt($_GET['dumpfile']);
-		
+		$file = decrypt($_GET['file']);
+		echo $_GET['dumpfile'];
 		$types = array("php",'html','htm','js','css','txt','csv','json','bak','cache','xml','htaccess');
 		$img_types = array('jpg','jpeg','gif','png');
 		if(is_file($file)){
@@ -351,20 +351,25 @@ class project {
 			}
 			if(in_array($type,$img_types)){
 				header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
-				echo '<img src="/index.php/project/image/'.urlencode($_GET['dumpfile']).'">';				
+				echo '<img src="/index.php/project/image?img='.urlencode($_GET['file']).'">';				
 			}
 			die;
 		}elseif($file!='' && is_dir($file)){
-			echo 123;
-			$tpl->assign("folders",list_dir($file));
+			$arr = list_dir($file);
+			foreach ($arr as $k=>$v){
+				$v['path'] = urlencode(encrypt($v['path']));
+				$arr[$k] = $v;
+			}
+			$tpl->assign("folders",$arr);
 		}
 		
 	}
 	
 	function view_image(){
 		//echo $_GET['image'];
-		$file = decrypt(urldecode($_GET['image']));
-		//echo $file;
+	
+		$file = decrypt(urldecode($_GET['img']));
+		//echo $file;die;
 		if(is_file($file)){
 			$size = getimagesize($file);		
 			$fp = fopen($file, "rb");
@@ -519,6 +524,63 @@ class project {
 				die;
 			}	
 		}
+	}
+	
+	function view_stats(){
+		$app_name = $_GET['stats'];
+		
+		$app_info = $this->mProjectObj->getAppByName($app_name);
+		
+		list_all_dir($app_info['app_dir'],$tree);
+		$this->readfolder($tree,$return);
+		
+		$arr = array('sizes'=>0,"folders"=>0,'files'=>0);
+		foreach ($return as $v){
+			$arr['sizes'] += $v['size'];
+			if($v['filetype']=='dir') $arr['folders']++;
+			if($v['filetype']=='file') $arr['files']++;
+		}
+		$arr['sizes'] = size_unit_convert($arr['sizes']);
+		json_output($arr);
+		
+	}
+	function op_exportapp(){
+		$app_name = $_POST['app_name'];
+		$app_info = $this->mProjectObj->getAppByName($app_name);
+		$zip = new ZipArchive();
+		$filename = APP_TEMP_DIR."$app_name.zip";
+		
+		if ($zip->open($filename, ZIPARCHIVE::CREATE)!==TRUE) {
+			trigger_error("cannot open <$filename>\n",E_USER_ERROR);
+		}
+		list_all_dir($app_info['app_dir'],$tree);
+		
+		$this->readfolder($tree,$return);
+		$len = strlen($app_info['app_dir']);
+		foreach ($return as $v){
+		
+			if($v['filetype'] =='file'){
+				$file = urldecode($v['dir'])."/".$v['name'];
+				$re_file = substr($file,$len+1);
+				$zip->addFile($file,$re_file);
+			}
+			
+		}
+		
+		$res = $zip->numFiles;
+		$zip->close();
+		
+		if($res>0){
+			$msg['s'] = 200;
+			$msg['m'] = "成功!";
+			$msg['d'] = "$app_name.zip";	
+		}else{
+			$msg['s'] = 400;
+			$msg['m'] = "失败!";
+			$msg['d'] = 'null';	
+		}
+		json_output($msg);
+				
 	}
 }
 ?>
