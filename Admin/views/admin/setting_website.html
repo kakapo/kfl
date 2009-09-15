@@ -6,8 +6,8 @@
 
 </head>
 <body class="nihilo">
- <div dojoType="dijit.layout.AccordionContainer" style="width:300px;height:300px;float:right">
-	<div dojoType="dijit.layout.ContentPane" title="功能说明">
+<div style="width:300px;height:300px;float:right">
+<div dojoType="dijit.TitlePane" open="false" title="功能说明" >
 		<p>
 		网站信息全局变量。支持自定义变量。
 		<br><br>规则：变量命名要求符合正则表达式 ^[A-Za-z_]{1}[A-Za-z0-9_]*。
@@ -15,18 +15,19 @@
 		</p>
 			  
 	</div>
-	<div dojoType="dijit.layout.ContentPane" title="如何使用">
+	<div dojoType="dijit.TitlePane" open="false" title="如何使用">
 	<p>
 	举例：
 	<br><br>
 	<? highlight_string('<?php 
 $GLOBALS ["gSiteInfo"] ["title"] =  "欢迎访问";
-?>') ?>
-	
-	<br><br>可以在模板中直接使用$title;
-	</p>
-	</div>
+	?>') ?>
+		
+		<br><br>可以在模板中直接使用$title;
+		</p>
 </div>
+</div>
+
 <div style="height:50px;">
 	<div style="margin:10px;">位置: 配置管理 > 网站信息</div>
 	<div style="margin:10px;">
