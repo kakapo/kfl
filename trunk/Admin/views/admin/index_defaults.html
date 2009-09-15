@@ -199,7 +199,7 @@
      		<div dojoType="dijit.layout.ContentPane" title="控制面板" id="dashboard" >
           		<!-- 项目列表 start -->
           		 <div style="width:400px;" >
-	         		  <script type="dojo/method">this.mover = dojo.dnd.boxConstrainedMover({l: 0, t: 0, w: 800, h: 700}, true);</script>
+	         		  
 			          <div dojoType="dijit.TitlePane" title="所有项目" >     
 					   	<div id="projectContainer"><input id="projectSelect"></div>
 						<button dojoType="dijit.form.Button"  onClick="openProject()"> 打开 </button>  <button dojoType="dijit.form.Button"  onClick="deleteProject()"> 删除 </button>
@@ -209,7 +209,7 @@
           
           		<!-- 创建项目 start -->
 	         	<div style="width:400px;" >
-	         		  <script type="dojo/method">this.mover = dojo.dnd.boxConstrainedMover({l: 0, t: 0, w: 800, h: 700}, true);</script>
+	         		  
 			          <div dojoType="dijit.TitlePane" title="第一步：创建项目" style="margin-top:15px">     
 				        <div method="" jsid="appcreate_form" id="appcreate_form" dojoType="dijit.form.Form" action="">
 				         <input type="hidden" name="action" value="project">
@@ -230,7 +230,7 @@
 	        	 
 	        	 <!-- 项目管理 start -->
 	        	 <div style="width:400px;" >
-	         		  <script type="dojo/method">this.mover = dojo.dnd.boxConstrainedMover({l: 0, t: 0, w: 800, h: 700}, true);</script>
+	         		 
 			          <div dojoType="dijit.TitlePane" title="第二步：配置项目" style="margin-top:15px">   
 			          	<p>config.ini.php全局配置文件管理。</p>  
 					     <button dojoType="dijit.form.Button" onclick="renewConfigFile('renewconfig');">生成文件</button>
@@ -242,7 +242,7 @@
 	        	 
 	        	  <!-- 项目管理 start -->
 	        	 <div style="width:400px;" >
-	         		  <script type="dojo/method">this.mover = dojo.dnd.boxConstrainedMover({l: 0, t: 0, w: 800, h: 700}, true);</script>
+	         		  
 			          <div dojoType="dijit.TitlePane" title="第三步：开发调试" style="margin-top:15px">     
 					     
 					     <button dojoType="dijit.form.Button" onclick="getText('/monitor/errorlog','错误日志')">错误日志</button>

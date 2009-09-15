@@ -7,16 +7,16 @@
 </head>
 <body class="nihilo">
 
- <div dojoType="dijit.layout.AccordionContainer" style="width:300px;height:450px;float:right">
-	<div dojoType="dijit.layout.ContentPane" title="功能说明">
-		<p>
+ <div  style="width:300px;height:450px;float:right">
+	<div dojoType="dijit.TitlePane" open="false" title="功能说明">
+		<ul>
 		数据库访问类的缓存配置。
 		<li>1、支持本地硬盘存储，多级目录缓存</li>
 		<li>2、支持memcached分布式内存缓存</li>
-		</p>
+		</ul>
 	  
 	</div>
-	<div dojoType="dijit.layout.ContentPane" title="如何使用">
+	<div dojoType="dijit.TitlePane" open="false" title="如何使用">
 		<p>
 		影响到方法：getRow(),getOne(),getAll();
 		使用缓存举例：<br>

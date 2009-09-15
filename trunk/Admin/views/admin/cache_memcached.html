@@ -16,20 +16,20 @@
 </head>
 <body class="nihilo">
 
-	 <div dojoType="dijit.layout.AccordionContainer" style="width:300px;height:300px;float:right">
-		<div dojoType="dijit.layout.ContentPane" title="功能说明">
-			<p>
-			Memcached 内存对象缓存系统配置管理。
-			</p>
-		  
-		</div>
-		<div dojoType="dijit.layout.ContentPane" title="如何使用">
-			<p>
-	举例：
-	<br><br>
-	
- <?
- 	$p = <<<EOT
+ <div  style="width:300px;height:300px;float:right">
+	<div dojoType="dijit.TitlePane" open="false" title="功能说明">
+		<p>
+		Memcached 内存对象缓存系统配置管理。
+		</p>
+	  
+	</div>
+	<div dojoType="dijit.TitlePane" open="false" title="如何使用">
+		<p>
+举例：
+<br><br>
+
+<?
+	$p = <<<EOT
 <?php  
 $ GLOBALS["gMemcacheServer"]["192.168.1.5:11213"] = 
 array (
@@ -44,7 +44,7 @@ EOT;
 	<br><br>
 	</p>
 		</div>
-	</div>
+</div>
 	
 	<div style="margin:10px;">位置: 缓存管理  > Memcached设置</div>
 	<div style="margin:10px;">
