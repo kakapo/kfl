@@ -34,7 +34,7 @@ class monitor{
 		}
 		$con['order'] = "id";
 
-		$items = $this->mMonitorObj->getErrorLog($con,4);
+		$items = $this->mMonitorObj->getErrorLog($con,10);
 		
 		$tpl->assign('items',$items);
 		$tpl->assign('error_no',$error_no);

@@ -482,6 +482,25 @@ function getText(pathinfo,title) {
  		
  	});
  }
+function statsApp(){
+	if(gCurAppName=='') return myAlert('请选择项目');
+ 	doGet(gSiteUrl+"/index.php/project/stats/"+gCurAppName,'',function(data, ioargs){
+ 		var info = "文件总大小:"+data.sizes+"<br>";
+ 			info += "文件夹数:"+data.folders+"<br>";
+ 			info += "文件数:"+data.files+"<br>";
+ 		dojo.byId("AlertCon3").innerHTML = info; 		  
+ 		dijit.byId("AlertShow3").show();  	
+     });
+	
+}
+function exportApp(){
+	if(gCurAppName=='') return myAlert('请选择项目');
+	doPost(gSiteUrl+"/index.php","action=project&op=exportapp&app_name="+gCurAppName,'',function(data){ 
+			myAlert(data.m);
+			window.open(gSiteUrl+"/tmp/"+data.d);
+			
+	});
+}
  function raiseQueryDialog(title, question, callbackFn) {
 
         var errorDialog = new dijit.Dialog({ id: 'queryDialog', title: title });
@@ -578,7 +597,7 @@ function getText(pathinfo,title) {
 			pane.attr("onDownloadError", function(e){
 				alert(e);
 			});
-			pane.attr("href", gSiteUrl+"/index.php/project/dumpfile/"+path);
+			pane.attr("href", gSiteUrl+"/index.php/project/dumpfile?file="+path);
 
 	}
  }
@@ -586,7 +605,7 @@ function getText(pathinfo,title) {
  	var item = getItemById(id);
  	var info='';
 	 info += '位置:'+unescape(item['dir'])+"<br>";
-	 info += '大小:'+item['size']+"<br>";
+	 info += '大小:'+item['size']+" Bytes<br>";
 	 info += '最后修改:'+item['time']; 
 	dojo.byId("AlertCon3").innerHTML = info; 		  
 	dijit.byId("AlertShow3").show();   

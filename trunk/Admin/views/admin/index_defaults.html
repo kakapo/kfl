@@ -165,7 +165,21 @@
 			                        <div dojoType="dijit.MenuItem" onClick="getText('/storage/userfile','用户文件')">用户文件</div>
 			                        <div dojoType="dijit.MenuItem" onClick="getText('/storage/upload','上传数据')">上传数据</div>
 			                </div>
-			        </div>			        	     
+			        </div>	
+			        <div dojoType="dijit.PopupMenuBarItem">
+			                <span>数据库管理</span>
+			                <div dojoType="dijit.Menu" >
+			                        <div dojoType="dijit.MenuItem" onClick="getText('/database/table','库表结构')">库表结构</div>
+			                        <div dojoType="dijit.MenuItem" onClick="getText('/database/sqlquery','SQL查询')">SQL查询</div>
+			                </div>
+			        </div>	
+			        <div dojoType="dijit.PopupMenuBarItem">
+			                <span>工具管理</span>
+			                <div dojoType="dijit.Menu">
+			                        <div dojoType="dijit.MenuItem" onClick="getText('/tool/ftp','FTP客户端')">FTP客户端</div>
+			                        
+			                </div>
+			        </div>	        	     
 			</div>
 	 </div>
 	 <!-- top end -->
@@ -182,6 +196,8 @@
 						<li>支持分布式Memcached服务的监控管理。</li>
 						<li>支持Session会话数据同步和在线用户统计。</li>
 						<li>支持错误日志管理和应用服务监控。</li>
+						<li>支持项目文件系统管理。</li>				
+						<li>支持数据库简单管理。</li>				
 						<li>集成用户数据文件的分布式存储服务。</li>				
 						</ul>	  
 			</div>
@@ -228,7 +244,7 @@
 	        	 </div>
 	        	 <!-- 创建项目 end -->
 	        	 
-	        	 <!-- 项目管理 start -->
+	        	 <!-- 配置项目 start -->
 	        	 <div style="width:400px;" >
 	         		 
 			          <div dojoType="dijit.TitlePane" title="第二步：配置项目" style="margin-top:15px">   
@@ -238,18 +254,32 @@
 					     <button dojoType="dijit.form.Button" onclick="restoreConfigFile();">恢复文件</button>
 					  </div>
 	        	 </div>
-	        	 <!-- 项目管理 end -->
+	        	 <!-- 配置项目 end -->
 	        	 
-	        	  <!-- 项目管理 start -->
+	        	  <!-- 开发调试 start -->
 	        	 <div style="width:400px;" >
 	         		  
 			          <div dojoType="dijit.TitlePane" title="第三步：开发调试" style="margin-top:15px">     
 					     
 					     <button dojoType="dijit.form.Button" onclick="getText('/monitor/errorlog','错误日志')">错误日志</button>
 					     <button dojoType="dijit.form.Button" onclick="visitApp('<?=HOST_URL?>');">访问项目</button>
+					     <button dojoType="dijit.form.Button" onclick="statsApp();">项目统计</button>
+					     <button dojoType="dijit.form.Button" onclick="exportApp();">项目导出</button>
 					  </div>
 	        	 </div>
-	        	 <!-- 项目管理 end -->
+	        	 <!-- 开发调试 end -->
+	        	 
+	        	  <!-- changelog Note start -->
+	        	 <div style="width:400px;height:200px;position:absolute;left:440px;top:0px" >     		  
+			          <div style="margin-top:5px" dojoType="dijit.TitlePane" title="系统更新" href="<?=$www_site_url?>/changelog.txt">	    </div>
+	        	 </div>
+	        	 <!-- changelog Note end -->
+	        	 
+	        	   <!-- todo note start -->
+	        	 <div style="width:400px;position:absolute;left:440px;top:100px;" >     		  
+			          <div dojoType="dijit.TitlePane" title="计划开发" href="<?=$www_site_url?>/todo.txt">	    </div>
+	        	 </div>
+	        	 <!-- todo Note end -->
           </div>
           
      </div>
