@@ -54,6 +54,21 @@ class monitor{
 		}
 		json_output($msg);
 	}
+	function op_deleventlog(){
+		$eid = $_POST['eid'];
+		
+		$res =$this->mMonitorObj->deleteEventLog($eid);
+		if($res){
+			$msg['s'] = 200;
+			$msg['m'] = "删除成功!";
+			$msg['d'] = 'null';	
+		}else{
+			$msg['s'] = 400;
+			$msg['m'] = "删除失败!";
+			$msg['d'] = 'null';	
+		}
+		json_output($msg);
+	}
 	function view_viewerrorlog(){
 		$msg = $this->mMonitorObj->getErrorLogById($_GET['error_no']);
 		echo htmlspecialchars_decode($msg,ENT_QUOTES);
@@ -61,13 +76,15 @@ class monitor{
 		die;
 	}
 	function view_eventlog(){
-		try{
-		$handle = fopen("c:\\data\\info.txt",'r');
-		}catch(Exception  $e){
-			var_dump($e);
-		}
-		var_dump($handle);
-		die;
+		global $tpl;
+		
+		$con['order'] = "eid";
+
+		$items = $this->mMonitorObj->getEventLog($con,10);
+		
+		$tpl->assign('items',$items);
+		
+		
 	}
 }
 ?>

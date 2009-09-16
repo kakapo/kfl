@@ -544,6 +544,7 @@ class project {
 		json_output($arr);
 		
 	}
+	
 	function op_exportapp(){
 		$app_name = $_POST['app_name'];
 		$app_info = $this->mProjectObj->getAppByName($app_name);
@@ -581,6 +582,43 @@ class project {
 		}
 		json_output($msg);
 				
+	}
+	
+	function op_importapp(){
+		$app_name = $_POST['app_name'];
+		$app_info = $this->mProjectObj->getAppByName($app_name);
+		$fieldName = "flashUploadFiles";//Filedata";
+		if( isset($_FILES[$fieldName])){
+		
+			$returnFlashdata = true; //for dev
+			$tmp_zip_file = $app_info['app_dir']."/tmp/" . addslashes($_FILES[$fieldName]['name']);
+			$m = move_uploaded_file($_FILES[$fieldName]['tmp_name'], $tmp_zip_file );
+			if($m){
+				$zip = new ZipArchive();
+				if ($zip->open($tmp_zip_file) === TRUE) {
+				    $zip->extractTo($app_info['app_dir']);
+				    $zip->close();
+				} 
+			}
+			
+			$name = urlencode($_FILES[$fieldName]['name']);
+			$file = $app_info['app_dir']."/tmp/". $name;
+			
+			$width=0;
+			$height=0;
+			
+			$type = strtolower(substr(strrchr($file,"."),1));
+			
+			$data = '';
+			$data .='file='.$file.',name='.$name.',width='.$width.',height='.$height.',type='.$type;
+			if($returnFlashdata){	
+			
+				echo($data);
+				
+				die;
+			}	
+		}
+	
 	}
 }
 ?>
