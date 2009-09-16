@@ -339,7 +339,7 @@ class project {
 	function view_dumpfile(){
 		global $tpl;
 		$file = decrypt($_GET['file']);
-		echo $_GET['dumpfile'];
+		//echo $_GET['file'];
 		$types = array("php",'html','htm','js','css','txt','csv','json','bak','cache','xml','htaccess');
 		$img_types = array('jpg','jpeg','gif','png');
 		if(is_file($file)){
@@ -366,9 +366,9 @@ class project {
 	}
 	
 	function view_image(){
-		//echo $_GET['image'];
+		//echo $_GET['img'];
 	
-		$file = decrypt(urldecode($_GET['img']));
+		$file = decrypt($_GET['img']);
 		//echo $file;die;
 		if(is_file($file)){
 			$size = getimagesize($file);		
