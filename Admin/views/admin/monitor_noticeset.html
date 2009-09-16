@@ -72,6 +72,23 @@ style="width:210px;height:200px;" required="true"><?=$sets['receiver']?></textar
 <td style="font-size:12px;color:#666">接收邮箱</td>
 </tr>
 
+<tr id="row_maxExecTime">
+<td>maxExecTime<input type="hidden" name="name_maxExecTime" value="maxExecTime"></td>
+<td>
+<input name="valu_maxExecTime" id="valu_maxExecTime"  dojoType="dijit.form.ValidationTextBox"
+ required="true" regExp="[0-9\.]+" invalidMessage="变量名不符合规则:[0-9\.]+" value="<?=$sets['maxExecTime']?>">
+</td>
+<td style="font-size:12px;color:#666">页面最大执行时间</td>
+</tr>
+
+<tr id="row_maxMemUsed">
+<td>maxMemUsed<input type="hidden" name="name_maxMemUsed" value="maxMemUsed"></td>
+<td>
+<input name="valu_maxMemUsed" id="valu_maxMemUsed"  dojoType="dijit.form.ValidationTextBox"
+required="true" regExp="[0-9\.]+" invalidMessage="变量名不符合规则:[0-9\.]+" value="<?=$sets['maxMemUsed']?>">
+</td>
+<td style="font-size:12px;color:#666">页面最大使用内存</td>
+</tr>
 
 </tbody>
 <tfoot>
