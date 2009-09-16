@@ -517,7 +517,7 @@ function statsApp(){
 function exportApp(){
 	if(gCurAppName=='') return myAlert('请选择项目');
 	doPost(gSiteUrl+"/index.php","action=project&op=exportapp&app_name="+gCurAppName,'',function(data){ 
-			myAlert(data.m);
+			myAlert(data.m+"<br>如果弹出窗口被拦截，<a href='"+gSiteUrl+"/tmp/"+data.d+"'>请点击此处.</a>");
 			window.open(gSiteUrl+"/tmp/"+data.d);
 			
 	});
@@ -574,7 +574,6 @@ function exportApp(){
  	window.open(hosturl+"/"+gCurAppName);
  }
  function getItemById(id){
- 	//alert(typeof(id)+id.length);
  	var item=new Array();
  	
  	if(id=='root') {
@@ -587,9 +586,7 @@ function exportApp(){
 	         'id': id
 	     },  
 	     onComplete: function(items, request){
-			
 	    	 item = items[0];
-	    	
 	     },
 	     onError: function (error, request) {
 	         alert("lookup failed.");
@@ -603,8 +600,6 @@ function exportApp(){
 	return item;
  }
  function viewFile(id,title,path){
-	//alert("t:"+title+';tof:'+typeof(title));
-	 //alert("t:"+path+';tof:'+typeof(path));
 	if(title==undefined && path==undefined){
 		var item = getItemById(id);		
 		title = item['name'];
