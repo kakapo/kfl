@@ -55,8 +55,8 @@ class PhpTemplate
 		if(file_exists($this->template_dir."/".$template)){
 			$r = @include($this->template_dir."/".$template);
 		}else{
-			trigger_error("KFL Error: {$template} template file not exist!",E_USER_ERROR);
-			die();
+			//trigger_error("{$template} template file not exist!",E_USER_ERROR);
+			//die();
 		}
 		
 		
