@@ -85,6 +85,15 @@ if(php_sapi_name() != "cli")
 }else{
 	set_error_handler('error_debug_handler');
 }
+function exception_handler($exception) {
+  echo "Uncaught exception: " , $exception->getMessage(), "\n";
+}
+
+set_exception_handler('exception_handler');
+
+//throw new Exception('test');
+//echo "Not Executed\n";
+
 function error_debug_handler($errno, $errstr, $errfile, $errline, $context, $backtrace = null)
 {
 	$type = get_error_type($errno);
@@ -217,7 +226,7 @@ function get_misc_error_info()
 	list ( $usec, $sec ) = explode ( " ", microtime () );
 	$exec_time =  (( float ) $usec + ( float ) $sec);
 	$time_usage = $exec_time - $GLOBALS['gAppStartTime'] ;
-	$ret .= "<tr style='background-color:#fff'><td>\n\tMemory Usage</td><td>\n\t" . round(memory_get_usage()/1024,2). " k bytes</td></tr>\n";
+	$ret .= "<tr style='background-color:#fff'><td>\n\tMemory Usage</td><td>\n\t" . round(memory_get_usage()/1024,2). " KB</td></tr>\n";
 	$ret .= "<tr style='background-color:#fff'><td>\n\tTime Usage</td><td>\n\t" . $time_usage. " second</td></tr>\n";
 	$ret .= "<tr style='background-color:#fff'><td>\n\tNow</td><td>\n\t" . date("r") . "</td></tr>\n";
 	$ret .= "<tr style='background-color:#fff'><td>\n\tIP</td><td>\n\t" . getip() . "</td></tr>\n";
@@ -775,6 +784,6 @@ function curl_get_content($url){
 function json_output($arr){
 	echo json_encode($arr);
 	//echo preg_replace("#\\\u([0-9a-f]+)#ie", "iconv('UCS-2', 'UTF-8', pack('H4', '\\1'))", $code);
-	die;
+	
 }
 ?>
