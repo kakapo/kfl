@@ -10,7 +10,7 @@
 <link rel="icon" type="image/gif" href="<?=$www_site_url?>/public/image/animated_favicon1.gif">
 <!-- load the dojo toolkit base -->
 	<script type="text/javascript" src="<?=$www_site_url?>/public/js/dojotoolkit/dojo/dojo.js"
-	    djConfig="parseOnLoad:true, isDebug:false"></script>
+	    djConfig="parseOnLoad:true, isDebug:true"></script>
     <script type="text/javascript">
 
 		dojo.require("dijit.layout.BorderContainer");
@@ -166,17 +166,13 @@
 			                        <div dojoType="dijit.MenuItem" onClick="getText('/storage/upload','上传数据')">上传数据</div>
 			                </div>
 			        </div>	
+			        	
 			        <div dojoType="dijit.PopupMenuBarItem">
-			                <span>数据库管理</span>
-			                <div dojoType="dijit.Menu" >
-			                        <div dojoType="dijit.MenuItem" onClick="getText('/database/table','库表结构')">库表结构</div>
-			                        <div dojoType="dijit.MenuItem" onClick="getText('/database/sqlquery','SQL查询')">SQL查询</div>
-			                </div>
-			        </div>	
-			        <div dojoType="dijit.PopupMenuBarItem">
-			                <span>工具管理</span>
+			                <span>管理工具</span>
 			                <div dojoType="dijit.Menu">
 			                        <div dojoType="dijit.MenuItem" onClick="getText('/tool/ftp','FTP客户端')">FTP客户端</div>
+			                        <div dojoType="dijit.MenuItem" onClick="getText('/tool/mysql','MySQL客户端')">MySQL客户端</div>
+			                        <div dojoType="dijit.MenuItem" onClick="getText('/tool/sqlite','SQLite Manager')">SQLite Manager</div>
 			                        
 			                </div>
 			        </div>	        	     
@@ -244,40 +240,36 @@
 	        	 </div>
 	        	 <!-- 创建项目 end -->
 	        	 
-	        	 <!-- 配置项目 start -->
+	        	 <!-- 管理项目 start -->
 	        	 <div style="width:400px;" >
 	         		 
-			          <div dojoType="dijit.TitlePane" title="第二步：配置项目" style="margin-top:15px">   
-			          	<p>config.ini.php全局配置文件管理。</p>  
-					     <button dojoType="dijit.form.Button" onclick="renewConfigFile('renewconfig');">生成文件</button>
-					     <button dojoType="dijit.form.Button" onclick="renewConfigFile('copyconfig');">同步文件</button>
-					     <button dojoType="dijit.form.Button" onclick="restoreConfigFile();">恢复文件</button>
-					  </div>
-	        	 </div>
-	        	 <!-- 配置项目 end -->
-	        	 
-	        	  <!-- 开发调试 start -->
-	        	 <div style="width:400px;" >
-	         		  
-			          <div dojoType="dijit.TitlePane" title="第三步：开发调试" style="margin-top:15px">     
-					     
-					     <button dojoType="dijit.form.Button" onclick="getText('/monitor/errorlog','错误日志')">错误日志</button>
+			          <div dojoType="dijit.TitlePane" title="第二步：管理项目" style="margin-top:15px">   
+			          	<p>
+					     <button dojoType="dijit.form.Button" onclick="renewConfigFile('renewconfig');">生成配置</button>
+					     <button dojoType="dijit.form.Button" onclick="renewConfigFile('copyconfig');">更新配置</button>
+					     <button dojoType="dijit.form.Button" onclick="restoreConfigFile();">恢复配置</button>
 					     <button dojoType="dijit.form.Button" onclick="visitApp('<?=HOST_URL?>');">访问项目</button>
+					     </p>
+					     <p> 
+					     
+					     
 					     <button dojoType="dijit.form.Button" onclick="statsApp();">项目统计</button>
 					     <button dojoType="dijit.form.Button" onclick="exportApp();">项目导出</button>
+					     <button dojoType="dijit.form.Button" onclick="importApp();">项目导入</button>
 					  </div>
 	        	 </div>
-	        	 <!-- 开发调试 end -->
+	        	 <!-- 管理项目 end -->
+	        
 	        	 
 	        	  <!-- changelog Note start -->
-	        	 <div style="width:400px;height:200px;position:absolute;left:440px;top:0px" >     		  
+	        	 <div style="width:400px;height:400px;position:absolute;left:440px;top:0px" >     		  
 			          <div style="margin-top:5px" dojoType="dijit.TitlePane" title="系统更新" href="<?=$www_site_url?>/changelog.txt">	    </div>
 	        	 </div>
 	        	 <!-- changelog Note end -->
 	        	 
 	        	   <!-- todo note start -->
-	        	 <div style="width:400px;position:absolute;left:440px;top:100px;" >     		  
-			          <div dojoType="dijit.TitlePane" title="计划开发" href="<?=$www_site_url?>/todo.txt">	    </div>
+	        	 <div style="width:400px;position:absolute;left:440px;top:200px;" >     		  
+			          <div dojoType="dijit.TitlePane" title="计划开发" open="false" href="<?=$www_site_url?>/todo.txt">	    </div>
 	        	 </div>
 	        	 <!-- todo Note end -->
           </div>

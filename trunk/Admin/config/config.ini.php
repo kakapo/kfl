@@ -22,10 +22,10 @@
 //				Email   Settings	                //
 //////////////////////////////////////////////////////		
 		
-	$GLOBALS ["gEmail"] ["smtp_host"] =  "smtp.guodong.com";
-	$GLOBALS ["gEmail"] ["smtp_account"] =  "no-reply@guodong.com";
-	$GLOBALS ["gEmail"] ["smtp_pass"] =  "tsong-0810";
-	$GLOBALS ["gEmail"] ["smtp_from"] =  "no-reply@guodong.com";
+	$GLOBALS ["gEmail"] ["smtp_host"] =  "smtp.163.com";
+	$GLOBALS ["gEmail"] ["smtp_account"] =  "cuckoolaugh@163.com";
+	$GLOBALS ["gEmail"] ["smtp_pass"] =  "810600";
+	$GLOBALS ["gEmail"] ["smtp_from"] =  "cuckoolaugh@163.com";
 	$GLOBALS ["gEmail"] ["pop3_host"] =  "pop3.guodong.com";
 	
 //////////////////////////////////////////////////////
@@ -121,8 +121,11 @@ $GLOBALS ["gMemcacheServer"]["192.168.1.5:11213"]);;
 //////////////////////////////////////////////////////
 //				Log   Settings	                //
 //////////////////////////////////////////////////////		
-	$GLOBALS['gLog']['sendemail'] = 1;	
+	$GLOBALS ['gLog'] ['sendemail'] = 1;	
 	$GLOBALS ["gLog"] ["subject"] =  "应用错误报告";
-	$GLOBALS ["gLog"] ["receiver"] =  "zswu@tsong.cn";
+	$GLOBALS ["gLog"] ["receiver"] =  "kakapowu@gmail.com";
+	
+	$GLOBALS ['gLog'] ['maxExecTime'] = 2;
+	$GLOBALS ['gLog'] ['maxMemUsed'] = 1024*800;
 	
 ?>

@@ -277,6 +277,24 @@ function getText(pathinfo,title) {
   
    	var deferred = dojo.xhrPost(xhrArgs);
  }
+ function deleteEventLog(eid){
+ 	 var xhrArgs = {
+ 		 	url: gSiteUrl+"/index.php",
+ 	        postData: "action=monitor&op=deleventlog&eid="+eid,
+  	        handleAs: "json",
+  	        load: function(data){ 
+  		 	  myAlert(data.m);
+  	          dijit.byId("_monitor_eventlog").refresh();
+  	        },
+  	        error: function(error,ioargs){
+  	          var message = httpErrorReport(ioargs.xhr.status);
+  	          myAlert(message);
+
+  	        }
+  	      }
+   
+    	var deferred = dojo.xhrPost(xhrArgs);
+ }
  function viewErrorLog(error_no){
 	 var xhrArgs = {
 		      url: gSiteUrl+"/index.php/monitor/viewerrorlog",
@@ -298,6 +316,9 @@ function getText(pathinfo,title) {
  }
  function gotopage(page){ 
 	 dijit.byId("_monitor_errorlog").attr("href",gSiteUrl+"/index.php/monitor/errorlog/page/"+page);
+ }
+ function gotopage2(page){ 
+	 dijit.byId("_monitor_eventlog").attr("href",gSiteUrl+"/index.php/monitor/eventlog/page/"+page);
  }
  function renewConfigFile(op){
 	 if(gCurAppName=='') return myAlert('请选择项目');
@@ -501,6 +522,7 @@ function exportApp(){
 			
 	});
 }
+
  function raiseQueryDialog(title, question, callbackFn) {
 
         var errorDialog = new dijit.Dialog({ id: 'queryDialog', title: title });
@@ -677,7 +699,7 @@ function exportApp(){
 				}
 	});
  }
-var uploadUrl = gSiteUrl+"/index.php";
+
 var rmFiles = "";
 var fileMask = [
 	["Php File", 	"*.php"],
@@ -694,7 +716,7 @@ function prepareUpload(id){
 	var f0 = new dojox.form.FileUploader({
 		button:dijit.byId("btn0"), 
 		degradable:false,
-		uploadUrl:uploadUrl, 
+		uploadUrl:gSiteUrl+"/index.php", 
 		uploadOnChange:false, 
 		selectMultipleFiles:false,
 		fileMask:fileMask,
@@ -728,6 +750,51 @@ function prepareUpload(id){
 	});
 	uploadFile = function(){
 		//console.log("doUpload");		
+		dojo.byId("fileToUpload").value = "uploading...";
+		f0.upload();
+	}
+}
+function importApp(){
+	if(gCurAppName=='') return myAlert('请选择项目');
+	dijit.byId('AlertShow6').show();
+	
+	var f0 = new dojox.form.FileUploader({
+		button:dijit.byId("btn0"), 
+		degradable:false,
+		uploadUrl:gSiteUrl+"/index.php", 
+		uploadOnChange:false, 
+		selectMultipleFiles:false,
+		fileMask:[["Zip File", 	"*.zip"]],
+		isDebug:false,
+		postData:{action:"project", op:"importapp",app_name:gCurAppName}
+
+	});
+	
+	dojo.connect(f0, "onChange", function(data){
+		console.log("DATA:", data);
+		dojo.forEach(data, function(d){
+			//file.type no workie from flash selection (Mac?)
+			dojo.byId("fileToUpload").value = d.name+" "+Math.ceil(d.size*.001)+"kb \n";
+		});
+	});
+
+	dojo.connect(f0, "onProgress", function(data){
+		console.warn("onProgress", data);
+		
+		dojo.forEach(data, function(d){
+			dojo.byId("fileToUpload").value += "("+d.percent+"%) "+d.name+" \n";
+			
+		});
+	});
+
+	dojo.connect(f0, "onComplete", function(data){
+		console.warn("onComplete", data);
+		
+		dojo.byId("fileToUpload").value = '';
+		dijit.byId('AlertShow6').hide();
+	});
+	uploadFile = function(){
+		console.log("doUpload");		
 		dojo.byId("fileToUpload").value = "uploading...";
 		f0.upload();
 	}
