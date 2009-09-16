@@ -126,6 +126,6 @@ $GLOBALS ["gMemcacheServer"]["192.168.1.5:11213"]);;
 	$GLOBALS ["gLog"] ["receiver"] =  "kakapowu@gmail.com";
 	
 	$GLOBALS ['gLog'] ['maxExecTime'] = 2;
-	$GLOBALS ['gLog'] ['maxMemUsed'] = 1024*800;
+	$GLOBALS ['gLog'] ['maxMemUsed'] = 1048576;
 	
 ?>
