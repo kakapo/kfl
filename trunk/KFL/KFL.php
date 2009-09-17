@@ -32,7 +32,7 @@ if(PHP_OS=='Linux'){
 	ini_set('include_path', KFL_DIR. "/;". APP_DIR_M."/;". ini_get('include_path')); // FOR WINDOWS
 }
 require_once("Common/common.php");
-include_once("Common/file.php");
+
 /**
 * @abstract KFL: Kindly Fast Light, a light fast MVC framework, kindly to be used.
 * @author kakapo <kakapowu@gmail.com>
@@ -46,11 +46,7 @@ class KFL
 	 * @param array
 	 */
 	private $mCore;
-	/**
-	 * start time
-	 * @param string
-	 */
-	private $mStartTime ;
+
 	/**
 	 * default controller
 	 * @param string
@@ -79,8 +75,8 @@ class KFL
      */
 	public function KFL()
 	{
-		$this->mStartTime = getmicrotime ();
 		$this->useCache();
+		include_once("Common/utils.php");
 	}
 
 	/**
@@ -219,7 +215,7 @@ class KFL
 	 * @return void
 	 */	
 	public function execTime(){
-		$exec_time = (getmicrotime ()-$this->mStartTime);
+		$exec_time = (getmicrotime ()-$GLOBALS['gAppStartTime']);
 		$memused = memory_get_usage();
 		if($exec_time>$GLOBALS ['gLog'] ['maxExecTime'] || $memused>$GLOBALS ['gLog'] ['maxMemUsed']){
 			$db = Model::dbConnect($GLOBALS ['gDataBase'] ['db_setting.db3']);
