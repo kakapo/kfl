@@ -258,7 +258,8 @@ class project {
 		$app_name = $_POST['app_name'];
 		$res = $this->mProjectObj->getAppByName($app_name);
 		if(!$res){
-			$app_root = $_SERVER["DOCUMENT_ROOT"]."/".$app_name;
+			$app_root = KFL_DIR."/../".$app_name;
+			echo $app_root;
 			if(!is_dir($app_root)){
 				$rs1 = create_dir($app_root);
 				create_dir($app_root."/config");
