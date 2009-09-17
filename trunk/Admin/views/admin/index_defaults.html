@@ -114,7 +114,7 @@
 					<span><img src="<?=$www_site_url?>/public/image/kfllogo.gif"><img src="<?=$www_site_url?>/public/image/logo.gif"></span>
 			        <div dojoType="dijit.PopupMenuBarItem">
 			                <span>首页</span>
-			                <div dojoType="dijit.Menu" id="fileMenu">
+			                <div dojoType="dijit.Menu">
 			                        <div dojoType="dijit.MenuItem" onClick="aboutus();">关于作者</div>
 			                        <div dojoType="dijit.MenuItem" onClick="view_phpinfo('phpinfo');">PHP INFO</div>
 			                        <div dojoType="dijit.MenuItem" onClick="window.location.href='<?=$www_site_url?>/index.php/index/logout';">退出</div>
@@ -123,7 +123,7 @@
 
 			        <div dojoType="dijit.PopupMenuBarItem">
 			                <span>配置管理</span>
-			                <div dojoType="dijit.Menu" id="configMenu">
+			                <div dojoType="dijit.Menu">
 			                        <div dojoType="dijit.MenuItem" onClick="getText('/setting/system','系统配置')">系统配置</div>
 			                        <div dojoType="dijit.MenuItem" onClick="getText('/setting/website','网站信息')">网站信息</div>
 			                        <div dojoType="dijit.MenuItem" onClick="getText('/setting/email','邮件发送')">邮件发送</div>
@@ -134,7 +134,7 @@
 			        </div>
 			        <div dojoType="dijit.PopupMenuBarItem">
 			                <span>缓存管理</span>
-			                <div dojoType="dijit.Menu" id="phpMenu">
+			                <div dojoType="dijit.Menu">
 			                        <div dojoType="dijit.MenuItem" onClick="getText('/cache/memcached','分布式内存')">分布式内存</div>
 			                        <div dojoType="dijit.MenuItem" onClick="getText('/cache/packet','数据片缓存')">数据片缓存</div>
 			                        <div dojoType="dijit.MenuItem" onClick="getText('/cache/page','页面缓存')">页面缓存</div>
@@ -144,7 +144,7 @@
 			        
 			        <div dojoType="dijit.PopupMenuBarItem">
 			                <span>会话管理</span>
-			                <div dojoType="dijit.Menu" id="sessionMenu">
+			                <div dojoType="dijit.Menu">
 			                        <div dojoType="dijit.MenuItem" onClick="getText('/session/basicset','会话配置')">会话配置</div>
 			                        <div dojoType="dijit.MenuItem" onClick="getText('/session/stats','在线统计')">在线统计</div>
 			                </div>
@@ -152,21 +152,21 @@
 			  
 			        <div dojoType="dijit.PopupMenuBarItem">
 			                <span>监控管理</span>
-			                <div dojoType="dijit.Menu" id="logMenu">
+			                <div dojoType="dijit.Menu">
 			                		<div dojoType="dijit.MenuItem" onClick="getText('/monitor/noticeset','监控设置')">监控设置</div>
 			                        <div dojoType="dijit.MenuItem" onClick="getText('/monitor/eventlog','事件日志')">事件日志</div>
 			                        <div dojoType="dijit.MenuItem" onClick="getText('/monitor/errorlog','应用日志')">应用日志</div>
 			                        
 			                </div>
 			        </div>
-			        <div dojoType="dijit.PopupMenuBarItem">
+			       <!--  <div dojoType="dijit.PopupMenuBarItem">
 			                <span>文件管理</span>
-			                <div dojoType="dijit.Menu" id="dataMenu">
+			                <div dojoType="dijit.Menu">
 			                        <div dojoType="dijit.MenuItem" onClick="getText('/storage/userfile','用户文件')">用户文件</div>
 			                        <div dojoType="dijit.MenuItem" onClick="getText('/storage/upload','上传数据')">上传数据</div>
 			                </div>
 			        </div>	
-			        	
+			        	 -->
 			        <div dojoType="dijit.PopupMenuBarItem">
 			                <span>管理工具</span>
 			                <div dojoType="dijit.Menu">
@@ -268,7 +268,7 @@
 	        	 
 	        	   <!-- todo note start -->
 	        	 <div style="width:400px;position:absolute;left:440px;top:280px;" >     		  
-			          <div dojoType="dijit.TitlePane" title="计划开发" open="false" href="<?=$www_site_url?>/todo.txt">	    </div>
+			          <div dojoType="dijit.TitlePane" title="计划开发" open="false" preventCache="true" href="<?=$www_site_url?>/todo.txt">	    </div>
 	        	 </div>
 	        	 <!-- todo Note end -->
           </div>
