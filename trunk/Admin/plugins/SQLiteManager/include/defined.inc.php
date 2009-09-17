@@ -52,7 +52,7 @@ if(isset($_POST['Theme'])) {
 } elseif(isset($_COOKIE['SQLiteManager_currentTheme'])) {
 	$localtheme = $_COOKIE['SQLiteManager_currentTheme'];
 } else {
-	$localtheme = 'green';
+	$localtheme = 'PMA';
 }
 
 // set cookie for FullText
