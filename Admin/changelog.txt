@@ -1,4 +1,7 @@
 <ul>
+<li>2009.9.17
+<li>phpMyBackupPro 工具集成</li>
+<li></li>
 <li>2009.9.16</li>
 <li>新增项目导入功能</li>
 <li>事件模块--执行效率等</li>
