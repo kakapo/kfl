@@ -1,1 +1,1 @@
-guodongweb2.0��վ����ģ��ȫ������index2.0Ŀ¼�£�include,index1.3,show1.3Ŀ¼��Ϊ�����ο�������֮ǰ�ᱻɾ����--kakapowu
+guodongweb2.0网站的新模板全部放在index2.0目录下，include,index1.3,show1.3目录作为开发参看，上线之前会被删除。--kakapowu
