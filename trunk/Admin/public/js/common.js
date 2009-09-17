@@ -214,9 +214,17 @@ function getText(pathinfo,title) {
   function view_sqlite(){
  	var tabs = dijit.byId("maindiv");
  	data = '<iframe src="'+gSiteUrl+'/plugins/SQLiteManager/index.php" width="100%" frameborder="0" height="700px"></iframe>';
- 	var pane = new dijit.layout.ContentPane({id:'SQLite_Manager', title:'SQLite Manager',closable:true, content:data });
+ 	var pane = new dijit.layout.ContentPane({id:'SQLite_Manager', title:'SQLite Manager 1.2.0',closable:true, content:data });
  	tabs.addChild(pane);
  	tabs.selectChild(pane);
+ }
+ 
+ function view_mysql(){
+	 var tabs = dijit.byId("maindiv");
+	 	data = '<iframe src="'+gSiteUrl+'/plugins/phpMyBackupPro/index.php" width="100%" frameborder="0" height="700px"></iframe>';
+	 	var pane = new dijit.layout.ContentPane({id:'phpMyBackupPro', title:'phpMyBackupPro v2.1',closable:true, content:data });
+	 	tabs.addChild(pane);
+	 	tabs.selectChild(pane);
  }
  function view_phpinfo(id){
 	 var tabs = dijit.byId("maindiv");

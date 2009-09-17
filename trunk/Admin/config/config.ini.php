@@ -12,11 +12,11 @@
 //				Website Settings	                //
 //////////////////////////////////////////////////////
 		
-	$GLOBALS ["gSiteInfo"] ["title"] =  "KFL--项目开发框架及在线管理平台";
-	$GLOBALS ["gSiteInfo"] ["vision"] =  "V2.0.0";
+	$GLOBALS ["gSiteInfo"] ["web_title"] =  "KFL--php开发框架及项目在线管理平台";
+	$GLOBALS ["gSiteInfo"] ["web_vision"] =  "V2.0.0";
 	$GLOBALS ["gSiteInfo"] ["www_site_url"] =  "http://www.kfl.net/Admin";
-	$GLOBALS ["gSiteInfo"] ["webcharset"] =  "utf-8";
-	$GLOBALS ["gSiteInfo"] ["site_name"] =  "KFL项目开发框架及在线管理平台";
+	$GLOBALS ["gSiteInfo"] ["web_charset"] =  "utf-8";
+	$GLOBALS ["gSiteInfo"] ["site_name"] =  "KFL php开发框架及项目在线管理平台";
 	
 //////////////////////////////////////////////////////
 //				Email   Settings	                //
@@ -103,10 +103,10 @@
 	$GLOBALS ["gPageCache"] ["index"] ["cachestore"]=  "file";
 	$GLOBALS ["gPageCache"] ["index"] ["cacheserver"]=  array($GLOBALS ["gMemcacheServer"]["192.168.1.5:11212"]);;
 	$GLOBALS ["gPageCache"] ["index"] ["cachedir"]=  APP_TEMP_DIR ."/_cache";
-	$GLOBALS ["gPageCache"] ["index"] ["cachetime"]=  10;
+	$GLOBALS ["gPageCache"] ["index"] ["cachetime"]=  60;
 	$GLOBALS ["gPageCache"] ["index"] ["compressed"]=  1;
 	$GLOBALS ["gPageCache"] ["index"] ["action"]=  "index";
-	$GLOBALS ["gPageCache"] ["index"] ["view"]=  "*";
+	$GLOBALS ["gPageCache"] ["index"] ["view"]=  "login";
 	
 //////////////////////////////////////////////////////
 //				Session   Settings	                //
@@ -123,8 +123,7 @@ $GLOBALS ["gMemcacheServer"]["192.168.1.5:11213"]);;
 //////////////////////////////////////////////////////		
 	$GLOBALS ['gLog'] ['sendemail'] = 1;	
 	$GLOBALS ["gLog"] ["subject"] =  "应用错误报告";
-	$GLOBALS ["gLog"] ["receiver"] =  "kakapowu@gmail.com";
-	
+	$GLOBALS ["gLog"] ["receiver"] =  "kakapowu@gmail.com";	
 	$GLOBALS ['gLog'] ['maxExecTime'] = 2;
 	$GLOBALS ['gLog'] ['maxMemUsed'] = 1048576;
 	

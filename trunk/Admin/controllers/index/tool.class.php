@@ -6,7 +6,6 @@ class tool{
 	public $mSettingObj;
 	
 	function __construct(){
-		$this->mtoolObj = new toolManage();
 		$this->mSettingObj = new SettingManage();
 	}
 	function view_noticeset(){

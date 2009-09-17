@@ -1,9 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=<?=$web_charset?>">
 
-<title><?=$title?></title>
+<title><?=$web_title?></title>
 <link rel="stylesheet"
 			href="<?=$www_site_url?>/public/js/dojotoolkit/dijit/themes/nihilo/nihilo.css" />
 <link rel="shortcut icon" href="<?=$www_site_url?>/public/image/favicon.ico" />
@@ -170,8 +170,7 @@
 			        <div dojoType="dijit.PopupMenuBarItem">
 			                <span>管理工具</span>
 			                <div dojoType="dijit.Menu">
-			                        <div dojoType="dijit.MenuItem" onClick="getText('/tool/ftp','FTP客户端')">FTP客户端</div>
-			                        <div dojoType="dijit.MenuItem" onClick="getText('/tool/mysql','MySQL客户端')">MySQL客户端</div>
+			                        <div dojoType="dijit.MenuItem" onClick="view_mysql()">MySQL客户端</div>
 			                        <div dojoType="dijit.MenuItem" onClick="view_sqlite()">SQLite Manager</div>
 			                        
 			                </div>
@@ -262,13 +261,13 @@
 	        
 	        	 
 	        	  <!-- changelog Note start -->
-	        	 <div style="width:400px;height:400px;position:absolute;left:440px;top:0px" >     		  
-			          <div style="margin-top:5px" dojoType="dijit.TitlePane" title="系统更新" href="<?=$www_site_url?>/changelog.txt">	    </div>
+	        	 <div style="width:400px;position:absolute;left:440px;top:0px" >     		  
+			          <div style="margin-top:5px;" dojoType="dijit.TitlePane" title="系统更新" href="<?=$www_site_url?>/changelog.txt">	    </div>
 	        	 </div>
 	        	 <!-- changelog Note end -->
 	        	 
 	        	   <!-- todo note start -->
-	        	 <div style="width:400px;position:absolute;left:440px;top:200px;" >     		  
+	        	 <div style="width:400px;position:absolute;left:440px;top:280px;" >     		  
 			          <div dojoType="dijit.TitlePane" title="计划开发" open="false" href="<?=$www_site_url?>/todo.txt">	    </div>
 	        	 </div>
 	        	 <!-- todo Note end -->
