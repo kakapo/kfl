@@ -62,6 +62,7 @@ class Cache {
 	 * @param string
 	 */		
  	private $mCacheContent = '';
+	
 	/**
 	 * Cache
 	 * 0 表示永久缓存，<0 表示不缓存，>0 表示缓存时间
@@ -104,39 +105,38 @@ class Cache {
 		$this->mCacheCompress = $compressed;
 	}
 	
+	/**
+	 * setCacheServer
+	 * @param array $store_server
+	 * @access public
+	 * @return void
+	 */
 	public function setCacheServer($store_server){
 		$this->mCacheServer = $store_server;
 	}
 	
+	/**
+	 * setCacheDir
+	 * @param string $dir
+	 * @access public
+	 * @return void
+	 */	
 	public function setCacheDir($dir) {
 		
 		$this->mCacheDir = $dir;
 	}
+	
+	/**
+	 * setCacheFile
+	 * @param string $file
+	 * @access public
+	 * @return void
+	 */	
 	public function setCacheFile($file) {
 		
 		$this->mCacheFile = $file;
 	}
-	private function _setupMemcached($server){
-		if (!class_exists('Memcache'))
-        {
-        	trigger_error("Fatal Error: Memcache extension not exists!", E_USER_ERROR);
-            die();
-        }
-        if(!(isset($GLOBALS['pageMemcacheObj']) && is_object($GLOBALS['pageMemcacheObj']))){
-			if(isset($server) && is_array($server)){
-				
-			 	$memcache  = new Memcache;
-			 	foreach ($server as $key => $v) {
-		 		  if(!empty($v['host']) && !empty($v['port'])){
-		 			$memcache->addServer($v['host'], $v['port']);
-		 		  }
-			 	}
-			}
-			$GLOBALS['pageMemcacheObj'] = $memcache;
-        }
-		
-		return $GLOBALS['pageMemcacheObj'];
-	}
+	
 	/**
 	 * is_cached
 	 * @access public
@@ -239,6 +239,11 @@ class Cache {
 		}
 	}
 	
+	/**
+	 * clear
+	 * @access public
+	 * @return void
+	 */
 	public function clear() {
 		@unlink ( $this->mCacheDir . $this->mCacheFile );
 	}
@@ -274,6 +279,34 @@ class Cache {
 			}
 		}
 		return false;
+	}
+	
+	/**
+	 * _setupMemcached
+	 * @param array $server
+	 * @access private
+	 * @return void
+	 */
+	private function _setupMemcached($server){
+		if (!class_exists('Memcache'))
+        {
+        	trigger_error("Fatal Error: Memcache extension not exists!", E_USER_ERROR);
+            die();
+        }
+        if(!(isset($GLOBALS['pageMemcacheObj']) && is_object($GLOBALS['pageMemcacheObj']))){
+			if(isset($server) && is_array($server)){
+				
+			 	$memcache  = new Memcache;
+			 	foreach ($server as $key => $v) {
+		 		  if(!empty($v['host']) && !empty($v['port'])){
+		 			$memcache->addServer($v['host'], $v['port']);
+		 		  }
+			 	}
+			}
+			$GLOBALS['pageMemcacheObj'] = $memcache;
+        }
+		
+		return $GLOBALS['pageMemcacheObj'];
 	}
 }
 
