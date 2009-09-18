@@ -214,26 +214,13 @@ function json_output($arr){
 
 /*-------------------------------文件扩展函数-----------------------------------*/
 
-//作用:模拟 清理路径中多余的斜杠 以及将所有 斜杠转换为 /
-//参数:$path 需要清理的路径字串
-//返回:清理后的路径字串
-
-function path_clean($path)
-{
-	$path = str_replace('://','__SLASH_SLASH_COLON__',$path);
-	$path = str_replace('\\','/',$path);
-	$path = preg_replace('/\/\.$/','/',str_replace('/./','/',preg_replace('/\/{2,}/','/',$path)));
-	$path = str_replace('__SLASH_SLASH_COLON__','://',$path);
-
-	return $path;
-}
 
 //作用:模拟 parse_path 但其解决解析带中文文件名路径无法正常获得文件名的问题
 //参数:$path 需要解析的路径
 //返回:数组 下标分别为 dirname,filename,basename,extension;
 function parse_path($path)
 {
-	$path = path_clean($path);
+	$path = realpath($path);
 	$pathinfo = pathinfo($path);
 	$pathinfo['filename'] = preg_replace('/^'.preg_quote($pathinfo['dirname'],'/').'\//' ,'', $path);
 	$pathinfo['basename'] = preg_replace('/\.'.$pathinfo['extension'].'$/' ,'', $pathinfo['filename']);
@@ -405,8 +392,8 @@ function list_dir($path,$type = 'all')
 		$list[$i]['time'] = date ("Y-m-d H:i:s", $fileinfo['mtime']);
 		$list[$i]['size'] = size_unit_convert($fileinfo['size']);
 		if($filetype=='dir') $list[$i]['folders'] = array(array("_reference"=>''));
-		$list[$i]['dir'] = $dir->path;
-		$list[$i]['path'] = $dir->path.'/'.$filename;
+		$list[$i]['dir'] = realpath($dir->path);
+		$list[$i]['path'] = realpath($dir->path.'/'.$filename);
 
 		$i++;
 	}
@@ -435,7 +422,7 @@ function list_all_dir($path,&$tree){
 		$fileinfo = stat($dir->path.'/'.$filename);
 		$pathinfo = pathinfo($filename);
 		
-		$t['path'] = urlencode(encrypt($dir->path.'/'.$filename));
+		$t['path'] = urlencode(encrypt(realpath($dir->path.'/'.$filename)));
 		
 		$filename = mb_convert_encoding($filename, "UTF-8", "GBK");
 		$t['id'] = $filename.uniqid("_");
@@ -446,7 +433,7 @@ function list_all_dir($path,&$tree){
 		$t['extension'] = isset($pathinfo['extension'])?$pathinfo['extension']:'';
 		$t['time'] = date ("Y-m-d H:i:s", $fileinfo['mtime']);
 		$t['size'] = $fileinfo['size'];	
-		$t['dir'] = urlencode($dir->path);
+		$t['dir'] = urlencode(realpath($dir->path));
 		
 		$tree[$i] = $t;
 		$i++;

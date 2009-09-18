@@ -11,7 +11,7 @@ function doPost(url,postdata,form,callback){
 	 
  	 var xhrArgs = {
  		 	url: url,
-  	        handleAs: "text",
+  	        handleAs: "json",
   	        load: function(data){ 
   	        	//alert(data);
   	        	myAlert(data.m);

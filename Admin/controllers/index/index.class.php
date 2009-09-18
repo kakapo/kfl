@@ -20,7 +20,22 @@ class index {
 	function view_defaults(){
 		global $tpl;
 		$this->is_login();
-
+		$path = realpath(APP_DIR."/../");
+		
+		$dirs = list_dir($path,'dir');
+		$new_dirs[] = array('path'=>$path,'path_encode'=>urlencode($path),'is_writable'=>is_writable($path));
+		if(is_array($dirs)){
+			foreach($dirs as $d){
+				$t = array();
+				if(strtolower(substr($d['path'],-3))=='kfl') continue;		
+				$t['path']=$d['path'];
+				$t['path_encode']= urlencode($d['path']);
+				$new_dirs[] =$t;
+				
+			}
+		}
+		
+		$tpl->assign('dirs',$new_dirs);
 	}
 	function is_login(){
 		if(!(isset($_SESSION['login'])&&$_SESSION['login']==1)){
