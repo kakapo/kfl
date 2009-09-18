@@ -6,7 +6,7 @@
 	define("APP_STATUS", "online");
 	define("APP_LANG", "ch");
 	define("APP_TEMP_DIR", APP_DIR."/tmp/");
-	define("KFL_DIR", "D:/GoogleCodeKFL/KFL");
+	define("KFL_DIR", APP_DIR."/../KFL");
 	
 //////////////////////////////////////////////////////
 //				Website Settings	                //
@@ -14,7 +14,6 @@
 		
 	$GLOBALS ["gSiteInfo"] ["web_title"] =  "KFL--php开发框架及项目在线管理平台";
 	$GLOBALS ["gSiteInfo"] ["web_vision"] =  "V2.0.0";
-	$GLOBALS ["gSiteInfo"] ["www_site_url"] =  "http://www.kfl.net/Admin";
 	$GLOBALS ["gSiteInfo"] ["web_charset"] =  "utf-8";
 	$GLOBALS ["gSiteInfo"] ["site_name"] =  "KFL php开发框架及项目在线管理平台";
 	
@@ -43,14 +42,7 @@
   'type' => 'sqlite',
   'path' => APP_DIR."/config",
 );
-	$GLOBALS ["gDataBase"] ["db_main"] = array (
-  'dbname' => 'main',
-  'type' => 'mysql',
-  'host' => 'localhost',
-  'port' => '3306',
-  'user' => 'root',
-  'passwd' => '111111',
-);
+
 	
 //////////////////////////////////////////////////////
 //				Memcached  Settings	                //
@@ -67,22 +59,6 @@
 	$GLOBALS ["gMemcacheServer"] ["192.168.1.5:11211"] = array (
   'mmhost' => '192.168.1.5',
   'mmport' => '11211',
-);
-	$GLOBALS ["gMemcacheServer"] ["222.73.242.74:11211"] = array (
-  'mmhost' => '222.73.242.74',
-  'mmport' => '11211',
-);
-	$GLOBALS ["gMemcacheServer"] ["222.73.242.74:11311"] = array (
-  'mmhost' => '222.73.242.74',
-  'mmport' => '11311',
-);
-	$GLOBALS ["gMemcacheServer"] ["222.73.242.74:11511"] = array (
-  'mmhost' => '222.73.242.74',
-  'mmport' => '11511',
-);
-	$GLOBALS ["gMemcacheServer"] ["222.73.242.74:11611"] = array (
-  'mmhost' => '222.73.242.74',
-  'mmport' => '11611',
 );
 	
 //////////////////////////////////////////////////////

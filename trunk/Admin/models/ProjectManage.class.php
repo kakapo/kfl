@@ -5,9 +5,9 @@ class ProjectManage extends Model{
 		$this->db = parent::dbConnect($GLOBALS ['gDataBase'] ['db_setting.db3']);
 	}
 
-	function createApp($app_name,$app_root){
-		
-		return $this->db->execute("insert into project (app_name,app_dir) values ('$app_name','$app_root')");
+	function createApp($app_name,$app_root,$app_url){
+		$app_url = addslashes($app_url);
+		return $this->db->execute("insert into project (app_name,app_dir,app_url) values ('$app_name','$app_root','$app_url')");
 	}
 	
 	function getAppList(){

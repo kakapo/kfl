@@ -258,42 +258,52 @@ class project {
 		$app_name = $_POST['app_name'];
 		$res = $this->mProjectObj->getAppByName($app_name);
 		if(!$res){
-			$app_root = KFL_DIR."/../".$app_name;
-			echo $app_root;
-			if(!is_dir($app_root)){
-				$rs1 = create_dir($app_root);
-				create_dir($app_root."/config");
-				create_dir($app_root."/controllers/index");
-				create_dir($app_root."/models");
-				create_dir($app_root."/public");
-				create_dir($app_root."/plugins");
-				create_dir($app_root."/langs/ch");
-				create_dir($app_root."/tmp");
-				create_dir($app_root."/views/index");
-				$index_content = file_get_contents(APP_DIR.'/public/install/index.txt');
-				
-				copy(APP_DIR.'/public/install/index.txt',$app_root."/index.php");
-				copy(APP_DIR.'/public/install/demo.class.txt',$app_root."/controllers/index/demo.class.php");
-				copy(APP_DIR.'/public/install/demo_defaults.txt',$app_root."/views/index/demo_defaults.html");
-				copy(APP_DIR.'/public/install/DemoManage.class.txt',$app_root."/models/DemoManage.class.php");
-				copy(APP_DIR.'/public/install/index.html',$app_root."/tmp/index.html");
-				copy(APP_DIR.'/public/install/index.html',$app_root."/plugins/index.html");
-				copy(APP_DIR.'/public/install/index.html',$app_root."/config/index.html");
-				copy(APP_DIR.'/public/install/index.html',$app_root."/public/index.html");
-				copy(APP_DIR.'/public/install/index.html',$app_root."/langs/ch/index.html");
-				copy(APP_DIR.'/public/install/globals.txt',$app_root."/langs/ch/globals.php");
-			}else{
-				$rs1=1;
-			}
+			$parent_dir = realpath($_POST['app_dir']);
 			
-			$rs2 =$this->mProjectObj->createApp($app_name,$app_root);
-			if($rs1 && $rs2){
-				$msg['s'] = 200;
-				$msg['m'] = "生成成功!";
-				$msg['d'] = 'null';	
+			if(is_dir($parent_dir) && is_writable($parent_dir)){
+				
+				$app_root = realpath($parent_dir.'/'.$app_name);
+				$app_url = $_POST['app_url'];
+				if(!is_dir($app_root)){
+					$rs1 = create_dir($app_root);
+					create_dir($app_root."/config");
+					create_dir($app_root."/controllers/index");
+					create_dir($app_root."/models");
+					create_dir($app_root."/public");
+					create_dir($app_root."/plugins");
+					create_dir($app_root."/langs/ch");
+					create_dir($app_root."/tmp");
+					create_dir($app_root."/views/index");
+					$index_content = file_get_contents(APP_DIR.'/public/install/index.txt');
+					
+					copy(APP_DIR.'/public/install/index.txt',$app_root."/index.php");
+					copy(APP_DIR.'/public/install/demo.class.txt',$app_root."/controllers/index/demo.class.php");
+					copy(APP_DIR.'/public/install/demo_defaults.txt',$app_root."/views/index/demo_defaults.html");
+					copy(APP_DIR.'/public/install/DemoManage.class.txt',$app_root."/models/DemoManage.class.php");
+					copy(APP_DIR.'/public/install/index.html',$app_root."/tmp/index.html");
+					copy(APP_DIR.'/public/install/index.html',$app_root."/plugins/index.html");
+					copy(APP_DIR.'/public/install/index.html',$app_root."/config/index.html");
+					copy(APP_DIR.'/public/install/index.html',$app_root."/public/index.html");
+					copy(APP_DIR.'/public/install/index.html',$app_root."/langs/ch/index.html");
+					copy(APP_DIR.'/public/install/globals.txt',$app_root."/langs/ch/globals.php");
+				}else{
+					$rs1=1;
+				}
+				
+				$rs2 =$this->mProjectObj->createApp($app_name,$app_root,$app_url);
+				if($rs1 && $rs2){
+					$msg['s'] = 200;
+					$msg['m'] = "生成成功!";
+					$msg['d'] = 'null';	
+				}else{
+					$msg['s'] = 400;
+					$msg['m'] = "生成失败!";
+					$msg['d'] = 'null';	
+				}
+				
 			}else{
 				$msg['s'] = 400;
-				$msg['m'] = "生成失败!";
+				$msg['m'] = "安装路径权限不可写!$parent_dir";
 				$msg['d'] = 'null';	
 			}
 		}else{
