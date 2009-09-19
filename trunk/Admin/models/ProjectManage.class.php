@@ -11,7 +11,7 @@ class ProjectManage extends Model{
 	}
 	
 	function getAppList(){
-		return $this->db->getAll("select app_id ,app_name ,app_dir  from project");
+		return $this->db->getAll("select app_id ,app_name ,app_dir,app_url  from project");
 	}
 	
 	function getAppById($id){
@@ -28,5 +28,10 @@ class ProjectManage extends Model{
 	
 	function getLastApp(){
 		return $this->db->getRow("select * from project order by app_id desc limit 1 ");
+	}
+	
+	function updateApp($app_name,$app_url){
+		return $this->db->execute("update project set app_url='$app_url' where app_name='$app_name'");;
+		
 	}
 }

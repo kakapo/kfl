@@ -487,7 +487,10 @@ function getText(pathinfo,title) {
          },  
          onComplete: function(items, request){
         	 gCurAppDir = items[0].app_dir.toString();
-        	
+        	 dojo.byId('prop_app_name').innerHTML = items[0].app_name.toString();
+        	 dojo.byId('prop_app_path').innerHTML = decodeURIComponent(items[0].app_dir.toString());
+        	 dojo.byId('app_url_new').value = items[0].app_url.toString();
+        	 
         	 dijit.byId("leftDiv").selectChild(dijit.byId("explorerApp"));
         	 refreshTree();
          },
@@ -586,7 +589,10 @@ function exportApp(){
  }
  function visitApp(hosturl){
  	if(gCurAppName=='') return myAlert('请选择项目');
- 	window.open(hosturl+"/"+gCurAppName);
+ 	doGet(gSiteUrl+"/index.php/project/getapp/"+gCurAppName,'',function(data, ioargs){
+ 			if(data.s==200) window.open(data.d);					
+ 		 });
+ 	
  }
  function getItemById(id){
  	var item=new Array();
@@ -766,10 +772,10 @@ function prepareUpload(id){
 }
 function importApp(){
 	if(gCurAppName=='') return myAlert('请选择项目');
-	dijit.byId('AlertShow6').show();
+	dijit.byId('AlertShow7').show();
 	
-	var f0 = new dojox.form.FileUploader({
-		button:dijit.byId("btn0"), 
+	var f1 = new dojox.form.FileUploader({
+		button:dijit.byId("btn1"), 
 		degradable:false,
 		uploadUrl:gSiteUrl+"/index.php", 
 		uploadOnChange:false, 
@@ -780,32 +786,55 @@ function importApp(){
 
 	});
 	
-	dojo.connect(f0, "onChange", function(data){
-		console.log("DATA:", data);
+	dojo.connect(f1, "onChange", function(data){
+		//console.log("DATA:", data);
 		dojo.forEach(data, function(d){
 			//file.type no workie from flash selection (Mac?)
-			dojo.byId("fileToUpload").value = d.name+" "+Math.ceil(d.size*.001)+"kb \n";
+			dojo.byId("appToUpload").value = d.name+" "+Math.ceil(d.size*.001)+"kb \n";
 		});
 	});
 
-	dojo.connect(f0, "onProgress", function(data){
-		console.warn("onProgress", data);
+	dojo.connect(f1, "onProgress", function(data){
+		//console.warn("onProgress", data);
 		
 		dojo.forEach(data, function(d){
-			dojo.byId("fileToUpload").value += "("+d.percent+"%) "+d.name+" \n";
+			dojo.byId("appToUpload").value += "("+d.percent+"%) "+d.name+" \n";
 			
 		});
 	});
 
-	dojo.connect(f0, "onComplete", function(data){
-		console.warn("onComplete", data);
+	dojo.connect(f1, "onComplete", function(data){
+		//console.warn("onComplete", data);
 		
-		dojo.byId("fileToUpload").value = '';
-		dijit.byId('AlertShow6').hide();
+		dojo.byId("appToUpload").value = '';
+		dijit.byId('AlertShow7').hide();
 	});
-	uploadFile = function(){
-		console.log("doUpload");		
+	uploadFile1 = function(){
+		//console.log("doUpload");		
 		dojo.byId("fileToUpload").value = "uploading...";
-		f0.upload();
+		f1.upload();
 	}
+}
+function editApp(){
+	if(gCurAppName=='') return myAlert('请选择项目');
+	dijit.byId('AlertShow8').show();
+}
+function updateApp(){
+	if(gCurAppName=='') return myAlert('请选择项目');
+	var reCat =  /(http|https):\/\/[\w]+(.[\w]+)([\w\-\.,@?^=%&amp;:/~\+#]*[\w\-\@?^=%&amp;/~\+#])?/ig;
+	var new_app_url = dojo.byId('app_url_new').value;
+    if(!reCat.test(new_app_url)) {
+    	return;
+    }
+     doPost(gSiteUrl+"/index.php","action=project&op=updateapp&appname="+gCurAppName+"&new_app_url="+encodeURI(new_app_url),'',function(data){ 
+ 		
+ 				myAlert(data.m);
+				if(data.s==200) 
+				{				
+					//dojo.byId('app_url_new').value='';
+					dijit.byId('AlertShow8').hide();
+				}
+	});
+	
+	
 }

@@ -303,7 +303,7 @@ class project {
 				
 			}else{
 				$msg['s'] = 400;
-				$msg['m'] = "安装路径权限不可写!$parent_dir";
+				$msg['m'] = "安装路径权限不可写!";
 				$msg['d'] = 'null';	
 			}
 		}else{
@@ -630,6 +630,37 @@ class project {
 			}	
 		}
 	
+	}
+	
+	function view_getapp(){
+		$app_name = $_GET['getapp'];	
+		$app_info = $this->mProjectObj->getAppByName($app_name);
+		if($app_info){
+			$msg['s'] = 200;
+			$msg['m'] = "重命名成功!";
+			$msg['d'] = $app_info['app_url'];	
+		}else{
+			$msg['s'] = 400;
+			$msg['m'] = "此项目不存在";
+			$msg['d'] = 'null';	
+		}
+		json_output($msg);
+	}
+	
+	function op_updateapp(){
+		$app_name = $_POST['appname'];	
+		$app_url = $_POST['new_app_url'];
+		$res = $this->mProjectObj->updateApp($app_name,$app_url);
+		if($res){
+			$msg['s'] = 200;
+			$msg['m'] = "修改成功!";
+			$msg['d'] = 'null';	
+		}else{
+			$msg['s'] = 400;
+			$msg['m'] = "修改失败";
+			$msg['d'] = 'null';	
+		}
+		json_output($msg);
 	}
 }
 ?>
