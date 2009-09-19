@@ -253,7 +253,7 @@
 					     <button dojoType="dijit.form.Button" onclick="renewConfigFile('renewconfig');">生成配置</button>
 					     <button dojoType="dijit.form.Button" onclick="renewConfigFile('copyconfig');">更新配置</button>
 					     <button dojoType="dijit.form.Button" onclick="restoreConfigFile();">恢复配置</button>
-					     <button dojoType="dijit.form.Button" onclick="visitApp('<?=substr(BASE_URL,0,-6)?>');">访问项目</button>
+					     <button dojoType="dijit.form.Button" onclick="visitApp();">访问项目</button>
 					     </p>
 					     <p> 
 					     
@@ -261,6 +261,7 @@
 					     <button dojoType="dijit.form.Button" onclick="statsApp();">项目统计</button>
 					     <button dojoType="dijit.form.Button" onclick="exportApp();">项目导出</button>
 					     <button dojoType="dijit.form.Button" onclick="importApp();">项目导入</button>
+					     <button dojoType="dijit.form.Button" onclick="editApp();">项目属性</button>
 					  </div>
 	        	 </div>
 	        	 <!-- 管理项目 end -->
@@ -329,7 +330,7 @@
  </div>
     <!-- Alert5 div -->
  <div dojoType="dijit.Dialog" id="AlertShow5" title="文件重命名">
-   <div id="AlertCon4" style="width:240px;height:80px;">
+   <div id="AlertCon5" style="width:240px;height:80px;">
    输入新名称: <input dojoType="dijit.form.ValidationTextBox" required="true" type="text" name="newfilename" id="newfilename" value="" regExp="^[A-Za-z_]{1}[A-Za-z0-9_\.]*" invalidMessage="变量名不符合规则:^[A-Za-z_]{1}[A-Za-z0-9_\.]*">
    <input type="hidden" id="old_file_id" name="old_file_id" value="">
    <button dojoType="dijit.form.Button" onclick="renameFile();">确定</button>
@@ -339,12 +340,33 @@
  
      <!-- Alert6 div -->
  <div dojoType="dijit.Dialog" id="AlertShow6" title="文件上传">
-   <div id="AlertCon4" style="width:240px;height:80px;">
+   <div id="AlertCon6" style="width:240px;height:80px;">
   
 	<input dojoType="dijit.form.TextBox" id="fileToUpload" style="width:150px">
 	<div id="btn0" class="browse" dojoType="dijit.form.Button">选择...</div>
  	<div id="uploadBtn" onClick="uploadFile();" dojoType="dijit.form.Button">上传</div>
    <button dojoType="dijit.form.Button" onclick="dijit.byId('AlertShow6').hide();">取消</button>
+   </div>
+ </div>     
+ <!-- Alert7 div -->
+ <div dojoType="dijit.Dialog" id="AlertShow7" title="项目导入">
+   <div id="AlertCon7" style="width:240px;height:80px;">
+  
+	<input dojoType="dijit.form.TextBox" id="appToUpload" style="width:150px">
+	<div id="btn1" class="browse" dojoType="dijit.form.Button">选择...</div>
+ 	<div id="uploadBtn1" onClick="uploadFile1();" dojoType="dijit.form.Button">上传</div>
+   <button dojoType="dijit.form.Button" onclick="dijit.byId('AlertShow7').hide();">取消</button>
+   </div>
+ </div> 
+ <!-- Alert8 div -->
+ <div dojoType="dijit.Dialog" id="AlertShow8" title="项目属性">
+   <div id="AlertCon8">
+    项目名称: <span id="prop_app_name"></span><br>
+    安装路径: <span id="prop_app_path"></span><br>
+	访问地址: <input dojoType="dijit.form.ValidationTextBox" required="true" regExp='(http|https):\/\/[\w]+(.[\w]+)([\w\-\.,@?^=%&amp;:/~\+#]*[\w\-\@?^=%&amp;/~\+#])?' invalidMessage='变量名不符合规则:((http|https):\/\/[\w]+(.[\w]+)([\w\-\.,@?^=%&amp;:/~\+#]*[\w\-\@?^=%&amp;/~\+#])?)' name="app_url_new" id="app_url_new" style="width:200px">
+	<br>
+ 	<div onClick="updateApp();" dojoType="dijit.form.Button">更新</div>
+    <button dojoType="dijit.form.Button" onclick="dijit.byId('AlertShow8').hide();">取消</button>
    </div>
  </div>
 </body>
