@@ -534,11 +534,8 @@ function statsApp(){
 }
 function exportApp(){
 	if(gCurAppName=='') return myAlert('请选择项目');
-	doPost(gSiteUrl+"/index.php","action=project&op=exportapp&app_name="+gCurAppName,'',function(data){ 
-			myAlert(data.m+"<br>如果弹出窗口被拦截，<a href='"+gSiteUrl+"/tmp/"+data.d+"'>请点击此处.</a>");
-			window.open(gSiteUrl+"/tmp/"+data.d);
-			
-	});
+	window.location.href =gSiteUrl+"/index.php?action=project&view=exportapp&app_name="+gCurAppName;
+	
 }
 
  function raiseQueryDialog(title, question, callbackFn) {

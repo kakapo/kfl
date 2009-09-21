@@ -559,42 +559,26 @@ class project {
 		
 	}
 	
-	function op_exportapp(){
-		$app_name = $_POST['app_name'];
+	function view_exportapp(){
+		$app_name = $_GET['app_name'];
 		$app_info = $this->mProjectObj->getAppByName($app_name);
-		$zip = new ZipArchive();
+		include(KFL_DIR. "/Libs/archive.php");
 		$filename = APP_TEMP_DIR."$app_name.zip";
+		$zip = new zip_file($filename);
+		// All files added will be relative to the directory in which the script is 
+		//    executing since no basedir is set.
+		$zip->set_options(array('inmemory' => 1, 'recurse' => 1, 'storepaths' =>1 ));
+		// Add lib/archive.php to archive
+		$zip->add_files($app_info['app_dir']."/*");
+		// Add all jpegs and gifs in the images directory to archive
+		//$zip->add_files(array("images/*.jp*g", "images/*.gif"));
 		
-		if ($zip->open($filename, ZIPARCHIVE::CREATE)!==TRUE) {
-			trigger_error("cannot open <$filename>\n",E_USER_ERROR);
-		}
-		list_all_dir($app_info['app_dir'],$tree);
+		// Create archive in memory
+		$zip->create_archive();
+		// Send archive to user for download
 		
-		$this->readfolder($tree,$return);
-		$len = strlen($app_info['app_dir']);
-		foreach ($return as $v){
-		
-			if($v['filetype'] =='file'){
-				$file = urldecode($v['dir'])."/".$v['name'];
-				$re_file = substr($file,$len+1);
-				$zip->addFile($file,$re_file);
-			}
-			
-		}
-		
-		$res = $zip->numFiles;
-		$zip->close();
-		
-		if($res>0){
-			$msg['s'] = 200;
-			$msg['m'] = "成功!";
-			$msg['d'] = "$app_name.zip";	
-		}else{
-			$msg['s'] = 400;
-			$msg['m'] = "失败!";
-			$msg['d'] = 'null';	
-		}
-		json_output($msg);
+		$zip->download_file();
+
 				
 	}
 	
@@ -608,11 +592,12 @@ class project {
 			$tmp_zip_file = $app_info['app_dir']."/tmp/" . addslashes($_FILES[$fieldName]['name']);
 			$m = move_uploaded_file($_FILES[$fieldName]['tmp_name'], $tmp_zip_file );
 			if($m){
-				$zip = new ZipArchive();
-				if ($zip->open($tmp_zip_file) === TRUE) {
-				    $zip->extractTo($app_info['app_dir']);
-				    $zip->close();
-				} 
+				include(KFL_DIR. "/Libs/archive.php");
+				$zip = new zip_file($tmp_zip_file);
+				$zip->set_options(array('basedir'=>$app_info['app_dir'],'overwrite' => 1));
+				// Extract contents of archive to disk
+				$zip->extract_files();
+				
 			}
 			
 			$name = urlencode($_FILES[$fieldName]['name']);
