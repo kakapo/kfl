@@ -1,0 +1,4 @@
+INSTALL
+1.修改Admin/config/setting.db3 文件权限为0777
+2.修改Admin/tmp 目录为0777
+  
