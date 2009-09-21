@@ -274,7 +274,7 @@ class project {
 					create_dir($app_root."/public");
 					create_dir($app_root."/plugins");
 					create_dir($app_root."/langs/ch");
-					create_dir($app_root."/tmp");
+					create_dir($app_root."/tmp/logs");
 					create_dir($app_root."/views/index");
 					$index_content = file_get_contents(APP_DIR.'/public/install/index.txt');
 					
@@ -283,6 +283,7 @@ class project {
 					copy(APP_DIR.'/public/install/demo_defaults.txt',$app_root."/views/index/demo_defaults.html");
 					copy(APP_DIR.'/public/install/DemoManage.class.txt',$app_root."/models/DemoManage.class.php");
 					copy(APP_DIR.'/public/install/index.html',$app_root."/tmp/index.html");
+					copy(APP_DIR.'/public/install/index.html',$app_root."/tmp/logs/ignore_repeated_errors.txt");
 					copy(APP_DIR.'/public/install/index.html',$app_root."/plugins/index.html");
 					copy(APP_DIR.'/public/install/index.html',$app_root."/config/index.html");
 					copy(APP_DIR.'/public/install/index.html',$app_root."/public/index.html");
