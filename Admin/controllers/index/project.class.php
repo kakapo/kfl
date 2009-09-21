@@ -255,6 +255,7 @@ class project {
 	}
 	
 	function op_createapp(){
+		
 		$app_name = $_POST['app_name'];
 		$res = $this->mProjectObj->getAppByName($app_name);
 		if(!$res){
@@ -262,7 +263,8 @@ class project {
 			
 			if(is_dir($parent_dir) && is_writable($parent_dir)){
 				
-				$app_root = realpath($parent_dir.'/'.$app_name);
+				$app_root = path_clean($parent_dir.'/'.$app_name);
+				
 				$app_url = $_POST['app_url'];
 				if(!is_dir($app_root)){
 					$rs1 = create_dir($app_root);
