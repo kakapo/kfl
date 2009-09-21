@@ -20,7 +20,7 @@ class index {
 	function view_defaults(){
 		global $tpl;
 		$this->is_login();
-		$path = realpath(APP_DIR."/../");
+		$path = realpath(APP_DIR."/..");
 		
 		$dirs = list_dir($path,'dir');
 		$new_dirs[] = array('path'=>$path,'path_encode'=>urlencode($path),'is_writable'=>is_writable($path));
