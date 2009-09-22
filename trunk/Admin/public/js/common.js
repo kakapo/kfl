@@ -740,7 +740,7 @@ function prepareUpload(id){
 	});
 	
 	dojo.connect(f0, "onChange", function(data){
-		console.log("DATA:", data);
+		//console.log("DATA:", data);
 		dojo.forEach(data, function(d){
 			//file.type no workie from flash selection (Mac?)
 			dojo.byId("fileToUpload").value = d.name+" "+Math.ceil(d.size*.001)+"kb \n";
@@ -757,7 +757,7 @@ function prepareUpload(id){
 	});
 
 	dojo.connect(f0, "onComplete", function(data){
-		console.warn("onComplete", data);
+		//console.warn("onComplete", data);
 		refreshTree();
 		dojo.byId("fileToUpload").value = '';
 		dijit.byId('AlertShow6').hide();
