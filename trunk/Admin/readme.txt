@@ -1,6 +1,6 @@
 <p>
 KFL是一个轻快的、友好的、MVC模式的PHP开发框架，基于应用层程序框架来解决Webserver集群带来的系列开发问题。
-<br>KFL Admin是一个项目在线管理平台，使用KFL框架开发。
+<br>KFL Admin是一个项目在线管理平台，使用KFL框架开发。可以作为学习使用KFL框架的demo。
 
 </p>
 <label>主要特点:</label>			
@@ -13,4 +13,4 @@ KFL是一个轻快的、友好的、MVC模式的PHP开发框架，基于应用�
 <li>项目文件系统在线管理。</li>				
 <li>集成MySQL备份工具phpMyBackupPro。</li>		
 <li>集成SQLite管理工具SQLite Manager。</li>			
-</ul>	  
+</ul>
