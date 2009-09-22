@@ -808,7 +808,11 @@ class unzip
 	if(substr($to,-1)!="/") $to.="/";
 	if($to=='./') $to = '';	
 	$pth = explode("/",$to.$header['filename']);
-	$mydir = '';
+	if(PHP_OS=='Linux'){
+		$mydir = '/';
+	}elseif(PHP_OS=='WINNT'){
+		$mydir = '';
+	}
 	for($i=0;$i<count($pth)-1;$i++){
 		if(!$pth[$i]) continue;
 		$mydir .= $pth[$i]."/";
