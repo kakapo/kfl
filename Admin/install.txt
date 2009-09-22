@@ -1,0 +1,4 @@
+INSTALL
+1.修改Admin/config目录及改目录下setting.db3 权限为0777, 相当于命令 chmod -R 0777 Admin/config/
+2.修改Admin/tmp目录，Admin/tmp/logs目录，Admin/tmp/logs/ignore_repeated_errors.txt文件权限为0777，相当于命令 chmod -R 0777 Admin/tmp/
+3.选择安装路径时，要将安装路径目录的权限改成0777;
