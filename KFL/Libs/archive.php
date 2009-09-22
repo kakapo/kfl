@@ -703,8 +703,10 @@ class unzip
    {
      @fseek($zip, $pos_entry);
      $header = $this->ReadCentralFileHeaders($zip);
-     $header['index'] = $i; $pos_entry = ftell($zip);
-     @rewind($zip); fseek($zip, $header['offset']);
+     $header['index'] = $i; 
+     $pos_entry = ftell($zip);
+     @rewind($zip); 
+     fseek($zip, $header['offset']);
      if(in_array("-1",$index)||in_array($i,$index))
      	$stat[$header['filename']]=$this->ExtractFile($header, $to, $zip);
    }
