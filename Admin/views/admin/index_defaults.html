@@ -5,7 +5,7 @@
 
 <title><?=$web_title?></title>
 <link rel="stylesheet"
-			href="<?=$www_site_url?>/public/js/dojotoolkit/dijit/themes/nihilo/nihilo.css" />
+			href="<?=$www_site_url?>/public/js/dojotoolkit/dijit/themes/<?=$ui_style?>/<?=$ui_style?>.css" />
 <link rel="shortcut icon" href="<?=$www_site_url?>/public/image/favicon.ico" />
 <link rel="icon" type="image/gif" href="<?=$www_site_url?>/public/image/animated_favicon1.gif">
 <!-- load the dojo toolkit base -->
@@ -83,7 +83,7 @@
 	</style>
 
 </head>
-<body class="nihilo">
+<body class="<?=$ui_style?>">
 
 <ul dojoType="dijit.Menu" id="tree_menu" style="display: none;">
     <li dojoType="dijit.MenuItem" onClick="refreshTree();">刷新</li>
@@ -168,7 +168,19 @@
 			                        <div dojoType="dijit.MenuItem" onClick="view_sqlite()">SQLite Manager</div>
 			                        
 			                </div>
-			        </div>	        	     
+			        </div>	
+			        <div style="float:right;">界面风格<select style="width:100px" dojoType="dijit.form.ComboBox" name="style" onchange="window.location.href=gSiteUrl+'/index.php/index/defaults/style/'+this.attr('value')">
+
+    <option <? if($ui_style=='nihilo') echo "selected";?>>
+        nihilo
+    </option>
+    <option <? if($ui_style=='soria') echo "selected";?>>
+        soria
+    </option>
+     <option <? if($ui_style=='tundra') echo "selected";?>>
+        tundra
+    </option>
+</select></div>        	     
 			</div>
 	 </div>
 	 <!-- top end -->
