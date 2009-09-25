@@ -1,5 +1,8 @@
 <ul>
-<li>2009.9.17
+<li>2009.9.25</li>
+<li>新增界面风格改变功能</li>
+<li></li>
+<li>2009.9.17</li>
 <li>phpMyBackupPro 工具集成</li>
 <li></li>
 <li>2009.9.16</li>
