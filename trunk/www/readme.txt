@@ -24,3 +24,5 @@ user_reg_time int 11
 user_reg_ip varchar 16
 user_lastlogin_time int 11
 user_lastlogin_ip varchar 16
+
+http://yav.sourceforge.net/en/gettingstarted.html
