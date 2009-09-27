@@ -9,98 +9,52 @@ class passport {
 	/****登录相关方法 开始*****/
 	function view_login() {
 		global $tpl;
-		$redirect_url = isset ( $_GET ['from'] ) ? $_GET ['from'] : '';
-		if(isset($_GET ['forward'])) {
-			$redirect_url = isset ( $_GET ['forward'] ) ? $_GET ['forward'] : '';
-		}
-		$tpl->assign ( 'redirect_url', urlencode ( $redirect_url ) );
-		$tpl->assign ( 'title', '登录-果动网-果然会动-网页3D娱乐' );
-		$tpl->assign ( 'tag', time () );
+		$redirect_url = isset ( $_GET ['forward'] ) ? $_GET ['forward'] : '';
+		$tpl->assign ( 'forward', urlencode ( $redirect_url ) );
 	}
-	function view_loginwin(){
-		global $tpl;
-		$redirect_url = isset ( $_GET ['from'] ) ? $_GET ['from'] : '';
-		if(isset($_GET ['forward'])) {
-			$redirect_url = isset ( $_GET ['forward'] ) ? $_GET ['forward'] : '';
-		}
-		$tpl->assign ( 'title', '登录-果动网-果然会动-网页3D娱乐' );
-		$tpl->assign ( 'redirect_url', urlencode ( $redirect_url ) );
-	}
+
 	function op_dologin() {
-		$redirect_url = ! empty ( $_POST ['redirect_url'] ) ? $_POST ['redirect_url'] : '';
-		if (empty ( $_POST ['passport_user'] )) {
+		$redirect_url = ! empty ( $_POST ['forward'] ) ? $_POST ['forward'] : '';
+		if (empty ( $_POST ['email'] )) {
 			$msg = "";
 			die ();
 		}
-		$user_name = $_POST ['passport_user'];
-		$user_passwd = $_POST ['passport_passwd'];
-		if(isset($_SESSION['pwd_error']) && isset($_POST ['User_Code'])){
-			$vcode		 =strtolower($_POST ['User_Code']);
+		$user_email = $_POST ['email'];
+		$user_passwd = $_POST ['password'];
+		if(isset($_SESSION['pwd_error']) && isset($_POST ['code'])){
+			$vcode		 =strtolower($_POST ['code']);
 			if($vcode!=strtolower($_SESSION['validatecode'])){
-				echo "-5";die;
+				echo "-5";
+				die;
 			}
 		}
 		$cookie_remember = ! empty ( $_POST ['remember'] ) ? $_POST ['remember'] : '0';
-		include_once("ApiUser.class.php");
-		$user = ApiUser::getUserByName( $user_name );
+		
+	
+		include_once("PassportModel.class.php");
+		$passmod = new PassportModel();
+		$user = $passmod->getUserByEmail($user_email);
 		if ($user) {
 
-			include_once("UserModel.class.php");
-			$usermod = new UserModel($user['user_db_key']);
-			$user_info = $usermod->getUserById($user['user_id']);
+			
+			$user_info = $passmod->getUserById($user['user_id'],$user_email);
 				
-			if ($user_info ['user_passwd'] == md5 ( $user_passwd )) {
+			if ($user_info ['user_password'] == md5 ( $user_passwd )) {
 				if(isset($_SESSION['pwd_error'])) unset($_SESSION['pwd_error']);
-				if ($user_info ['user_status'] == 1) {
-
-					// 送果果
-					include_once("Rule/Rule.class.php");
-					Rule::login($user['user_id'],$user ['user_name']);
-
-					$user_ext = $usermod->getUserExt ( $user ['user_id'] );
-					$msg_noread_no = $usermod->getUserMsgNum( $user ['user_id']);
-					$user ['user_passwd'] = $user_info ['user_passwd'];
-					$user ['user_score'] = $user_ext ['user_score'];
-					$user ['user_host'] = $user_ext ['user_host'];
-					$user ['user_gender'] = $user_ext ['user_gender'];
-					$user ['user_coin'] = $user_ext ['user_coin'];
-					$user ['user_cash'] = $user_ext ['user_cash'];
-					$user ['city_code'] = $user_ext ['city_code'];
-					$user ['town_code'] = $user_ext ['town_code'];
-					$user ['province_code'] = $user_ext ['province_code'];
-					$user ['user_rank'] = 1;
-					$user ['user_vip'] =  $user_ext ['user_vip'];
-					$user ['user_vip_time'] =  $user_ext ['user_vip_time'];
-					$user ['user_icon'] =  $user_ext ['user_icon'];
-					$user ['autologin'] = $cookie_remember;
-					$user ['user_vote_total'] = $user_ext ['user_vote_total'];
-					$user ['user_vote_num'] = $user_ext ['user_vote_num'];
-					$user ['msg_noread_no'] = $msg_noread_no;
-					$user['user_last_logtime'] = (empty($user_ext['user_last_logtime']))?'':$user_ext['user_last_logtime'];
-					$this->set_cookie ( $user );
-					$usermod->updateUserExtInfo ( $user );
-
-					//如果不是在商城登陆的,要种cookie['VIEW_GENDER']
-					if(strpos($redirect_url,'show')==false){
-						$widget_gender = '';
-						$widget_gender = $usermod->getUserWidgetGender( $user ['user_id'] );
-						if($widget_gender==1) $widget_gender='boy';
-						if($widget_gender==2) $widget_gender='girl';
-						setcookie("VIEW_GENDER",$widget_gender,0,'/',COOKIE_DOMAIN);
-					}
-
+				if ($user_info ['user_state'] == 1) {
+	
+					//$user ['user_password'] = $user_info ['user_passwd'];							
+					//$user ['autologin'] = $cookie_remember;				
+					$updates['user_lastlogin_time'] = time();
+					$updates['user_lastlogin_ip'] = getip();
+					$updates['user_id'] = $user['user_id'];
+					//$this->set_cookie ( $user );
+					$passmod->updateUser( $updates, $user['user_id']);
+				    $msg = "0";
+			
 					//记录登陆日志
-					curl_get_content($GLOBALS ['gSiteInfo'] ['stats_site_url']."/loginlog.php?user=".$user_name."&userid=".$user ['user_id']);
+					//curl_get_content($GLOBALS ['gSiteInfo'] ['stats_site_url']."/loginlog.php?user=".$user_email."&userid=".$user ['user_id']);
 
-
-					if (empty ( $redirect_url )){
-						echo $GLOBALS ['gSiteInfo'] ['www_site_url']."/index.php/passport/forwardbbs";
-						die;
-					} else{
-						if(strpos($redirect_url,'http')===false) $redirect_url = $GLOBALS ['gSiteInfo'] ['www_site_url'].$redirect_url;
-						echo $GLOBALS ['gSiteInfo'] ['www_site_url']."/index.php?action=passport&view=forwardbbs&gourl=".$redirect_url;
-						die ();
-					}
 				} else {
 					$msg = "-1";
 				}
@@ -129,43 +83,6 @@ class passport {
 		echo $msg;
 		die ();
 	}
-	function view_forwardbbs() {
-
-		$user = authenticate ();
-		if ($user != false) {
-
-			$passport_key=$GLOBALS ['bbs']['key'];  //通行证私有密匙
-			$member = array
-			(
-				        'cookietime'    => 0,
-				        'time'      => time(),
-				        'username'  => $user ['0'],  //用户名
-				        'password'  => $_COOKIE['IDOL_AUTH'] ,        //密码
-				        'email'     => $user['13'],         //emial
-					    'nickname'=>$user [2]
-			);
-
-			$action     = 'login';  //状态为登录
-			$forward = $GLOBALS ['gSiteInfo'] ['www_site_url'];
-			if(isset($_GET['gourl']) && !empty($_GET['gourl'])){
-				$forward=$_GET['gourl'];
-			}
-			include_once ("PassportModel.class.php");
-			$auth		= PassportModel::passport_encrypt(PassportModel::passport_encode($member), $passport_key);
-			$verify		= md5($action.$auth.$forward.$passport_key);
-
-
-			header("Location: ".$GLOBALS ['gSiteInfo'] ['bbs_site_url']."/api/passport.php".
-							"?action=$action".
-							"&auth=".rawurlencode($auth).
-							"&forward=".rawurlencode($forward).
-							"&verify=$verify");
-			die;
-		}
-
-		header("Location: ".$GLOBALS ['gSiteInfo'] ['www_site_url']);
-		die;
-	}
 	function view_autologin() {
 
 		//初始化道具
@@ -191,11 +108,11 @@ class passport {
 
 			//echo "text: ".trim($decrypted_data);
 			if(!empty($decrypted_data) && preg_match("/.*?\|.{32}\|.*?\|\d*?/ism",$decrypted_data)){
-				list ( $user_name, $pwd_md5, $nickname, $time ) = explode ( "|", $decrypted_data );
+				list ( $user_email, $pwd_md5, $nickname, $time ) = explode ( "|", $decrypted_data );
 
 				if (($time >= time () - 5 && $from == 'client') || ($from == 'user')) {
 					include_once("ApiUser.class.php");
-					$user = ApiUser::getUserByName( $user_name );
+					$user = ApiUser::getUserByName( $user_email );
 					if ($user !== false) {
 
 						include_once("UserModel.class.php");
@@ -240,7 +157,7 @@ class passport {
 								
 								//show_message ( $msg );
 								//记录登陆日志
-								curl_get_content($GLOBALS ['gSiteInfo'] ['stats_site_url']."/loginlog.php?user=".$user_name."&userid=".$user ['user_id']);
+								curl_get_content($GLOBALS ['gSiteInfo'] ['stats_site_url']."/loginlog.php?user=".$user_email."&userid=".$user ['user_id']);
 
 								$backurl = ! empty ( $_GET ['backurl'] )?urlencode($_GET ['backurl']):$GLOBALS ['gSiteInfo'] ['www_site_url']."/index.php/show/frameset";
 
@@ -295,25 +212,6 @@ class passport {
 		die ();
 
 	}
-	function view_logoutbbs() {
-
-		$passport_key=	$GLOBALS ['bbs']['key'];
-		$action     = 'logout';  //状态为登录
-		$forward = $GLOBALS ['gSiteInfo'] ['www_site_url'];
-		if(isset($_GET['gourl']) && !empty($_GET['gourl'])){
-			$forward=$_GET['gourl'];
-		}
-		$auth		= '';//PassportModel::passport_encrypt(PassportModel::passport_encode($member), $passport_key);
-		$verify		= md5($action.$auth.$forward.$passport_key);
-		unset($_SESSION['user_info']);
-		header("Location: ".$GLOBALS ['gSiteInfo'] ['bbs_site_url']."/api/passport.php".
-							"?action=$action".
-							"&auth=".rawurlencode($auth).
-							"&forward=".rawurlencode($forward).
-							"&verify=$verify");
-
-		die;
-	}
 	function set_cookie($user) {
 		$str = 'abcedfghijklmnopqrstuvwxyz';
 		$rand_str = $str [rand ( 0, 25 )] . $str [rand ( 0, 25 )] . $str [rand ( 0, 25 )] . $str [rand ( 0, 25 )];
@@ -329,7 +227,7 @@ class passport {
 
 		$user_arr[0] = $user ['user_name'];
 		$user_arr[1] = $user ['user_id'];
-		$user_arr[2] = $user ['user_nickname'];
+		$user_arr[2] = $user ['nickname'];
 		$user_arr[3] = $user ['user_cash'];
 		$user_arr[4] = $user ['user_rank'];
 		$user_arr[5] = "http://" . $user ['user_host'] ;
@@ -340,7 +238,7 @@ class passport {
 		$user_arr[10] = $user ['user_vote_num'];
 		$user_arr[11] = $average;
 		$user_arr[12] = $user ['user_db_key'];
-		$user_arr[13] = $user ['user_email'];
+		$user_arr[13] = $user ['email'];
 		$user_arr[14] = $user ['user_vip'];
 		$user_arr[15] = $user ['user_coin'];
 		$user_arr[16] = !empty($user ['user_icon'])?$user ['user_icon']:$GLOBALS ['gSiteInfo'] ['image_site_url']."/images/noavatar.gif";
@@ -356,7 +254,7 @@ class passport {
 		setcookie ( 'IDOL_VIP_' . $user ['user_name'], $user ['user_vip_time'], 0, '/', COOKIE_DOMAIN );
 		setcookie ( 'IDOL_MSGNUM_' . $user ['user_name'], $user ['msg_noread_no'], 0, '/', COOKIE_DOMAIN );
 		setcookie ( 'IDOL_USERNAME' ,$user ['user_name'], time () + 3600 * 24 * 365 * 10, '/', COOKIE_DOMAIN);
-		setcookie ( 'IDOL_NICKNAME' ,urlencode($user ['user_nickname']), time () + 3600 * 24 * 365 * 10, '/', COOKIE_DOMAIN);
+		setcookie ( 'IDOL_NICKNAME' ,urlencode($user ['nickname']), time () + 3600 * 24 * 365 * 10, '/', COOKIE_DOMAIN);
 		if ($user ['autologin'] == 1) {
 			//setcookie ( 'IDOL_USERNAME' ,$user ['user_name'], time () + 3600 * 24 * 365 * 10, '/', COOKIE_DOMAIN);
 			$key = TICKET_KEY;
@@ -364,7 +262,7 @@ class passport {
 			$iv = mcrypt_create_iv ( mcrypt_enc_get_iv_size ( $td ), MCRYPT_RAND );
 			$key = substr ( $key, 0, mcrypt_enc_get_key_size ( $td ) );
 			mcrypt_generic_init ( $td, $key, $iv );
-			$input = $user ['user_name'] . '|' . $user ['user_passwd'] . "|" . $user ['user_nickname'] . "|" . time ();
+			$input = $user ['user_name'] . '|' . $user ['user_passwd'] . "|" . $user ['nickname'] . "|" . time ();
 			$encrypted_data = mcrypt_generic ( $td, $input );
 			$encrypted_data = bin2hex ( $encrypted_data );
 			setcookie ( 'IDOL_TICKET', $encrypted_data, time () + 3600 * 24 * 365 * 10, '/', COOKIE_DOMAIN );
@@ -444,32 +342,27 @@ class passport {
 	}
 	function view_reg() {
 		global $tpl;
-		$reg_html = APP_DIR . '/reg.html';
 		$sponsor = isset ( $_GET ['sponsor'] ) ? $_GET ['sponsor'] : '';
 
-		$_SESSION ['User_Sex'] = ! isset ( $_SESSION ['User_Sex'] ) ? '' : $_SESSION ['User_Sex'];
-		$_SESSION ['User_Account'] = ! isset ( $_SESSION ['User_Account'] ) ? '' : $_SESSION ['User_Account'];
-		$_SESSION ['User_Email'] = ! isset ( $_SESSION ['User_Email'] ) ? '' : $_SESSION ['User_Email'];
-		$_SESSION ['User_Nickname'] = ! isset ( $_SESSION ['User_Nickname'] ) ? '' : $_SESSION ['User_Nickname'];
+		$_SESSION ['sex'] = ! isset ( $_SESSION ['sex'] ) ? '' : $_SESSION ['sex'];
+		$_SESSION ['username'] = ! isset ( $_SESSION ['username'] ) ? '' : $_SESSION ['username'];
+		$_SESSION ['email'] = ! isset ( $_SESSION ['email'] ) ? '' : $_SESSION ['email'];
+		$_SESSION ['nickname'] = ! isset ( $_SESSION ['nickname'] ) ? '' : $_SESSION ['nickname'];
 
 		$forward=$GLOBALS ['gSiteInfo'] ['www_site_url']."/index.php/passport/regok";
 		if(isset($_GET ['forward'])) {
 			$redirect_url = isset ( $_GET ['forward'] ) ? $_GET ['forward'] : '';
 		}
 
-		$tpl->assign ( 'User_Account', $_SESSION ['User_Account'] );
-		$tpl->assign ( 'User_Email', $_SESSION ['User_Email'] );
-		$tpl->assign ( 'User_Nickname', $_SESSION ['User_Nickname'] );
-		$tpl->assign ( 'select_sex', $_SESSION ['User_Sex'] );
+		$tpl->assign ( 'username', $_SESSION ['username'] );
+		$tpl->assign ( 'email', $_SESSION ['email'] );
+		$tpl->assign ( 'nickname', $_SESSION ['nickname'] );
+		$tpl->assign ( 'select_sex', $_SESSION ['sex'] );
 
 		$tpl->assign ( 'sponsor', $sponsor );
 		$tpl->assign ( 'forward', $forward );
-		$tpl->assign ( 'title', "注册-果动网-果然会动-网页3D娱乐" );
 
 
-
-
-		if(!file_exists($reg_html)) Controller::createHtml($reg_html);
 	}
 	function view_regok() {
 		global $tpl;
@@ -483,34 +376,35 @@ class passport {
 	}
 	function op_saveuser() {
 		$msg = '';
-		$_POST ['User_Sex'] = ($_POST ['User_Sex'] ==1)?$_POST ['User_Sex']:2;
-		$_SESSION ['User_Account'] = $_POST ['User_Account'];
-		$_SESSION ['User_Email'] = $_POST ['User_Email'];
-		$_SESSION ['User_Nickname'] = $_POST ['User_Nickname'];
-		$_SESSION ['User_Sex'] = $_POST ['User_Sex'];
+		$_POST ['sex'] = (isset($_POST ['sex']))?$_POST ['sex']:0;
+		$_SESSION ['username'] = $_POST ['username'];
+		$_SESSION ['email'] = $_POST ['email'];
+		$_SESSION ['nickname'] = $_POST ['nickname'];
+		$_SESSION ['realname'] = $_POST ['realname'];
+		$_SESSION ['sex'] = $_POST ['sex'];
 		//在php端对变量的规则进行判断.
 		$pattern = "/^[a-zA-Z][a-zA-Z0-9_]{1,13}[a-zA-Z0-9]$/i";
 		$pattern2 = "/^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/";
-		if (!isset($_SESSION['validatecode']) || ($_POST['User_Code']!='back' && strtolower($_POST['User_Code'])!=strtolower($_SESSION['validatecode']))) {
+		if (!isset($_SESSION['validatecode']) || ($_POST['code']!='back' && strtolower($_POST['code'])!=strtolower($_SESSION['validatecode']))) {
 			show_message_goback ( "验证码输入错误!" );
 		}
-		$_POST ['User_Account'] = trim ( $_POST ['User_Account'] );
-		if (empty ( $_POST ['User_Account'] ) || ! preg_match ( $pattern, $_POST ['User_Account'] )) {
+		$_POST ['username'] = trim ( $_POST ['username'] );
+		if (empty ( $_POST ['username'] ) || ! preg_match ( $pattern, $_POST ['username'] )) {
 			show_message_goback ( "用户名只能由3-15位字母(a-z)、数字(0-9)或下划线(_)构成，并且必须以字母开头!" );
 		}
-		if (empty ( $_POST ['User_Email'] ) || ! preg_match ( $pattern2, $_POST ['User_Email'] )) {
+		if (empty ( $_POST ['email'] ) || ! preg_match ( $pattern2, $_POST ['email'] )) {
 			show_message_goback ( "您的电子邮箱格式有误，请修改!" );
 		}
-		if ($_POST ['User_Password'] != $_POST ['User_RePassword']) {
+		if ($_POST ['password'] != $_POST ['comfirm']) {
 			show_message_goback ( "两个密码不一致，请修改!" );
 		}
-		$_POST ['User_Nickname'] = trim ( $_POST ['User_Nickname'] );
-		$nickname_len = mb_strlen ( $_POST ['User_Nickname'], "UTF-8");
-		if (empty ( $_POST ['User_Nickname'] ) || $nickname_len < 2 || $nickname_len > 8) {
+		$_POST ['nickname'] = trim ( $_POST ['nickname'] );
+		$nickname_len = mb_strlen ( $_POST ['nickname'], "UTF-8");
+		if (empty ( $_POST ['nickname'] ) || $nickname_len < 2 || $nickname_len > 12) {
 			show_message_goback ( "昵称不能为空,不能少于2位,大于8位!" );
 		}
-		$_POST ['User_Sex'] = intval($_POST ['User_Sex']);
-		if (empty($_POST ['User_Sex'])) {
+		$_POST ['sex'] = intval($_POST ['sex']);
+		if (empty($_POST ['sex'])) {
 			show_message_goback ( "请选择性别！" );
 		}
 
@@ -518,101 +412,44 @@ class passport {
 		include_once("PassportModel.class.php");
 		$passmod = new PassportModel();
 
-		$count = $passmod->checkUserName ( $_POST ['User_Account'] );
-		$count1 = $passmod->checkEmail ( $_POST ['User_Email'] );
-		$count2 = $passmod->checkNickName ( htmlspecialchars ( $_POST ['User_Nickname'] ) );
-		if ($count > 0 || $count1 > 0 || $count2 > 0) {
-			$msg = "用户名 或者 邮箱 或者 昵称 已存在!";
+		$count = $passmod->checkUserName ( $_POST ['username'] );
+		$count1 = $passmod->checkEmail ( $_POST ['email'] );
+		
+		if ($count > 0 || $count1 > 0 ) {
+			$msg = "用户名 或者 邮箱 已存在!";
 			show_message_goback ( $msg );
 
 		} else {
-			$city_code = 0;
-			$town_code = 0;
-			$province_code = 0;
-
+			
 			$sponsor = ! empty ( $_POST ['sponsor'] ) ? $_POST ['sponsor'] : '';
-			$user = array ('user_name' => $_POST ['User_Account'], 'user_passwd' => md5 ( $_POST ['User_Password'] ), 'user_email' => $_POST ['User_Email'], 'user_nickname' => htmlspecialchars ( $_POST ['User_Nickname'] ), 'user_gender' => $_POST ['User_Sex'], 'user_province' => $province_code, 'user_city' => $city_code, 'user_town' => $town_code, 'city_code' => $city_code, 'town_code' => $town_code, 'province_code' => $province_code );
-			$user ['user_rank'] = 0;
-			$user ['autologin'] = 0;
-			$user ['user_coin'] = 0;
+			$user = array ('user_name' => $_POST ['username'], 'user_password' => md5 ( $_POST ['password'] ), 'user_email' => $_POST ['email'], 'user_nickname' => htmlspecialchars ( $_POST ['nickname'] ), 
+			'user_sex' => $_POST ['sex'],'user_realname'=>$_POST['realname'], 'user_reg_ip'=>getip() );
+	
 
 			// 1. create db user
 			$row = $passmod->createNewUser ( $user );
 			if ($row !== false) {
-				// update the ad_id in order to  dealing register count
-				if (! empty ( $_COOKIE ['advertise_uid'] )) {
-					$medium_id = $_COOKIE ['advertise_uid'];
-					$passmod->updateMediumIDByUser ( $row['db_key'],$row['user_id'], $medium_id );
-					setcookie ( 'advertise_uid', '', time()-3600, '/', COOKIE_DOMAIN );
-				}
-
-				// 送果果
-				include_once("Rule/Rule.class.php");
-				$reg_coin = Rule::reg($row['user_id'],$user ['user_name']);
-
+	
 				//  add user to user_sponsor,user_friend table
 				if ($sponsor != '') {
-					$sponsor_userid = $passmod->addUserSponsor (  $row['db_key'],$row['user_id'], $sponsor, $user ['user_name'], $user ['user_email'], $user ['user_nickname'] );
+					$sponsor_userid = $passmod->addUserSponsor (  $row['db_key'],$row['user_id'], $sponsor, $user ['user_name'], $user ['email'], $user ['nickname'] );
 				}
-
 
 				// 6.自动登录
 				$user ['user_id'] = $row['user_id'];
-				$user ['user_score'] = 0;
-				$user ['user_coin'] = $reg_coin;
-				$user ['user_cash'] = 0;
-				$user ['user_host'] = '';
-				$user ['user_vote_total'] = 0;
-				$user ['user_vote_num'] = 0;
-				$user ['user_db_key'] = $row['db_key'];
-				$user ['user_vip'] = 0;
-				$user ['user_vip_time'] = 0;
-				$user ['user_icon'] = '';
-				$user ['msg_noread_no'] = 1;
-				//
-				$_SESSION ['User_Sex'] = '';
-				$_SESSION ['User_Account'] = '';
-				$_SESSION ['User_Email'] = '';
-				$_SESSION ['User_Nickname'] = '';
 
-				$this->set_cookie ( $user );
+				$_SESSION ['sex'] = '';
+				$_SESSION ['username'] = '';
+				$_SESSION ['email'] = '';
+				$_SESSION ['nickname'] = '';
 
-				// 默认商城显示
-				$view_gender ='';
-				if($user['user_gender']==1) $view_gender = 'boy';
-				if($user['user_gender']==2) $view_gender = 'girl';
-				setcookie("VIEW_GENDER",$view_gender,0,'/',COOKIE_DOMAIN);
+				//$this->set_cookie ( $user );
 
 				//记录登陆日志
-				curl_get_content($GLOBALS ['gSiteInfo'] ['stats_site_url']."/loginlog.php?user=".$user ['user_name']."&userid=".$row['user_id']);
+				//curl_get_content($GLOBALS ['gSiteInfo'] ['stats_site_url']."/loginlog.php?user=".$user ['user_name']."&userid=".$row['user_id']);
 
-				//如果需要同步到论坛系统里
-				//if(isset($_POST['sysbbs']) && $_POST['sysbbs']=="1"){
-				$passport_key=$GLOBALS ['bbs']['key'];  //通行证私有密匙
-				$member = array
-				(
-			        'cookietime'    => 0,
-			        'time'      => time(),
-			        'username'  => $_POST ['User_Account'],  //用户名
-			        'password'  => md5 ( $_POST ['User_Password'] ),        //密码
-			        'email'     => $_POST ['User_Email'],         //emial
-					'nickname'=>$_POST ['User_Nickname']
-				);
-				$action     = 'login';  //状态为登录
-				$forward    = $GLOBALS ['gSiteInfo'] ['www_site_url']."/index.php/passport/regok";
-				if(isset($_GET ['forward'])) {
-					$forward = $_GET ['forward'];
-				}
-				$auth		= PassportModel::passport_encrypt(PassportModel::passport_encode($member), $passport_key);
-				$verify		= md5($action.$auth.$forward.$passport_key);
-				header("Location: ".$GLOBALS ['gSiteInfo'] ['bbs_site_url']."/api/passport.php".
-						"?action=$action".
-						"&auth=".rawurlencode($auth).
-						"&forward=".rawurlencode($forward).
-						"&verify=$verify");
-
-				//}
-
+				echo 'ok';
+				//show_message_goback('注册成功！');
 				//redirect("index.php?action=user&view=personal1");
 				//header ( "location: /index.php/passport/regok/" );
 
@@ -622,38 +459,38 @@ class passport {
 	}
 	function op_saveuserapi(){
 		$msg = '';
-		$_POST['User_Account'] = !isset($_POST['User_Account'])?'':$_POST['User_Account'];
-		$_POST['User_Email'] = !isset($_POST['User_Email'])?'':$_POST['User_Email'];
-		$_POST['User_Sex'] = !isset($_POST['User_Sex'])?'':$_POST['User_Sex'];
-		$_POST['User_Password'] = !isset($_POST['User_Password'])?'':$_POST['User_Password'];
+		$_POST['username'] = !isset($_POST['username'])?'':$_POST['username'];
+		$_POST['email'] = !isset($_POST['email'])?'':$_POST['email'];
+		$_POST['sex'] = !isset($_POST['sex'])?'':$_POST['sex'];
+		$_POST['password'] = !isset($_POST['password'])?'':$_POST['password'];
 		$_POST['User_RePassword'] = !isset($_POST['User_RePassword'])?'':$_POST['User_RePassword'];
-		$_POST['User_Nickname'] = !isset($_POST['User_Nickname'])?'':$_POST['User_Nickname'];
+		$_POST['nickname'] = !isset($_POST['nickname'])?'':$_POST['nickname'];
 		//在php端对变量的规则进行判断.
 		$pattern = "/^[a-zA-Z][a-zA-Z0-9_]{1,13}[a-zA-Z0-9]$/i";
 		$pattern2= "/^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/";
-		$_POST['User_Account'] = trim($_POST['User_Account']);
-		if(empty($_POST['User_Account']) || !preg_match($pattern,$_POST['User_Account'])){
+		$_POST['username'] = trim($_POST['username']);
+		if(empty($_POST['username']) || !preg_match($pattern,$_POST['username'])){
 			$msg ="用户名只能由3-15位字母(a-z)、数字(0-9)或下划线(_)构成，并且必须以字母开头!";
 		}
-		if(empty($_POST['User_Email']) || !preg_match($pattern2,$_POST['User_Email'])){
+		if(empty($_POST['email']) || !preg_match($pattern2,$_POST['email'])){
 			$msg ="您的电子邮箱格式有误，请修改!";
 		}
-		if($_POST['User_Password']!=$_POST['User_RePassword']){
+		if($_POST['password']!=$_POST['User_RePassword']){
 			$msg = "两个密码不一致，请修改!";
 		}
-		$_POST['User_Nickname'] = trim($_POST['User_Nickname']);
-		$nickname_len = mb_strlen($_POST['User_Nickname']);
-		if(empty($_POST['User_Nickname'])|| $nickname_len<2 || $nickname_len>8){
+		$_POST['nickname'] = trim($_POST['nickname']);
+		$nickname_len = mb_strlen($_POST['nickname']);
+		if(empty($_POST['nickname'])|| $nickname_len<2 || $nickname_len>8){
 			$msg = "昵称不能为空,不能少于2位,大于8位!";
 		}
-		if($_POST['User_Sex']==''){
+		if($_POST['sex']==''){
 			$msg ="请选择性别！";
 		}
 		include_once("PassportModel.class.php");
 		$passmod = new PassportModel();
-		$count = $passmod->checkUserName(trim($_POST['User_Account']));
-		$count1 = $passmod->checkEmail(trim($_POST['User_Email']));
-		$count2 = $passmod->checkNickName(htmlspecialchars(trim($_POST['User_Nickname'])));
+		$count = $passmod->checkUserName(trim($_POST['username']));
+		$count1 = $passmod->checkEmail(trim($_POST['email']));
+		$count2 = $passmod->checkNickName(htmlspecialchars(trim($_POST['nickname'])));
 		if ($count > 0 || $count1 > 0 || $count1 > 0)
 		{
 			$msg = "用户名 或者 邮箱 或者 昵称 已存在!";
@@ -666,10 +503,10 @@ class passport {
 			$gender = empty($_POST['select_sex'])?1:$_POST['select_sex'];
 			$select_idol = empty($_POST['select_idol'])?1:$_POST['select_idol'];
 
-			$user = array('user_name'=>trim($_POST['User_Account']),
-						  'user_passwd'=>md5($_POST['User_Password']),
-						  'user_email'=>trim($_POST['User_Email']),
-						  'user_nickname'=>htmlspecialchars($_POST['User_Nickname']),
+			$user = array('user_name'=>trim($_POST['username']),
+						  'user_passwd'=>md5($_POST['password']),
+						  'email'=>trim($_POST['email']),
+						  'nickname'=>htmlspecialchars($_POST['nickname']),
 						  'user_gender'=>$gender,
 						  'user_province'=>$province_code,
 						  'user_city'=>$city_code,
@@ -693,31 +530,7 @@ class passport {
 		echo "<msg>".$msg."</msg>";
 		die;
 	}
-	function view_regframe2() {
-		global $tpl;
-		$v_user = array ();
-		$src = "";
-		$src2 = "";
-		$res = "";
-		if (! empty ( $_GET ['sponsor'] )) {
-			include_once("ApiUser.class.php");
-			include_once("UserModel.class.php");
-			$user = ApiUser::getUserByName( $_GET ['sponsor']);
-			$userModel = new UserModel( $user['user_db_key']);
-			$v_user = $userModel->getUserExt( $user['user_id'] );
-			$src = $v_user ['user_icon'] ;
-			$src2 = $v_user ['user_pic'] ;
-		} else {
-			$v_user ['user_nickname'] = '';
-			$v_user ['user_name'] = '';
-		}
-		$sponsor = isset($_GET ['sponsor'])?$_GET ['sponsor']:'';
-		$tpl->assign ( "title", $v_user['user_name']."邀请你加入果动网" );
-		$tpl->assign ( 'res', $sponsor );
-		$tpl->assign ( 'vuser', $v_user );
-		$tpl->assign ( 'src', $src );
-		$tpl->assign ( 'src2', $src2 );
-	}
+	
 	/****注册相关方法 结束*****/
 
 	/****找回密码相关方法 开始****/
@@ -889,31 +702,5 @@ class passport {
 	}
 	/****找回密码相关方法 结束****/
 
-	function view_widget(){
-		// 送果果
-		$userid = $_GET['userid'];
-
-		include_once("ApiUser.class.php");
-		$user = ApiUser::getUserByName($userid);
-		if($user){
-			include_once("Rule/Rule.class.php");
-			//给自己送GG
-			Rule::widget($user['user_id'],$user['user_name']);
-
-			include_once("UserModel.class.php");
-			$userModel  = new UserModel($user['user_db_key']);
-			$userext = $userModel->getUserExt($user['user_id']);
-			if(!empty($userext['user_sponsor'])){
-				$sponsor_name  = $userext['user_sponsor'];
-				$sponsor = ApiUser::getUserByName($sponsor_name);
-
-				//给发起者送GG
-				Rule::invite_widget($sponsor['user_id'],$sponsor['user_name'],$user['user_name']);
-			}
-		}
-
-		die;
-
-	}
 }
 ?>

@@ -37,10 +37,19 @@
 //				Database   Settings	                //
 //////////////////////////////////////////////////////		
 		
+	$GLOBALS ["gDataBase"] ["db_kakapo"] = array (
+  'dbname' => 'kakapo',
+  'type' => 'mysql',
+  'host' => 'localhost',
+  'port' => '3306',
+  'user' => 'kakapo',
+  'passwd' => '123456',
+  'charset' => 'utf8',
+);
 	$GLOBALS ["gDataBase"] ["db_setting.db3"] = array (
   'dbname' => 'setting.db3',
   'type' => 'sqlite',
-  'path' => APP_DIR."/config",
+  'path' => APP_DIR."/../Admin/config",
 );
 	
 //////////////////////////////////////////////////////
@@ -99,7 +108,7 @@ $GLOBALS ["gMemcacheServer"]["192.168.1.5:11213"]);;
 		
 	$GLOBALS ["gLog"] ["sendemail"] =  "1";
 	$GLOBALS ["gLog"] ["subject"] =  "应用错误报告";
-	$GLOBALS ["gLog"] ["receiver"] =  "zswu@tsong.cn";
+	$GLOBALS ["gLog"] ["receiver"] =  "kakapowu@gmail.com";
 	$GLOBALS ["gLog"] ["maxExecTime"] =  "2";
 	$GLOBALS ["gLog"] ["maxMemUsed"] =  "1048576";
 	

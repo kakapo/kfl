@@ -1,0 +1,50 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title><?=$web_title?></title>
+<LINK href="<?=$www_site_url?>/public/yav-style.css" type=text/css rel=stylesheet>
+<script src="<?=$www_site_url?>/public/js/yav2.0/yav.js"></script>
+<script src="<?=$www_site_url?>/public/js/yav2.0/yav-config-zh-CN.js"></script>
+<SCRIPT>
+//only for test purposes
+function checkOnSubmit(formName, r) {
+  
+    if (yav.performCheck(formName, r, 'inline')) {
+       return true;
+    } 
+    return false;
+}
+
+var rules=new Array();
+
+rules[0]='email|required';
+rules[1]='email|email';
+rules[2]='password|required';
+
+
+yav.addHelp('email', '请输入您的帐号：电子邮箱');
+yav.addHelp('password', '请输入您的密码');
+
+
+
+</SCRIPT>
+
+</head>
+<body onload="yav.init('loginform', rules);">
+<h1> 欢迎使用 KPass！ 登录系统</h1>
+<FORM name="loginform" method="POST" onsubmit="return checkOnSubmit('loginform', rules);" >
+<input type="hidden" name="action" value="passport">
+<input type="hidden" name="op" value="dologin">
+<input type="hidden" name="forward" value="<?=$forward?>">
+<TABLE valign=top>
+
+<TR><TD>帐号:</TD><TD><INPUT type=text name=email />&nbsp;&nbsp;<span id=errorsDiv_email></span></TD></TR>
+<TR><TD>密码:</TD><TD><INPUT type=password name=password />&nbsp;&nbsp;<span id=errorsDiv_password></span></TD></TR>
+
+<TR><TD>&nbsp;</TD><TD><INPUT type="checkbox" name="remember" /> 记住我&nbsp;&nbsp;<span id=errorsDiv_remember></span></TD></TR>
+<TR><TD colspan="2"><INPUT type=submit value="登录" /> <INPUT type="button" value="注册" onclick="window.location.href='/index.php/passport/reg'" /><br></TD><TD></TD></TR>
+</TABLE>
+</form>
+</body>
+</html>
