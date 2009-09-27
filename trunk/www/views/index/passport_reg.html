@@ -1,0 +1,76 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title><?=$web_title?></title>
+<LINK href="<?=$www_site_url?>/public/yav-style.css" type=text/css rel=stylesheet>
+<script src="<?=$www_site_url?>/public/js/yav2.0/yav.js"></script>
+<script src="<?=$www_site_url?>/public/js/yav2.0/yav-config-zh-CN.js"></script>
+<SCRIPT>
+//only for test purposes
+function checkOnSubmit(formName, r) {
+   // document.getElementById(yav_config.errorsdiv).className = '';
+   // document.getElementById(yav_config.errorsdiv).style.display = 'none';
+   // var alertType = document.getElementById('alertType').value;
+    if (yav.performCheck(formName, r, 'inline')) {
+    	return true;
+        alert('Form validated (you usually submit your form now)');
+    } 
+    return false;
+}
+
+var rules=new Array();
+rules[0]='username|required';
+rules[1]='password|required';
+rules[2]='password|minlength|6';
+rules[3]='confirm|equal|$password';
+rules[4]='email|required';
+rules[5]='email|email';
+rules[6]='realname|required';
+rules[7]='sex|required';
+rules[8]='code|required';
+rules[9]='nickname|required';
+rules[10]='username|regexp|^[a-zA-Z][a-zA-Z0-9_]{1,13}[a-zA-Z0-9]$|用户名只能由3-15位字母(a-z)、数字(0-9)或下划线(_)构成，并且必须以字母开头!';
+rules[11]='nickname|minlength|2';
+rules[12]='nickname|maxlength|12';
+
+yav.addHelp('username', '用户名只能由3-16位字母(a-z)、数字(0-9)或下划线(_)构成，并且必须以字母开头!');
+yav.addHelp('password', '输入密码');
+yav.addHelp('confirm', '确认密码');
+yav.addHelp('email', '请输入有效邮箱');
+
+function changeCode() {
+	var num = 	new Date().getTime();
+	var rand = Math.round(Math.random() * 10000);
+	num = num + rand;
+	document.getElementById("codeimg").src = "/index.php/identifycode/generate/" + num;
+	// 设置唯一标识
+	//document.getElementById("identifier").value = num;
+	return false;
+}
+
+</SCRIPT>
+
+</head>
+<body onload="yav.init('registerform', rules);">
+<h1>欢迎使用 KPass！ 注册新用户</h1>
+<FORM name="registerform" method="POST" onsubmit="return checkOnSubmit('registerform', rules);" >
+<input type="hidden" name="action" value="passport">
+<input type="hidden" name="op" value="saveuser">
+<TABLE valign=top>
+<TR><TD>电子邮箱:</TD><TD><INPUT type="text" name="email"  />&nbsp;&nbsp;<span id=errorsDiv_email></span></TD></TR>
+<TR><TD>用户名:</TD><TD><INPUT type="text" name="username"  />&nbsp;&nbsp;<span id=errorsDiv_username></span></TD></TR>
+<TR><TD>密码:</TD><TD><INPUT type="password" name="password"  />&nbsp;&nbsp;<span id=errorsDiv_password></span></TD></TR>
+<TR><TD>确认密码:</TD><TD><INPUT type="password" name="comfirm"  />&nbsp;&nbsp;<span id=errorsDiv_confirm></span></TD></TR>
+<TR><TD>姓名:</TD><TD><INPUT type="text" name="realname"  />&nbsp;&nbsp;<span id=errorsDiv_realname></span></TD></TR>
+<TR><TD>昵称:</TD><TD><INPUT type="text" name="nickname"  />&nbsp;&nbsp;<span id=errorsDiv_nickname></span></TD></TR>
+<TR><TD>性别:</TD><TD><INPUT type="radio" name="sex" value="1" />男 |<INPUT type="radio" name="sex" value="1" />女&nbsp;&nbsp;<span id=errorsDiv_sex></span></TD></TR>
+<TR><TD></TD><TD><img id="codeimg" src="<?=$www_site_url?>/index.php/identifycode/generate" align="absmiddle" title="换一张" onClick="changeCode();" style="cursor:pointer"> <span onClick="changeCode();" style="cursor:pointer">看不清</span></TD></TR>
+<TR><TD>验证码:</TD><TD><INPUT type="text" name="code" />&nbsp;&nbsp;<span id=errorsDiv_code></span></TD></TR>
+
+<TR><TD>&nbsp;</TD><TD></TD></TR>
+<TR><TD colspan="2"><INPUT type=submit value="注册"/> <INPUT type=reset value="重填"/><br></TD><TD></TD></TR>
+</TABLE>
+</form>
+</body>
+</html>

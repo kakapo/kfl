@@ -8,9 +8,9 @@ class PassportModel extends Model {
 	 **/
 	private function _getBlockword() {
 		$allblockwords = array ();
-		$db  = $this->_connectMainDb();
+		$this->db  = $this->_connectMainDb();
 		$sql = "select word From user_blockword";
-		$result = $db->getOne ( $sql );
+		$result = $this->db->getOne ( $sql );
 		$arr = explode ( '|', $result );
 		foreach ( $arr as $row ) {
 			$allblockwords [] = $row;
@@ -23,33 +23,34 @@ class PassportModel extends Model {
 	private  function _connectMainDb(){
 		return parent::dbConnect ();
 	}
-	public function checkUserName($username) {
-		$db = $this->_connectAccountIndexDb();
-		return $db->getOne ( "select user_id from user_index where user_name = '{$username}'" );
+	private function _getTblPrefix(){
+		$tb_prefix = '00';
+		if(isset($multi_tbl) && $multi_tbl==true) $tb_prefix = substr(md5($user['user_email']),0,2);
+		return $tb_prefix;
 	}
-	public function checkNickName($nickname){
-		$db = $this->_connectAccountIndexDb();
-		return $db->getOne ( "select user_id from user_index where user_nickname = '{$nickname}'" );
+	public function __construct(){
+		$this->db = parent::dbConnect($GLOBALS ["gDataBase"] ["db_kakapo"]);
+	}
+	public function checkUserName($username) {	
+		return $this->db->getOne ( "select user_id from user_index where user_name = '{$username}'" );
+	}
+	public function getUserByEmail($email){
+		return $this->db->getRow( "select * from user_index where user_email='{$email}'");
+	}
+	public function updateUser($item,$user_id){
+		$tb_prefix = $this->_getTblPrefix();	
+		$this->db->update($item,"user_".$tb_prefix," user_id=".$user_id);
+	}
+	
+	public function getUserById($user_id,$email){
+		$tb_prefix = $this->_getTblPrefix();
+		return $this->db->getRow("select * from user_$tb_prefix where user_id='$user_id'");
 	}
 	public function checkEmail($email){
-		$db = $this->_connectAccountIndexDb();
-		return $db->getOne ( "select user_id from user_index where user_email = '{$email}'" );
+		
+		return $this->db->getOne ( "select user_id from user_index where user_email = '{$email}'" );
 	}
-	public function getRecommendUserName($name, $i) {
-		$str = str_shuffle('abcdefghijklmnopqrstuvwxyz_0123456789');
-		if ($i == 0) {
-			$u = $name.'_'. rand ( 1, 99 );
-		}
-		if ($i == 1) {
-			$u = $name . substr($str,rand ( 0, strlen($str) ),2);
-		}
-		if ($i == 2) {
-			$u = $name . substr($str,rand ( 0, strlen($str) ),3);
-		}
-		if ($this->checkUserName ( $u ))
-			$u = $this->getRecommendUserName ( $name, $i );
-		return $u;
-	}
+	
 	/**
 	 *  判断是否为禁词
 	 * @param string $newword
@@ -90,49 +91,29 @@ class PassportModel extends Model {
 	 *@return boolen
 	 */
 	public function createNewUser($user) {
-		//// 用户基本信息
-		$indexdb = $this->_connectAccountIndexDb();
-		$use_db_key= $indexdb->getOne("select db_key from account_db where db_status=1 limit 1");
-		$res = $indexdb->execute("insert into user_index (`user_name`,`user_db_key`,`user_email`,`user_nickname`) values ('{$user['user_name']}','{$use_db_key}','{$user['user_email']}','{$user['user_nickname']}')");
+	
+		$res = $this->db->execute("insert into user_index (`user_name`,`user_email`) values ('{$user['user_name']}','{$user['user_email']}')");
 		if(!$res) return false;
 
-		$user_id = $indexdb->getOne("select last_insert_id() from user_index");
+		$user_id = $this->db->getOne("select last_insert_id() from user_index");
 		if(!$user_id) return false;
-
-		if(!isset($GLOBALS ['gDataBase'] [$use_db_key])){
-			return false;
-		}
-		$account_db = parent::dbConnect ($GLOBALS ['gDataBase'] [$use_db_key]);
-		$account_db->beginTransaction ();
+		
+		$tb_prefix = $this->_getTblPrefix();
+	
+		
 		//user table
-		$account_db->execute ( "insert into user (user_id,user_name,user_passwd,user_email,user_nickname,user_reg_time,user_status)
-		values ('{$user_id}','{$user['user_name']}','" . $user ['user_passwd'] . "','{$user['user_email']}','{$user['user_nickname']}',UNIX_TIMESTAMP(),1)" );
-		// user_extinfo table
-		$account_db->execute ( "insert into user_extinfo (user_id,user_name,user_nickname,user_gender,user_province,user_city,user_town,city_code,town_code,province_code,user_coin,user_cash)
-		values ('{$user_id}','{$user['user_name']}','{$user['user_nickname']}','{$user['user_gender']}','{$user['user_province']}','{$user['user_city']}','{$user['user_town']}','{$user['city_code']}','{$user['town_code']}','{$user['province_code']}','{$user['user_coin']}',0)" );
-		// user_personinfo table
-		$account_db->execute ( "insert into user_personinfo (user_id) value ('{$user_id}')" );
-
-		if ($account_db->commit ()) {
-			// email queue
-			$db = $this->_connectMainDb();
-			$db->execute ( "insert into email_queue (user_id,email,addtime) values ('{$user_id}','{$user['user_email']}',NOW())" );
-			return array('user_id'=>$user_id,'db_key'=>$use_db_key);
-		} else {
-			$account_db->rollBack ();
-			return false;
-		}
+		$this->db->execute ( "insert into user_$tb_prefix (user_id,user_email,user_password,user_name,user_nickname,user_realname,user_sex,user_state,user_reg_time,user_reg_ip,user_lastlogin_time,user_lastlogin_ip)
+		values ('{$user_id}','{$user['user_email']}','" . $user ['user_password'] . "','{$user['user_name']}','{$user['user_nickname']}','{$user['user_realname']}','{$user['user_sex']}',1,UNIX_TIMESTAMP(),'{$user['user_reg_ip']}',UNIX_TIMESTAMP(),'{$user['user_reg_ip']}')" );
+			
+		return $user_id;
+		
 
 	}
-	public function updateMediumIDByUser($db_key,$user_id, $medium_id) {
-		if(!isset($GLOBALS ['gDataBase'] [$db_key])) return false;
-		$account_db = parent::dbConnect ($GLOBALS ['gDataBase'] [$db_key]);
-		$sql = " UPDATE `user_extinfo` SET `ad_id` = '$medium_id' WHERE `user_id` =$user_id LIMIT 1";
-		return $account_db->query ( $sql );
-	}
+	
+
 	/**
 	 *  新增邀请记录
-	 * @param string $db_key
+	 * @param string $this->db_key
 	 * @param integer $user_id
 	 * @param string $sponsor
 	 * @param string $user_name
@@ -140,7 +121,7 @@ class PassportModel extends Model {
 	 * @access public
 	 * @return mix
 	 **/
-	public function addUserSponsor($db_key,$user_id, $sponsor, $user_name, $user_email, $user_nickname) {
+	public function addUserSponsor($db,$user_id, $sponsor, $user_name, $user_email, $user_nickname) {
 		include_once('ApiUser.class.php');
 
 		$sponsor_user = ApiUser::getUserByName($sponsor);
@@ -156,7 +137,7 @@ class PassportModel extends Model {
 //			$sql = "insert into user_friend_ask (user_id,ask_user_id,ask_user_name,ask_user_nickname,ask_time) values (?,?,?,?,now())";
 //			$this->db->execute($sql, array( $sponsor_user['user_id'],$user_id, $user_name, $user_nickname));
 
-			$account_db2 = parent::dbConnect ($GLOBALS ['gDataBase'] [$db_key]);
+			$account_db2 = parent::dbConnect ($GLOBALS ['gDataBase'] [$this->db_key]);
 			// 为受邀请者添加好友
 			$user_gender=$account_db2->getOne("select user_gender from user_extinfo where user_id=".$sponsor_user['user_id']);
 			$sql = "insert into user_friend (user_id,friend_id,friend_name,friend_nickname,friend_gender,friend_order,friend_pass) values (?,?,?,?,?,0,0)";
@@ -188,22 +169,22 @@ class PassportModel extends Model {
 			return 2;
 		}
 		$validSec = $GLOBALS ['account'] ['urlValidSecond'];
-		$db = $this->_connectMainDb();
+		$this->db = $this->_connectMainDb();
 		$sql2 = "SELECT count(*) FROM `forget_pwd`  WHERE  `user_name` = '$username'    AND states=1 AND (UNIX_TIMESTAMP()-`start_ts`)< $validSec ";
-		$count = $db->getOne ( $sql2 );
+		$count = $this->db->getOne ( $sql2 );
 		//$count=$st->rowCount();
 		if ($count > 1) {
 			return 5; //
 		}
 
 		$sql2 = "UPDATE `forget_pwd`  SET  `states` =0 WHERE  `user_name` ='$username'";
-		$db->query ( $sql2 );
+		$this->db->query ( $sql2 );
 
 		$code = $this->randomkeys ( 10 );
 		$sql = "INSERT INTO `forget_pwd` ( `user_name` , `start_ts` , `rand_code` , `states`  )
 								VALUES (  '$username', UNIX_TIMESTAMP(), '$code', '1' );";
 
-		if ($db->query ( $sql ) < 1) {
+		if ($this->db->query ( $sql ) < 1) {
 			return 2;
 		} else {
 			return $code;
@@ -230,15 +211,15 @@ class PassportModel extends Model {
 			return 0;
 		}
 		$validSec = $GLOBALS ['account'] ['urlValidSecond'];
-		$db = $this->_connectMainDb();
+		$this->db = $this->_connectMainDb();
 		$sql = "SELECT count(*) FROM `forget_pwd`  WHERE `user_name` = '$username' AND `rand_code` = '$code' AND states=1 AND (UNIX_TIMESTAMP()-`start_ts`)< $validSec ";
-		return $db->getOne ( $sql );
+		return $this->db->getOne ( $sql );
 
 	}
 	public function updateForgetPwd($username){
-		$db = $this->_connectMainDb();
+		$this->db = $this->_connectMainDb();
 		$sql1 = "UPDATE `forget_pwd` SET states=0 WHERE user_name='$username'";
-		$db->execute ( $sql1 );
+		$this->db->execute ( $sql1 );
 	}
 
 
