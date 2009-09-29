@@ -7,15 +7,16 @@
 	define("KFL_DIR", "D:/GoogleCodeKFL/KFL");
 	define("APP_LANG", "ch");
 	define("APP_TEMP_DIR", APP_DIR."/tmp/");
+	define("SSO_MODE", "session");
 	
 //////////////////////////////////////////////////////
 //				Website Settings	                //
 //////////////////////////////////////////////////////
 		
 	$GLOBALS ["gSiteInfo"] ["web_charset"] =  "UTF-8";
-	$GLOBALS ["gSiteInfo"] ["web_keyword"] =  "KFL";
+	$GLOBALS ["gSiteInfo"] ["web_keyword"] =  "XPASS";
 	$GLOBALS ["gSiteInfo"] ["web_description"] =  "KFL是一个轻快的、友好的、MVC模式的PHP开发框架，试图在应用层解决Webserver集群带来的系列问题。 ";
-	$GLOBALS ["gSiteInfo"] ["web_title"] =  "欢迎访问&quot;KFL&quot;";
+	$GLOBALS ["gSiteInfo"] ["web_title"] =  "欢迎使用&quot;XPass&quot;单点登录系统";
 	
 //////////////////////////////////////////////////////
 //				Email   Settings	                //
@@ -74,7 +75,7 @@
 //////////////////////////////////////////////////////		
 		
 	$GLOBALS ["gPacket"] ["cacheOpen"] =  1;
-	$GLOBALS ["gPacket"] ["cacheStore"] =  "memcache";
+	$GLOBALS ["gPacket"] ["cacheStore"] =  "file";
 	$GLOBALS ["gPacket"] ["cacheTime"] =  3600;
 	$GLOBALS ["gPacket"] ["cacheDir"] =  APP_TEMP_DIR;
 	$GLOBALS ["gPacket"] ["cacheServer"] =  array($GLOBALS ["gMemcacheServer"]["192.168.1.5:11213"]);
@@ -96,7 +97,7 @@
 //				Session   Settings	                //
 //////////////////////////////////////////////////////		
 		
-	$GLOBALS ["gSession"] ["sessionHandle"] =  "file";
+	$GLOBALS ["gSession"] ["sessionHandle"] =  "memcache";
 	$GLOBALS ["gSession"] ["lifeTime"] =  1440;
 	$GLOBALS ["gSession"] ["database"] =  $GLOBALS ["gDataBase"]["db_setting.db3"];
 	$GLOBALS ["gSession"] ["memcached"] =  array($GLOBALS ["gMemcacheServer"]["192.168.1.5:11212"],

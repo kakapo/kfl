@@ -71,22 +71,29 @@ function decrypt($s, $key='key')
 }
 
 function authenticate(){
-	if(!empty($_COOKIE['IDOL_TOKEN']) && !empty($_COOKIE['IDOL_STATE']) && !empty($_COOKIE['IDOL_INFO'])){
-		$token = $_COOKIE['IDOL_TOKEN'];
-		$state_txt = urldecode($_COOKIE['IDOL_STATE']);
-		$enc_info = $_COOKIE['IDOL_INFO'];
-		list($login_time,$user_name,$key,,$rand_str) = explode('|',$state_txt);
-		if($key==md5($user_name.$token.$login_time.$rand_str)){
-
-			$userinfo = decrypt($enc_info,$key);
-			//$user_name,$user_id,$user_nickname,$user_unique_id,$user_rank,$user_host
-			$user = json_decode($userinfo);//explode('|',$userinfo);
-			return $user;
+	if(!defined('SSO_MODE')) define('SSO_MODE','session');
+	if(SSO_MODE=='cookie'){
+		if(!empty($_COOKIE['XPASS_TOKEN']) && !empty($_COOKIE['XPASS_STATE']) && !empty($_COOKIE['XPASS_INFO'])){
+			$token = $_COOKIE['XPASS_TOKEN'];
+			$state_txt = urldecode($_COOKIE['XPASS_STATE']);
+			$enc_info = $_COOKIE['XPASS_INFO'];
+			list($login_time,$user,$key,,$rand_str) = explode('|',$state_txt);
+			
+			if($key==md5($user.$token.$login_time.$rand_str)){	
+				$userinfo = decrypt($enc_info,$key);
+				return json_decode($userinfo,true);
+			}else{
+				return false;
+			}
 		}else{
 			return false;
 		}
-	}else{
-		return false;
+	}
+	if(SSO_MODE=='session'){
+		if(isset($_SESSION['_XpassOnlineUser'])) 
+			return $_SESSION['_XpassOnlineUser'];
+		else 
+			return false;
 	}
 }
 

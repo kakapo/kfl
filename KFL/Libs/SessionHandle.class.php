@@ -129,7 +129,7 @@ class SessionHandleMemcache
         	return false;
         }
         self::_AddMemcacheServers();
-
+//echo $domain;
 		ini_set("session.use_trans_sid", 0);
 		ini_set("session.gc_maxlifetime", self::$set['lifeTime']);
 		ini_set("session.use_cookies", 1);
