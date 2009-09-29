@@ -1,0 +1,42 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title><?=$web_title?></title>
+<LINK href="<?=$www_site_url?>/public/yav-style.css" type=text/css rel=stylesheet>
+<script src="<?=$www_site_url?>/public/js/yav2.0/yav.js"></script>
+<script src="<?=$www_site_url?>/public/js/yav2.0/yav-config-zh-CN.js"></script>
+<SCRIPT>
+//only for test purposes
+function checkOnSubmit(formName, r) {
+  
+    if (yav.performCheck(formName, r, 'inline')) {
+       return true;
+    } 
+    return false;
+}
+
+var rules=new Array();
+
+rules[0]='user|required';
+
+yav.addHelp('user', '请输入您的帐号');
+
+</SCRIPT>
+
+</head>
+<body onload="yav.init('forgetpwdform', rules);">
+<h1> <?=$web_title?></h1>
+<FORM name="forgetpwdform" method="POST" onsubmit="return checkOnSubmit('forgetpwdform', rules);" >
+<input type="hidden" name="action" value="passport">
+<input type="hidden" name="op" value="emailpwd">
+<TABLE valign=top>
+
+<TR><TD>帐号:</TD><TD><INPUT type=text name="user" />&nbsp;&nbsp;<span id=errorsDiv_user></span></TD></TR>
+
+
+<TR><TD colspan="2"><INPUT type=submit value="发送邮件" /> <INPUT type="button" value="返回" onclick="history.go(-1)"/><br></TD><TD></TD></TR>
+</TABLE>
+</form>
+</body>
+</html>

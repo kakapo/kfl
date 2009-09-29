@@ -30,14 +30,18 @@ rules[6]='realname|required';
 rules[7]='sex|required';
 rules[8]='code|required';
 rules[9]='nickname|required';
-rules[10]='username|regexp|^[a-zA-Z][a-zA-Z0-9_]{1,13}[a-zA-Z0-9]$|用户名只能由3-15位字母(a-z)、数字(0-9)或下划线(_)构成，并且必须以字母开头!';
+rules[10]='username|regexp|^[a-zA-Z][a-zA-Z0-9_]{1,13}[a-zA-Z0-9]$|用户名只能由3-15位字母(a-z)、数字(0-9)或下划线(_)构成, 并且只能以字母开头!';
 rules[11]='nickname|minlength|2';
 rules[12]='nickname|maxlength|12';
+rules[13]='question|required';
+rules[14]='answer|required';
 
-yav.addHelp('username', '用户名只能由3-16位字母(a-z)、数字(0-9)或下划线(_)构成，并且必须以字母开头!');
+yav.addHelp('username', '用户名只能由3-15位字母(a-z)、数字(0-9)或下划线(_)构成,  并且只能以字母开头!');
 yav.addHelp('password', '输入密码');
 yav.addHelp('confirm', '确认密码');
 yav.addHelp('email', '请输入有效邮箱');
+yav.postValidation_OnOK('email', 'blur', 'ajaxCall("email")');
+yav.postValidation_OnOK('username', 'blur', 'ajaxCall("username")');
 
 function changeCode() {
 	var num = 	new Date().getTime();
@@ -49,27 +53,110 @@ function changeCode() {
 	return false;
 }
 
+
+var captchaOK = 2;  // 2 - not yet checked, 1 - correct, 0 - failed
+var account = '';
+// a simple ajax implementation
+// here you can use your ajax framework as you prefer
+function getHTTPObject() {
+    try {
+          req = new XMLHttpRequest();
+    } catch (err1) {
+        try {
+            req = new ActiveXObject("Msxml12.XMLHTTP");
+        } catch (err2) {
+            try {
+                req = new ActiveXObject("Microsoft.XMLHTTP");
+            } catch (err3) {
+                req = false;
+            }
+        }
+    }
+    return req;
+}
+        
+var http = getHTTPObject(); // We create the HTTP Object        
+
+function handleHttpResponse() {
+   if (http.readyState == 4) {
+    captchaOK = http.responseText;
+   
+    if(captchaOK != 1) {              
+      yav.displayMsg(account, '此帐号已经存在！请换一个.', yav_config.innererror);
+     // document.getElementById(account).value='';     
+      document.registerform.registerbtn.disabled=true;
+      return false;
+      }  else {
+          yav.displayMsg(account, '此帐号可用！', yav_config.innerhelp);      
+          document.registerform.registerbtn.disabled=false;
+          return true;
+      }
+   }
+}
+
+function ajaxCall(s) {
+	account = s;
+    http.open("GET", "<?=$www_site_url?>/index.php/passport/checkuser/user/" + escape(document.getElementById(s).value), true);
+    http.onreadystatechange = handleHttpResponse;
+    http.send(null);
+    return false;
+}
 </SCRIPT>
 
 </head>
 <body onload="yav.init('registerform', rules);">
-<h1>欢迎使用 KPass！ 注册新用户</h1>
+<h1><?=$web_title?></h1>
 <FORM name="registerform" method="POST" onsubmit="return checkOnSubmit('registerform', rules);" >
 <input type="hidden" name="action" value="passport">
 <input type="hidden" name="op" value="saveuser">
+<input type="hidden" name="reg_type" value="<?=$reg_type?>">
+
 <TABLE valign=top>
-<TR><TD>电子邮箱:</TD><TD><INPUT type="text" name="email"  />&nbsp;&nbsp;<span id=errorsDiv_email></span></TD></TR>
-<TR><TD>用户名:</TD><TD><INPUT type="text" name="username"  />&nbsp;&nbsp;<span id=errorsDiv_username></span></TD></TR>
+<TR><TD colspan="2">
+<? if($reg_type=='email') {?><INPUT type="button" value="采用用户名注册" onclick="window.location.href='<?=$www_site_url?>/index.php/passport/reg/username'"/><? } ?>
+<? if($reg_type=='username') {?> <INPUT type="button" value="采用电子邮箱注册" onclick="history.go(-1);"/><? }?>
+</TD></TR>
+<? if($reg_type=='email') {?><TR><TD>电子邮箱:</TD><TD><INPUT type="text" name="email" value="<?=$email?>" id="email" />&nbsp;&nbsp;<span id=errorsDiv_email></span></TD></TR><? } ?>
+<? if($reg_type=='username') {?><TR><TD>用户名:</TD><TD><INPUT type="text" name="username"  value="<?=$username?>" id="username"/>&nbsp;&nbsp;<span id=errorsDiv_username></span></TD></TR><? } ?>
 <TR><TD>密码:</TD><TD><INPUT type="password" name="password"  />&nbsp;&nbsp;<span id=errorsDiv_password></span></TD></TR>
 <TR><TD>确认密码:</TD><TD><INPUT type="password" name="comfirm"  />&nbsp;&nbsp;<span id=errorsDiv_confirm></span></TD></TR>
-<TR><TD>姓名:</TD><TD><INPUT type="text" name="realname"  />&nbsp;&nbsp;<span id=errorsDiv_realname></span></TD></TR>
-<TR><TD>昵称:</TD><TD><INPUT type="text" name="nickname"  />&nbsp;&nbsp;<span id=errorsDiv_nickname></span></TD></TR>
-<TR><TD>性别:</TD><TD><INPUT type="radio" name="sex" value="1" />男 |<INPUT type="radio" name="sex" value="1" />女&nbsp;&nbsp;<span id=errorsDiv_sex></span></TD></TR>
+<? if($reg_type=='username') {?>
+<TR><TD>密码保护问题:</TD><TD>		<select id="question" name="question" title="密码保护问题">
+
+			<option value="" selected="selected" >请选择一个问题</option>
+
+			<option value="我就读的第一所学校的名称？" >我就读的第一所学校的名称？</option>			
+
+			<option value="我最喜欢的休闲运动是什么？" >我最喜欢的休闲运动是什么？</option>
+
+			<option value="我最喜欢的运动员是谁？" >我最喜欢的运动员是谁？</option>
+
+			<option value="我最喜欢的物品的名称？" >我最喜欢的物品的名称？</option>
+
+			<option value="我最喜欢的歌曲？" >我最喜欢的歌曲？</option>
+
+			<option value="我最喜欢的食物？" >我最喜欢的食物？</option>			
+
+			<option value="我最爱的人的名字？" >我最爱的人的名字？</option>
+
+			<option value="我最爱的电影？" >我最爱的电影？</option>
+
+			<option value="我妈妈的生日？" >我妈妈的生日？</option>
+
+			<option value="我的初恋日期？" >我的初恋日期？</option>
+			
+		</select>&nbsp;&nbsp;<span id=errorsDiv_question></span></TD></TR>
+<TR><TD>您的答案:</TD><TD><INPUT type="text" name="answer" />&nbsp;&nbsp;<span id=errorsDiv_answer></span></TD></TR>
+<?}?>
+<TR><TD>姓名:</TD><TD><INPUT type="text" name="realname"  value="<?=$realname?>"/>&nbsp;&nbsp;<span id=errorsDiv_realname></span></TD></TR>
+<TR><TD>昵称:</TD><TD><INPUT type="text" name="nickname" value="<?=$nickname?>" />&nbsp;&nbsp;<span id=errorsDiv_nickname></span></TD></TR>
+<TR><TD>性别:</TD><TD><INPUT type="radio" name="sex" value="1" <? if($select_sex==1) echo 'checked';?> />男 <INPUT type="radio" name="sex" value="2" <? if($select_sex==2) echo 'checked';?>/>女&nbsp;&nbsp;<span id=errorsDiv_sex></span></TD></TR>
+
 <TR><TD></TD><TD><img id="codeimg" src="<?=$www_site_url?>/index.php/identifycode/generate" align="absmiddle" title="换一张" onClick="changeCode();" style="cursor:pointer"> <span onClick="changeCode();" style="cursor:pointer">看不清</span></TD></TR>
 <TR><TD>验证码:</TD><TD><INPUT type="text" name="code" />&nbsp;&nbsp;<span id=errorsDiv_code></span></TD></TR>
 
 <TR><TD>&nbsp;</TD><TD></TD></TR>
-<TR><TD colspan="2"><INPUT type=submit value="注册"/> <INPUT type=reset value="重填"/><br></TD><TD></TD></TR>
+<TR><TD colspan="2"><INPUT type=submit value="注册" name="registerbtn"/> <INPUT type=reset value="重填"/> <INPUT type="button" value="返回" onclick="history.go(-1)"/><br></TD><TD></TD></TR>
 </TABLE>
 </form>
 </body>

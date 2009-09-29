@@ -7,15 +7,16 @@
 	define("KFL_DIR", "D:/GoogleCodeKFL/KFL");
 	define("APP_LANG", "ch");
 	define("APP_TEMP_DIR", APP_DIR."/tmp/");
+	define("SSO_MODE", "cookie");
 	
 //////////////////////////////////////////////////////
 //				Website Settings	                //
 //////////////////////////////////////////////////////
 		
 	$GLOBALS ["gSiteInfo"] ["web_charset"] =  "UTF-8";
-	$GLOBALS ["gSiteInfo"] ["web_keyword"] =  "KFL";
+	$GLOBALS ["gSiteInfo"] ["web_keyword"] =  "XPASS";
 	$GLOBALS ["gSiteInfo"] ["web_description"] =  "KFL是一个轻快的、友好的、MVC模式的PHP开发框架，试图在应用层解决Webserver集群带来的系列问题。 ";
-	$GLOBALS ["gSiteInfo"] ["web_title"] =  "欢迎访问&quot;KFL&quot;";
+	$GLOBALS ["gSiteInfo"] ["web_title"] =  "欢迎使用&quot;XPass&quot;单点登录系统";
 	
 //////////////////////////////////////////////////////
 //				Email   Settings	                //
@@ -37,11 +38,6 @@
 //				Database   Settings	                //
 //////////////////////////////////////////////////////		
 		
-	$GLOBALS ["gDataBase"] ["db_setting.db3"] = array (
-  'dbname' => 'setting.db3',
-  'type' => 'sqlite',
-  'path' => APP_DIR."/config",
-);
 	$GLOBALS ["gDataBase"] ["db_kakapo"] = array (
   'dbname' => 'kakapo',
   'type' => 'mysql',
@@ -50,6 +46,11 @@
   'user' => 'kakapo',
   'passwd' => '123456',
   'charset' => 'utf8',
+);
+	$GLOBALS ["gDataBase"] ["db_setting.db3"] = array (
+  'dbname' => 'setting.db3',
+  'type' => 'sqlite',
+  'path' => APP_DIR."/../Admin/config",
 );
 	
 //////////////////////////////////////////////////////

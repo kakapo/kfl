@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title><?=$web_title?></title>
+<LINK href="<?=$www_site_url?>/public/yav-style.css" type=text/css rel=stylesheet>
+<script src="<?=$www_site_url?>/public/js/yav2.0/yav.js"></script>
+<script src="<?=$www_site_url?>/public/js/yav2.0/yav-config-zh-CN.js"></script>
+<SCRIPT>
+//only for test purposes
+function checkOnSubmit(formName, r) {
+  
+    if (yav.performCheck(formName, r, 'inline')) {
+       return true;
+    } 
+    return false;
+}
+
+var rules=new Array();
+
+rules[0]='answer|required';
+rules[1]='newpwd1|required';
+rules[2]='newpwd1|minlength|6';
+rules[3]='newpwd2|equal|$newpwd1';
+
+
+
+
+yav.addHelp('answer', '请输入您的答案');
+
+
+
+
+</SCRIPT>
+
+</head>
+<body onload="yav.init('forgetpwdform', rules);">
+<h1> <?=$web_title?></h1>
+<FORM name="forgetpwdform" method="POST" onsubmit="return checkOnSubmit('forgetpwdform', rules);" >
+<input type="hidden" name="action" value="passport">
+<input type="hidden" name="op" value="answer">
+<input type="hidden" name="user" value="<?=$arr['user']?>">
+<TABLE valign=top>
+
+<TR><TD>您的密码保护问题:</TD><TD><?=$arr['user_question']?></TD></TR>
+<TR><TD>请输入您的答案:</TD><TD><INPUT type=text name="answer" />&nbsp;&nbsp;<span id=errorsDiv_answer></span></TD></TR>
+<TR><TD>输入新密码:</TD><TD><INPUT type="password" name=newpwd1 />&nbsp;&nbsp;<span id=errorsDiv_newpwd1></span></TD></TR>
+<TR><TD>再次输入密码:</TD><TD><INPUT type="password" name=newpwd2 />&nbsp;&nbsp;<span id=errorsDiv_newpwd2></span></TD></TR>
+
+<TR><TD colspan="2"><INPUT type=submit value="提交" /> <INPUT type="button" value="返回" onclick="history.go(-1)"/><br></TD><TD></TD></TR>
+</TABLE>
+</form>
+</body>
+</html>

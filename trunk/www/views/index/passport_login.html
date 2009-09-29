@@ -18,12 +18,14 @@ function checkOnSubmit(formName, r) {
 
 var rules=new Array();
 
-rules[0]='email|required';
-rules[1]='email|email';
-rules[2]='password|required';
+rules[0]='user|required';
+rules[1]='password|required';
+<? if($show_code){?>
+rules[2]='code|required';
+<? }?>
 
 
-yav.addHelp('email', '请输入您的帐号：电子邮箱');
+yav.addHelp('user', '请输入您的帐号：电子邮箱');
 yav.addHelp('password', '请输入您的密码');
 
 
@@ -32,18 +34,22 @@ yav.addHelp('password', '请输入您的密码');
 
 </head>
 <body onload="yav.init('loginform', rules);">
-<h1> 欢迎使用 KPass！ 登录系统</h1>
+<h1> <?=$web_title?></h1>
 <FORM name="loginform" method="POST" onsubmit="return checkOnSubmit('loginform', rules);" >
 <input type="hidden" name="action" value="passport">
 <input type="hidden" name="op" value="dologin">
 <input type="hidden" name="forward" value="<?=$forward?>">
 <TABLE valign=top>
 
-<TR><TD>帐号:</TD><TD><INPUT type=text name=email />&nbsp;&nbsp;<span id=errorsDiv_email></span></TD></TR>
+<TR><TD>帐号:</TD><TD><INPUT type=text name=user value="用户邮箱/用户名" onfocus="this.value='';"/>&nbsp;&nbsp;<span id=errorsDiv_user></span></TD></TR>
 <TR><TD>密码:</TD><TD><INPUT type=password name=password />&nbsp;&nbsp;<span id=errorsDiv_password></span></TD></TR>
+<? if($show_code>3){?>
+<TR><TD></TD><TD><img id="codeimg" src="<?=$www_site_url?>/index.php/identifycode/generate" align="absmiddle" title="换一张" onClick="changeCode();" style="cursor:pointer"> <span onClick="changeCode();" style="cursor:pointer">看不清</span></TD></TR>
+<TR><TD>验证码:</TD><TD><INPUT type="text" name="code" />&nbsp;&nbsp;<span id=errorsDiv_code></span></TD></TR>
+<? }?>
+<TR><TD>&nbsp;</TD><TD><INPUT type="checkbox" name="remember" value="1"/> 记住我&nbsp;&nbsp;<span id=errorsDiv_remember></span></TD></TR>
 
-<TR><TD>&nbsp;</TD><TD><INPUT type="checkbox" name="remember" /> 记住我&nbsp;&nbsp;<span id=errorsDiv_remember></span></TD></TR>
-<TR><TD colspan="2"><INPUT type=submit value="登录" /> <INPUT type="button" value="注册" onclick="window.location.href='/index.php/passport/reg'" /><br></TD><TD></TD></TR>
+<TR><TD colspan="2"><INPUT type=submit value="登录" /> <INPUT type="button" value="注册" onclick="window.location.href='/index.php/passport/reg'" /> <INPUT type="button" value="忘记密码" onclick="window.location.href='/index.php/passport/forget'" /><br></TD><TD></TD></TR>
 </TABLE>
 </form>
 </body>

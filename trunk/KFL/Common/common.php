@@ -12,6 +12,12 @@ else
 $dir_name = dirname($_SERVER["SCRIPT_NAME"]);
 if($dir_name=="\\") $dir_name ='';
 define("BASE_URL", $preht . $_SERVER["HTTP_HOST"] . $dir_name);
+list(,$plast,$last) = explode(".",$_SERVER["HTTP_HOST"]);
+$cookie_domain = '.'.$plast.'.'.$last;
+define('COOKIE_DOMAIN',$cookie_domain);
+unset($plast);
+unset($last);
+unset($cookie_domain);
 
 define("HOST_URL", $preht . $_SERVER["HTTP_HOST"]);
 $GLOBALS ["gSiteInfo"] ["www_site_url"] = BASE_URL;
