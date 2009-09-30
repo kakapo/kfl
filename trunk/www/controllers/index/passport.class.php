@@ -6,7 +6,7 @@
  *
  **/
 class passport {
-
+	
 	/****登录相关方法 开始*****/
 	function view_login() {
 		global $tpl;
@@ -38,7 +38,7 @@ class passport {
 			$user_info = $passmod->getUserById($user_arr['user_id'],$user);	
 	
 			
-			if ($user_info ['user_password'] == md5 ( $user_passwd )) {
+			if ($user_info ['user_password'] == PassportModel::encryptpwd ($user_passwd,$user)) {
 				if(isset($_SESSION['pwd_error'])) unset($_SESSION['pwd_error']);
 				if ($user_info ['user_state'] == 1) {
 								
@@ -46,14 +46,10 @@ class passport {
 					$updates['user_lastlogin_ip'] = getip();
 					$passmod->updateUser( $updates, $user_arr['user_id'],$user);
 				   
-					$user_arr ['user_password'] = $user_info ['user_password'];							
-					$user_arr ['user_email'] = $user_info ['user_email'];							
-					$user_arr ['autologin'] = $cookie_remember;	
-					$user_arr ['user_nickname'] = $user_info ['user_nickname'];		
-					$user_arr ['user_sex'] = $user_info ['user_sex'];
-
+							
+					$user_info ['autologin'] = $cookie_remember;					
 					//自动登录
-					$this->save_online_user ( $user_arr );
+					$this->save_online_user ( $user_info );
 					
 					//记录登录日志
 					//curl_get_content($GLOBALS ['gSiteInfo'] ['stats_site_url']."/loginlog.php?user=".$user_email."&userid=".$user ['user_id']);
@@ -130,21 +126,16 @@ class passport {
 						
 						$user_info = $passmod->getUserById($userindex['user_id'],$user);
 
-						if ($user_info ['user_password'] == $pwd_md5) {
+						if ($user_info ['user_password'] == PassportModel::encryptpwd ($pwd_md5,$user,1)) {
 							if ($user_info ['user_state'] == 1) {
 			
 								$updates['user_lastlogin_time'] = time();
-								$updates['user_lastlogin_ip'] = getip();
-								
+								$updates['user_lastlogin_ip'] = getip();						
 								$passmod->updateUser( $updates, $userindex['user_id'],$user);
 								
-								$user ['user_password'] = $user_info ['user_password'];
-								$user ['user_sex'] = $user_info ['user_sex'];
-								$user ['user_nickname'] = $user_info ['user_nickname'];
-								$user ['autologin'] = 0;
-								
-
-								$this->save_online_user ( $user );
+								//登录
+								$user_info ['autologin'] = 0;
+								$this->save_online_user ( $user_info );
 
 								
 								//记录登录日志
@@ -368,11 +359,12 @@ class passport {
 		}
 		
 
-		$user['user_password'] = md5 ( $_POST ['password'] );
+		$user['user_password'] = PassportModel::encryptpwd($_POST ['password'],$user['user']);
 		$user['user_nickname'] = htmlspecialchars ( $_POST ['nickname'] );
 		$user['user_sex'] = $_POST ['sex'];
 		$user['user_realname'] = $_POST['realname'];
 		$user['user_reg_ip'] = getip();
+		
 
 		// 1. create db user
 		$row = $passmod->createNewUser ( $user );
@@ -439,7 +431,7 @@ class passport {
 		$userindex = $passmod->getUser ($user );
 		$user_arr = $passmod->getUserById($userindex['user_id'],$user);
 		if($answer == $user_arr['user_answer']){
-			if (false!=$passmod->updatePassByUser( $user_arr['user'], md5( $new1) )) {
+			if (false!=$passmod->updatePassByUser( $user_arr['user'], PassportModel::encryptpwd( $new1,$user) )) {
 				$passmod->updateForgetPwd($user_arr['user']);
 				show_message_goback('重置密码成功！');;
 			} else {
@@ -526,7 +518,7 @@ class passport {
 		
 		$row = $passmod->checkForget ( $code );
 		if ($row) {		
-			if (false!=$passmod->updatePassByUser ( $row['user'], md5( $new1) )) {
+			if (false!=$passmod->updatePassByUser ( $row['user'], PassportModel::encryptpwd( $new1,$row['user']) )) {
 				$passmod->updateForgetPwd($row['user']);
 				show_message_goback('重置密码成功！');;
 			} else {

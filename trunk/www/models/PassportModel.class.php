@@ -3,6 +3,12 @@ class PassportModel extends Model {
 	public function __construct(){
 		$this->db = parent::dbConnect($GLOBALS ["gDataBase"] ["db_kakapo"]);
 	}
+	static public function encryptpwd($pwd,$user,$pwd_had_md5=0){
+		if($pwd_had_md5) 
+			return md5($pwd.$user);
+		else
+			return md5(md5($pwd).$user);
+	}
 	/**
 	 *  获取所有禁词
 	 * @access public
