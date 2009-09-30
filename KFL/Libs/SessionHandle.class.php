@@ -2,7 +2,8 @@
 class SessionHandle
 {
 	function __construct($setting){
-		if($setting['sessionHandle']=='file'){
+		if($setting['sessionHandle']=='file'){			
+			ini_set("session.cookie_domain", isset($_SERVER['HTTP_HOST'])?strstr($_SERVER['HTTP_HOST'],"."):'');
 			session_start();
 		}elseif($setting['sessionHandle']=='database'){
 			SessionHandleMySQL::Init($setting);
@@ -129,7 +130,7 @@ class SessionHandleMemcache
         	return false;
         }
         self::_AddMemcacheServers();
-//echo $domain;
+
 		ini_set("session.use_trans_sid", 0);
 		ini_set("session.gc_maxlifetime", self::$set['lifeTime']);
 		ini_set("session.use_cookies", 1);
