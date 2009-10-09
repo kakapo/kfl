@@ -25,7 +25,7 @@ B. Session方案：
 
 思路：
 
-1、用户访问应用服务SP，SP判断用户session id不存在，则调用 sso client通过http get api访问 sso server，需要带上数字签名，user_name 和 signature,
+1、用户访问应用服务SP，SP判断用户session id不存在，则调用 sso client api通过http get访问 sso server，需要带上数字签名，user_name 和 signature,
 signature 由 sso client 用client 的private key 加密user_name得到。
 （用户想游玩景点，景点先看看此用户是否已经检查过了？没有则去售票处咨询，营业执照(数字签名)传输到售票内部系统。）
 

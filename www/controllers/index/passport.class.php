@@ -181,12 +181,13 @@ class passport {
 		show_message('您已经安全退出！');
 		redirect("/index.php/passport/login");
 	}
+	
 	function save_online_user($user) {
 		
 		if(SSO_MODE=='ticket'){
-			
+			$this->set_ticket($user);
 		}elseif(SSO_MODE=='session'){
-			
+			$user['ticket'] = session_id();
 			$this->set_session($user);
 			
 		}else{
@@ -197,12 +198,13 @@ class passport {
 			$token = md5 ( microtime () );
 			$key = md5 ( $user ['user'] . $token . $time . $rand_str );
 	
-			$user_arr['user'] 	= $user ['user'];
-			$user_arr['user_id'] 	= $user ['user_id'];
-			$user_arr['user_nickname'] = $user ['user_nickname'];		
-			$user_arr['user_sex'] 	= $user ['user_sex'];	
+			$user_arr['user'] 			= $user ['user'];
+			$user_arr['user_id'] 		= $user ['user_id'];
+			$user_arr['user_nickname'] 	= $user ['user_nickname'];		
+			$user_arr['user_sex'] 		= $user ['user_sex'];	
 			$user_arr['user_email'] 	= $user ['user_email'];
-			$user_arr['user_password'] = $user ['user_password'];
+			$user_arr['user_password'] 	= $user ['user_password'];
+			$user_arr['ticket'] 		= $key;
 	
 			$enc_info = encrypt ( json_encode($user_arr), $key );
 	
@@ -223,7 +225,18 @@ class passport {
 			$this->set_iccard($user);
 		}
 	}
-	function  set_iccard($user){
+	function set_ticket($user){
+		
+		$arr['ticket'] = md5(microtime().$user['user']);
+		$arr['user'] = $user['user'];
+		$arr['data'] = json_encode($user);
+		include_once("PassportModel.class.php");
+		$passmod = new PassportModel();
+		$passmod->addTicket($arr);
+		$passmod->deleteExpiryTicket();
+		
+	}
+	function set_iccard($user){
 		$key = 'Powered by Xpass!';
 		$td = mcrypt_module_open ( 'des', '', 'ecb', '' );
 		$iv = mcrypt_create_iv ( mcrypt_enc_get_iv_size ( $td ), MCRYPT_RAND );

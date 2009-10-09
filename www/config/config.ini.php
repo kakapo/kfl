@@ -7,7 +7,7 @@
 	define("KFL_DIR", "D:/GoogleCodeKFL/KFL");
 	define("APP_LANG", "ch");
 	define("APP_TEMP_DIR", APP_DIR."/tmp/");
-	define("SSO_MODE", "session");
+	define("SSO_MODE", "ticket");
 	
 //////////////////////////////////////////////////////
 //				Website Settings	                //
