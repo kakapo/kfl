@@ -37,21 +37,18 @@ class ToolManage extends Model{
 		return;
 	}
 	
-	public function generateKeyPair($key_length=32){
-		require_once 'Crypt/RSA.php';
-	    
-	    $key_pair = new Crypt_RSA_KeyPair($key_length,'BCMath','check_error');
-	    
-	    $public_key = $key_pair->getPublicKey();
-	    $private_key = $key_pair->getPrivateKey();
-	    $str_out = $key_pair->toPEMString();
-	    echo $str_out;
-	    return array('public_key'=>$public_key->toString(),'private_key'=>$private_key->toString());
+	public function generateKey(){
+		$tmp = array_merge(range(0, 9), range('A', 'Z'));
+	    $key = '';
+	    for ($i = 0; $i < 16; $i++) {
+	        $key .= $tmp[mt_rand(0, 35)];
+	    }
+	    return md5($key);    
 	}
 	
 	public function addNewClient($arr){
-		$sql = "insert into `client` (`domain`, `public_key`, `private_key`) values (?,?,?)";
-		return $this->db->execute($sql,array($arr['domain'],$arr['keypair']['public_key'],$arr['keypair']['private_key']));
+		$sql = "insert into `client` (`domain`, `private_key`) values (?,?)";
+		return $this->db->execute($sql,array($arr['domain'],$arr['key']));
 	}
 	
 	public function getClientByDomain($domain){

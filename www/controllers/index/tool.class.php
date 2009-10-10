@@ -14,7 +14,7 @@ class tool {
 		
 		$toolManage = new ToolManage();
 		
-		$arr['keypair'] = $toolManage->generateKeyPair(32);
+		$arr['key'] = $toolManage->generateKey();
 		
 		$toolManage->addNewClient($arr);
 	}
