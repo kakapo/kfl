@@ -7,6 +7,7 @@ class api{
 		print_r($user);
 	
 	}
+	
 	function verifySign($domain,$text,$sign){
 		require_once 'ToolManage.class.php';		
 		$toolManage = new ToolManage();
@@ -19,9 +20,9 @@ class api{
 		}
 	}
 	function encryptToken($data){
-	
 		return encrypt($data,$this->_private_key);
 	}
+	
 	function view_islogin(){
 		$user = $_GET['user'];
 		$sign = $_GET['sign'];
