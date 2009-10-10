@@ -4,9 +4,8 @@
 3、密码找回页面
 
 API开发
-1、注册接口
-2、登录接口
-3、信息查询接口
+1、登录接口
+2、信息查询接口
 
 工具开发
 1、用户表管理，创建用户散列表 substr(md5(user_email),0,2) 256 tables
@@ -26,6 +25,8 @@ user_reg_ip varchar 16
 user_lastlogin_time int 11
 user_lastlogin_ip varchar 16
 
+参考资料:
 http://yav.sourceforge.net/en/gettingstarted.html
 http://tetlaw.id.au/view/javascript/really-easy-field-validation
 http://customformelements.net/demopage.php
+http://pajhome.org.uk/crypt/md5/index.html

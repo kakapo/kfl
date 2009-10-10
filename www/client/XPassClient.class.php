@@ -10,12 +10,10 @@ class XPassClient{
 	
 	private function _createSign($text)
 	{	
-		$sign = hmac($this->_private_key,$text,'sha1');		    
-	    return $sign;
+		return hmac($this->_private_key,$text,'sha1');
 	}
 	
 	private function _decryptToken($enc_text){
-		
 		return decrypt($enc_text,$this->_private_key);
 	}
 	
@@ -47,10 +45,6 @@ class XPassClient{
 				$info.=@fgets($fp, 1024);
 			}
 			fclose($fp);
-			//$info = implode("",$info);
-//			while (list ($key, $val) = each ($_POST)) {
-//				$arg.=$key."=".$val."&";
-//			}
 			
 			return $info;
 		}
@@ -58,6 +52,7 @@ class XPassClient{
 	
 	private function _getLoginUrl($user){
 		global $server_url;
+		
 		$domain = $_SERVER['HTTP_HOST'];
 		
 		$sign = $this->_createSign(md5($user.$domain));
@@ -70,12 +65,14 @@ class XPassClient{
 	/**
 	 * isLogin 
 	 * @param string $user
-	 * 
+	 * @param boolen $redirect
 	 * @return array
 	 **/
 	public function isLogin($user,$redirect=false){
 			
-		if(isset($_GET['ticket'])&& !empty($_GET['ticket'])) return array('s'=>200,'m'=>'success','d'=>$_GET['ticket']);
+		if(isset($_GET['ticket']) && !empty($_GET['ticket'])){
+			return array('s'=>200,'m'=>'success','d'=>$_GET['ticket']);
+		}
 		
 		$url = $this->_getLoginUrl($user);
 		
@@ -92,9 +89,14 @@ class XPassClient{
 		
 		return $msg;
 	}
-	
+	/**
+	 * getLoginUser 
+	 * @param string $ticket
+	 * @return array
+	 **/	
 	public function getLoginUser($ticket){
 		global $server_url;
+		
 		$domain = $_SERVER['HTTP_HOST'];
 		
 		$sign = $this->_createSign(md5($ticket.$domain));
@@ -106,6 +108,7 @@ class XPassClient{
 		list($head,$body) = explode("\r\n\r\n",$res);
 		
 		$msg = json_decode($body,true);
+		
 		if($msg['s']==200){
 			$msg['d'] = $this->_decryptToken($msg['d']);			
 		}

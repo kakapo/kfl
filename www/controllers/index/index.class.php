@@ -5,7 +5,7 @@ class index{
 		global $tpl;	
 		$user = authenticate();		
 		if($user){
-			$msg = "Login on. Welcome, ".$user['user_nickname']." go to <a href='/index.php/passport/logout'>log out</a>";
+			$msg = "<h1>欢迎！ ".$user['user_nickname']."  <a href='/index.php/passport/logout'>安全退出</a>";
 			echo $msg;
 		}
 		$tpl->assign("name","It's a demo.");
