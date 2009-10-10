@@ -11,22 +11,30 @@ class passport {
 	function view_login() {
 		global $tpl;
 		$forward = isset ( $_GET ['forward'] ) ? $_GET ['forward'] : '';
+		$_SESSION['_XpassSignKey'] = uniqid();
 		$show_code = 0;
 		if(isset($_SESSION['pwd_error'])) $show_code = $_SESSION['pwd_error'];
 		if(!empty($_COOKIE['XPASS_IC_CARD'])) header("location: ".$GLOBALS ['gSiteInfo'] ['www_site_url']."/index.php/passport/autologin");
 		$tpl->assign ( 'forward', urlencode ( $forward ) );
 		$tpl->assign ( 'show_code', $show_code );
+		$tpl->assign ( '_XpassSignKey', $_SESSION['_XpassSignKey'] );
 	}
 	function op_dologin() {
-		$forward = ! empty ( $_POST ['forward'] ) ? $_POST ['forward'] : '';		
+		$forward = ! empty ( $_POST ['forward'] ) ? urldecode($_POST ['forward']) : '';		
 		$user = $_POST ['user'];
 		$user_passwd = $_POST ['password'];
+		$sign = $_POST ['s'];
 		
 		if(isset($_SESSION['pwd_error']) && isset($_POST ['code'])){
 			$vcode		 =strtolower($_POST ['code']);
 			if($vcode!=strtolower($_SESSION['validatecode'])){
 				show_message_goback("验证码输入错误");
 			}
+		}
+		
+		//签名验证
+		if($sign!=hmac($_SESSION['_XpassSignKey'],$user_passwd)){
+			show_message_goback("非法登录！");
 		}
 		
 		$cookie_remember = ! empty ( $_POST ['remember'] ) ? $_POST ['remember'] : '0';
@@ -36,9 +44,8 @@ class passport {
 		if ($user_arr) {
 			
 			$user_info = $passmod->getUserById($user_arr['user_id'],$user);	
-	
 			
-			if ($user_info ['user_password'] == PassportModel::encryptpwd ($user_passwd,$user)) {
+			if ($user_info ['user_password'] == PassportModel::encryptpwd ($user_passwd,$user,1)) {
 				if(isset($_SESSION['pwd_error'])) unset($_SESSION['pwd_error']);
 				if ($user_info ['user_state'] == 1) {
 								
@@ -185,7 +192,10 @@ class passport {
 	function save_online_user($user) {
 		
 		if(SSO_MODE=='ticket'){
-			$this->set_ticket($user);
+			$user['ticket'] = session_id();
+			$this->set_ticket($user);		
+			$this->set_session($user);
+			
 		}elseif(SSO_MODE=='session'){
 			$user['ticket'] = session_id();
 			$this->set_session($user);
@@ -227,7 +237,7 @@ class passport {
 	}
 	function set_ticket($user){
 		
-		$arr['ticket'] = md5(microtime().$user['user']);
+		$arr['ticket'] = $user['ticket'];
 		$arr['user'] = $user['user'];
 		$arr['data'] = json_encode($user);
 		include_once("PassportModel.class.php");

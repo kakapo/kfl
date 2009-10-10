@@ -2,42 +2,21 @@
 class XPassClient{
 	
 	private $_private_key;
-	
-	public $math_lib;
-	
-	function __construct($private_key,$math_library='BCMath'){
-		require_once 'Crypt/RSA.php';
-		$this->math_lib = $math_library;
-		$this->_private_key = Crypt_RSA_Key::fromString($private_key,$this->math_lib);
+
+	function __construct($private_key){
+		
+		$this->_private_key = $private_key;
 	}
 	
-	
 	private function _createSign($text)
-	{
-	 
-	   	$rsa_obj = new Crypt_RSA(array(), $this->math_lib, 'check_error');
-	
-		// check signing/sign validating
-		$params = array(
-		    'private_key' => $this->_private_key
-		);
-		$rsa_obj->setParams($params);
-		
-		$sign = $rsa_obj->createSign($text);
-			    
+	{	
+		$sign = hmac($this->_private_key,$text,'sha1');		    
 	    return $sign;
 	}
 	
 	private function _decryptToken($enc_text){
-		$rsa_obj = new Crypt_RSA(array(), $this->math_lib, 'check_error');
-	
-		// check signing/sign validating
-		$params = array(
-		    'dec_key' => $this->_private_key
-		);
-		$rsa_obj->setParams($params);
 		
-		return $rsa_obj->decrypt($enc_text);
+		return decrypt($enc_text,$this->_private_key);
 	}
 	
 	private function _xpassServer($url,$time_out = "60") {
@@ -82,19 +61,28 @@ class XPassClient{
 		$domain = $_SERVER['HTTP_HOST'];
 		
 		$sign = $this->_createSign(md5($user.$domain));
+		
 		$url = $server_url."/index.php?action=api&view=islogin&user=".$user."&domain=".$domain."&sign=".$sign;
 		
 		return $url;
 	}
+	
 	/**
 	 * isLogin 
 	 * @param string $user
 	 * 
 	 * @return array
 	 **/
-	public function isLogin($user){
+	public function isLogin($user,$redirect=false){
+			
+		if(isset($_GET['ticket'])&& !empty($_GET['ticket'])) return array('s'=>200,'m'=>'success','d'=>$_GET['ticket']);
 		
 		$url = $this->_getLoginUrl($user);
+		
+		if($redirect) {
+			header("Location: ".$url."&redirect=1&return=".urlencode(selfURL()));
+			die;
+		}
 		
 		$res = $this->_xpassServer($url);
 		
@@ -110,26 +98,43 @@ class XPassClient{
 		$domain = $_SERVER['HTTP_HOST'];
 		
 		$sign = $this->_createSign(md5($ticket.$domain));
-		
+	
 		$url = $server_url."/index.php?action=api&view=getuser&ticket=".$ticket."&domain=$domain&sign=".$sign;
 		
 		$res = $this->_xpassServer($url);
 		
 		list($head,$body) = explode("\r\n\r\n",$res);
-		//echo $body;
+		
 		$msg = json_decode($body,true);
 		if($msg['s']==200){
-			//$userinfo = $this->_decryptToken($msg['d']);
-			$userinfo = decrypt($msg['d'],$ticket);
-			return json_decode($userinfo,true);
-		}else{
-			return false;
+			$msg['d'] = $this->_decryptToken($msg['d']);			
 		}
-		
+		return $msg;
 	}
 	
 
 	
+}
+
+function selfURL() {
+    $s = empty($_SERVER["HTTPS"]) ? '' : ($_SERVER["HTTPS"] == "on") ? "s" : "";
+    $protocol = strtolower($_SERVER["SERVER_PROTOCOL"]);
+    $protocol = substr($protocol, 0, strpos($protocol, "/")).$s;
+    $port = ($_SERVER["SERVER_PORT"] == "80") ? "" : (":".$_SERVER["SERVER_PORT"]);
+	return $protocol."://".$_SERVER['SERVER_NAME'].$port.$_SERVER['REQUEST_URI'];
+} 
+function hmac($key, $data, $hash="md5") {
+    // RFC 2104 HMAC implementation for php. Hacked by Lance Rushing
+    $b = 64;
+    if (strlen($key) > $b)
+        $key = pack("H*", call_user_func($hash, $key));
+     $key = str_pad($key, $b, chr(0x00));
+     $ipad = str_pad("", $b, chr(0x36));
+     $opad = str_pad("", $b, chr(0x5c));
+     $k_ipad = $key ^ $ipad ;
+     $k_opad = $key ^ $opad;
+    
+     return call_user_func($hash, $k_opad . pack("H*", call_user_func($hash, $k_ipad . $data)));
 }
 function decrypt($s, $key='key')
 {

@@ -3,7 +3,7 @@ A. Cookie方案：
 1、采用cookie存储用户信息数据
 2、用户信息数据加密
 3、各子域名应用程序采用统一解密算法
-4、需要共享解密方法插件。
+4、需要共享解密方法。
 
 好处：机制简单，避免了webserver集群造成的会话数据同步问题。有一定的安全性。
 坏处：cookie存取的数据量有限。无法跨域。
@@ -25,18 +25,18 @@ B. Session方案：
 
 思路：
 
-1、用户访问应用服务SP，SP判断用户session id不存在，则调用 sso client api通过http get访问 sso server，需要带上数字签名，user_name 和 signature,
+1、用户访问应用服务SP，SP判断用户是否在本地已经登录，未登录则调用 sso client api通过http get访问 sso server，需要带上数字签名，user_name 和 signature,
 signature 由 sso client 用client 的private key 加密user_name得到。
-（用户想游玩景点，景点先看看此用户是否已经检查过了？没有则去售票处咨询，营业执照(数字签名)传输到售票内部系统。）
+（用户想游玩景点，工作人员判断此用户是否已经检过票？没有则去售票处咨询，将营业执照(数字签名)传输到售票内部系统。）
 
-2、sso server 接收到来自client的user_name和signature后，先认证client是否合法，即签名校验。然后从本机session判断user_name是否存在，存在则返回session id，即票单ticket；ticket不存在就转跳到登录界面。。
-（售票处检测此用户是否有买过票？有的话则直接将票单返回给景点，没有则告诉用户去买票）
+2、sso server 接收到来自client的user_name和signature后，先认证client是否合法，即签名校验。然后从本机session判断user_name是否存在，存在则返回session id，即票证ticket；ticket不存在就转跳到登录界面。。
+（售票处检测此用户是否有买过票？有的话则直接将票证返回给景点，没有则告诉用户去买票）
 
 3、用户在身份认证中心登录成功后，sso server在session中保存user_name。然后转跳回应用服务SP，URL带上ticket(session id)。
-（用户在售票处掏钱买票，售票处登记，发给用户票单）
+（用户在售票处掏钱买票，售票处登记，发给用户票证）
 
-4、各应用程序通过SSO client 插件,再次将ticket，signature(此时signature由 ticket加密得到)通过http post API通道访问 SSO Server，SSO Server先进行授权判断，然后返回加密的用户token数据，token数据用client的public key加密用户信息得到。
- （用户来到某景点入口，景点将用户票单，景点营业执照通过内部系统发送到售票处查证，售票处系统检测此景点是否合法的，合法同时票单有效，则返回
+4、各应用程序通过SSO client 插件,再次将ticket，signature(此时signature由 ticket加密得到)通过http get API通道访问 SSO Server，SSO Server先进行授权判断，然后返回加密的用户token数据，token数据用client的public key加密用户信息得到。
+ （用户来到某景点入口，景点将用户票证，景点营业执照通过内部系统发送到售票处查证，售票处系统检测此景点是否合法的，合法同时票证有效，则返回
  用户的基本信息给景点去做进一步操作）
 
 5、用户信息数据是加密传输，SSO client 插件通过private key解密token数据。
