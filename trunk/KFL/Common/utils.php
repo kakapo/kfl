@@ -89,7 +89,7 @@ function authenticate(){
 			return false;
 		}
 	}
-	if(SSO_MODE=='session'){
+	if(SSO_MODE=='session' || SSO_MODE=='ticket'){
 		if(isset($_SESSION['_XpassOnlineUser'])) 
 			return $_SESSION['_XpassOnlineUser'];
 		else 
@@ -219,6 +219,19 @@ function json_output($arr){
 	
 }
 
+function hmac($key, $data, $hash="md5") {
+    // RFC 2104 HMAC implementation for php. Hacked by Lance Rushing
+    $b = 64;
+    if (strlen($key) > $b)
+        $key = pack("H*", call_user_func($hash, $key));
+     $key = str_pad($key, $b, chr(0x00));
+     $ipad = str_pad("", $b, chr(0x36));
+     $opad = str_pad("", $b, chr(0x5c));
+     $k_ipad = $key ^ $ipad ;
+     $k_opad = $key ^ $opad;
+    
+     return call_user_func($hash, $k_opad . pack("H*", call_user_func($hash, $k_ipad . $data)));
+}
 /*-------------------------------文件扩展函数-----------------------------------*/
 
 function path_clean($path)
