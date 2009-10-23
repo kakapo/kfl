@@ -18,7 +18,7 @@ class Database extends PDO
 	public $cacheTime 		= 3600;			//设置全局缓存时间
 	public $cacheDir 		= "/tmp";		//缓存存储路径
 	public $cacheDirLevel 	= 3;			//缓存 HASH 目录级别
-	public $cacheOpen		= 1 ;			//缓存开关,默认关闭
+	public $cacheOpen		= 0 ;			//缓存开关,默认关闭
 	public $cacheStore		='file';     	//缓存存储方式
 	public $cacheServer	;					//memcached 服务器配置
 	
@@ -271,7 +271,7 @@ class Database extends PDO
 	{
 		$cacheId = md5($cacheId);
 		$cacheFile = ($this->cacheDir ? $this->cacheDir.'/' : '').$this->_hashCacheId($cacheId);
-		@unlink($cacheFile);
+		if(file_exists($cacheFile)) @unlink($cacheFile);
 	}
 	//清除全部缓存
 	public function cleanAllCache()
@@ -300,7 +300,7 @@ class Database extends PDO
 	{
 		$this->lastSql = $sql;
 		$this->lastData = $arr;
-		if($cacheTime>=0 && !$this->cacheOpen){
+		if($cacheTime>=0 && $this->cacheOpen){
 			return $this->_cacheQuery($sql,"fetch",$cacheTime, $cacheId);
 		}else{
 			return $this->_execSql('fetch');
@@ -317,7 +317,7 @@ class Database extends PDO
 	{
 		$this->lastSql = $sql;
 		$this->lastData = $arr;
-		if($cacheTime>=0 && !$this->cacheOpen){
+		if($cacheTime>=0 && $this->cacheOpen){
 			return $this->_cacheQuery($sql,"fetchAll",$cacheTime, $cacheId);
 		}else{
 			return $this->_execSql('fetchAll');
@@ -334,7 +334,7 @@ class Database extends PDO
 	{
 		$this->lastSql = $sql;
 		$this->lastData = $arr;
-		if($cacheTime>=0 && !$this->cacheOpen){
+		if($cacheTime>=0 && $this->cacheOpen){
 			return $this->_cacheQuery($sql,"fetchColumn",$cacheTime, $cacheId);
 		}else{
 			return $this->_execSql('fetchColumn');
