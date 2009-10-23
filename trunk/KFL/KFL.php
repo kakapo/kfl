@@ -109,6 +109,7 @@ class KFL
 	private function _getPageCacheRule(){
 		$cur_action = !empty($GLOBALS['gDispatcher'])?$GLOBALS['gDispatcher']:$this->mDefaultController;
 		if(isset($GLOBALS['gPageCache'])){
+			$_GET['view'] = !empty($_GET['view'])?$_GET['view']:'defaults';
 			foreach($GLOBALS['gPageCache'] as $rule){
 				if(isset($rule['action']) && $rule['action']==$cur_action)	{
 					if(isset($rule['view']) && ($rule['view']=='*')){ 
@@ -196,6 +197,8 @@ class KFL
 		// set up core components;
 		$this->setup();
 
+		View::assignLanguage();
+		
 		// use controller to dispatch
 		Controller::dispatch($this->mDefaultController,$this->mCore);
 
@@ -379,7 +382,6 @@ class View{
 		global $tpl,$gCurUseMeth,$gTplFile;
 		self::$view = $tpl;
 		self::_assignGlobalSetting();
-	    self::_assignLanguage();
 		// view
 		if(strpos($gCurUseMeth,'view')!== false) {
 			self::$view->display(APP_TPLSTYLE.'/'.$gTplFile);
@@ -387,15 +389,20 @@ class View{
 
 	}
 	/**
-	 * _assignLanguage
-	 * @access private
+	 * assignLanguage
+	 * @access public
 	 * @return void
 	 */
-	private static function _assignLanguage(){
-		$langfile = APP_LANG_DIR."/".APP_LANG."/globals.php";
+	public static function assignLanguage(){
+		global $tpl;
+		$selected_lang = !empty($_COOKIE['_Selected_Language'])?$_COOKIE['_Selected_Language']:APP_LANG; 
+		$langfile = APP_LANG_DIR."/".$selected_lang."/globals.php";
+		
 		if(file_exists($langfile)){
 			include_once($langfile);
-			self::$view->assign($GLOBALS['gLang']);
+			
+			//$tpl->assign($GLOBALS['gLang']);
+			$tpl->assign('selected_lang',$selected_lang);
 		}
 
 	}
