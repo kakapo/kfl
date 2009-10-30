@@ -591,4 +591,11 @@ function icopy($path, $dir)
 	return true;
 }
 
+function second_convert($s){
+	if($s<0) return $s.'s';
+	$hour = floor($s/3600);
+	$minute = floor(($s-$hour*3600)/60);
+	$second = $s-$hour*3600-$minute*60;
+	return $hour.'h '.$minute.'m '.$second.'s ';
+}
 ?>

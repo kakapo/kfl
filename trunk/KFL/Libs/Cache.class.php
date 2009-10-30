@@ -203,37 +203,27 @@ class Cache {
 	 * @return void
 	 */
 	public function save($content = '') {
+		$designated = ! empty ( $content ) ? 1 : 0;
+		$content =  ( $designated ) ? $content : ob_get_contents ();
+		if(!$designated) $content .="\r\n <!-- Cached ";
+		if($this->mCacheCompress==1) {
+			if(!$designated) $content .=" with gzip by KFL at ".date("Y-m-d H:i:s")."-->";
+			$content = gzencode($content,9);
+		}else{
+			if(!$designated) $content .="by KFL at ".date("Y-m-d H:i:s")."-->";
+		}
 		if($this->mCacheStore=='file'){
 			if ($this->mIsCache) {
 				if (! is_dir ( $this->mCacheDir )) {
 					$this->_mkdirr ( $this->mCacheDir );
 				}
-				$content = ! empty ( $content ) ? $content : ob_get_contents ();
-				$content .="\r\n <!-- Cached ";
-				if($this->mCacheCompress==1) {
-					$content .=" with gzip by KFL at ".date("Y-m-d H:i:s")."-->";
-					$content = gzencode($content,9);
-				}else{
-					$content .="by KFL at ".date("Y-m-d H:i:s")."-->";
-				}
 				$mCacheFile = $this->mCacheDir . $this->mCacheFile;
-				
-				file_put_contents ( $mCacheFile, $content, LOCK_EX );
-				
+				write_file($content,$mCacheFile);	
 				ob_end_flush ();
-			}
-		
+			}		
 		}
 		
-		if($this->mCacheStore=='memcache'){
-			$content = ! empty ( $content ) ? $content : ob_get_contents ();
-			$content .="\r\n <!-- Cached ";
-			if($this->mCacheCompress==1) {
-				$content .=" with gzip by KFL at ".date("Y-m-d H:i:s")."-->";
-				$content = gzencode($content,9);
-			}else{
-				$content .="by KFL at ".date("Y-m-d H:i:s")."-->";
-			}			
+		if($this->mCacheStore=='memcache'){			
 			$this->mCacheMemcache->set($this->mCacheFile,$content,0,$this->mCacheTime);
 			ob_end_flush ();
 		}
