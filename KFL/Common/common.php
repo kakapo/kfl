@@ -10,7 +10,7 @@ else
 }
 
 $dir_name = dirname($_SERVER["SCRIPT_NAME"]);
-if($dir_name=="\\") $dir_name ='';
+if($dir_name=="\\" || $dir_name=='/') $dir_name ='';
 define("BASE_URL", $preht . $_SERVER["HTTP_HOST"] . $dir_name);
 list(,$plast,$last) = explode(".",$_SERVER["HTTP_HOST"]);
 $cookie_domain = '.'.$plast.'.'.$last;
