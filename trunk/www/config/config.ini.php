@@ -4,7 +4,7 @@
 //					Application	Settings			//
 //////////////////////////////////////////////////////
 	define("APP_STATUS", "dev");
-	define("KFL_DIR", "D:/GoogleCodeKFL/KFL");
+	define("KFL_DIR", "D:/xampp/htdocs/kfl/KFL");
 	define("APP_LANG", "ch");
 	define("APP_TEMP_DIR", APP_DIR."/tmp/");
 	define("SSO_MODE", "ticket");
